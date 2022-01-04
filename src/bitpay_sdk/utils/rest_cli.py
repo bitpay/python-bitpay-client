@@ -54,7 +54,6 @@ class RESTcli:
         if signature_required:
             headers['x-signature'] = xsignature
             headers['x-identity'] = xidentity
-
         response = requests.post(full_url, data=form_data, headers=headers)
         json_response = self.response_to_json_string(response)
         return json_response
@@ -115,4 +114,4 @@ class RESTcli:
         return json_response
 
     def response_to_json_string(self, response):
-        return response.json()
+        return response.json()['data']

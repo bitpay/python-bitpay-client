@@ -1,5 +1,6 @@
 import os
 import json
+
 from .config import Config
 from .tokens import Tokens
 from .models.facade import Facade
@@ -9,63 +10,97 @@ from .exceptions.bitpay_exception import BitPayException
 
 
 class Client:
-    __configuration = ""
-    __env = ""
-    __eckey = ""
-    __token_cache = ""
+    __configuration = None
+    __env = None
+    __ec_key = None
+    __token_cache = None
+    __currencies_info = []
     __restcli = None
 
-    def __init__(self, config_file_path):
-        self.build_config_from_file(config_file_path)
-        self.init_keys()
-        self.init()
+    def __init__(self, config_file_path, environment=None, private_key=None, tokens=None):
+        try:
+            if config_file_path:
+                self.build_config_from_file(config_file_path)
+                self.init_keys()
+                self.init()
+            else:
+                self.__env = environment
+                self.build_config(private_key, tokens)
+                self.init_keys()
+                self.init()
+        except Exception as e:
+            raise BitPayException("failed to initiate client: " + str(e))
 
-    def build_config_from_file(self, config_file_path):
-        self.__configuration = Config()
+    def build_config_from_file(self, config_file_path: str):
+        try:
+            self.__configuration = Config()
 
-        if os.path.exists(config_file_path):
+            if os.path.exists(config_file_path):
+                try:
+                    read_file = open(config_file_path, 'r')
+                    json_data = json.loads(read_file.read())
+                    self.__env = json_data['BitPayConfiguration']['Environment']
+                    env_config = json_data["BitPayConfiguration"]["EnvConfig"][self.__env]
+                except Exception as e:
+                    raise BitPayException("Error when reading configuration file", str(e))
 
-            try:
-                read_file = open(config_file_path, 'r')
-                content = read_file.read()
-                json_data = json.loads(content)
-                self.__configuration.set_environment(json_data['BitPayConfiguration']['Environment'])
-                self.__env = self.__configuration.get_environment()
-                tokens = json_data["BitPayConfiguration"]["EnvConfig"][self.__env]["ApiTokens"]
-                private_key_path = json_data["BitPayConfiguration"]["EnvConfig"][self.__env]["PrivateKeyPath"]
-                private_key_secret = json_data["BitPayConfiguration"]["EnvConfig"][self.__env]["PrivateKeySecret"]
-                proxy = json_data["BitPayConfiguration"]["EnvConfig"][self.__env]["proxy"]
+                self.__configuration.set_environment(self.__env)
+                self.__configuration.set_envconfig({self.__env: env_config})
+            else:
+                raise BitPayException("Configuration file not found")
 
-                env_config = {self.__env: {
-                    "PrivateKeyPath": private_key_path,
-                    "PrivateKeySecret": private_key_secret,
-                    "ApiTokens": tokens,
-                    "Proxy": proxy
-                }}
-                self.__configuration.set_envconfig(env_config)
+        except Exception as e:
+            raise BitPayException("failed to process configuration: " + str(e))
 
-            except BitPayException as e:
-                print(e)
+    def build_config(self, private_key_path: str, tokens: Tokens):
+        try:
+            self.__configuration = Config()
 
-        else:
-            raise BitPayException("Configuration file not found")
+            if os.path.exists(private_key_path):
+                read_file = open(private_key_path, 'r')
+                plain_private_key = read_file.read()
+                self.__ec_key = plain_private_key
+            else:
+                raise BitPayException("Private Key file not found")
+
+            env_config = {
+                "PrivateKeyPath": private_key_path,
+                "PrivateKey": plain_private_key,
+                "ApiTokens": tokens
+            }
+            self.__configuration.set_environment(self.__env)
+            self.__configuration.set_envconfig({self.__env: env_config})
+        except Exception as e:
+            raise BitPayException("failed to process configuration: " + str(e))
 
     def init_keys(self):
-        private_key_path = self.__configuration.get_envconfig()[self.__env]["PrivateKeyPath"]
-        try:
-            if not self.__eckey:
-                with open(private_key_path) as f:
-                    self.__eckey = f.read()
+        if not self.__ec_key:
+            try:
+                private_key_path = self.__configuration.get_envconfig()[self.__env]["PrivateKeyPath"]
+                if os.path.exists(private_key_path):
+                    with open(private_key_path) as f:
+                        self.__ec_key = f.read()
+                else:
+                    plain_private_key = self.__configuration.get_envconfig()[self.__env]["PrivateKey"]
+                    if plain_private_key:
+                        self.__ec_key = plain_private_key
 
-        except BitPayException as e:
-            raise BitPayException("failed to build configuration : ")
+            except Exception as e:
+                raise BitPayException("When trying to load private key. Make sure the configuration details are "
+                                      "correct and the private key and tokens are valid: ", str(e))
 
     def init(self):
         try:
-            proxy = self.__configuration.get_envconfig()[self.__env]["Proxy"]
-            self.__restcli = RESTcli(self.__env, self.__eckey, proxy)
+            proxy = self.__configuration.get_envconfig()[self.__env]["proxy"]
+            self.__restcli = RESTcli(self.__env, self.__ec_key, proxy)
             self.load_access_tokens()
-            # TODO :load currencies
+            self.__currencies_info = self.load_currencies()
+        except Exception as e:
+            raise BitPayException("failed to deserialize BitPay server response (Token array): ", str(e))
+
+    def load_currencies(self):
+        try:
+            return []
         except BitPayException as e:
             print(e)
 
@@ -73,21 +108,31 @@ class Client:
         try:
             self.clear_access_token_cache()
             self.__token_cache = self.__configuration.get_envconfig()[self.__env]["ApiTokens"]
-        except BitPayException as e:
-            print(e)
+        except Exception as e:
+            raise BitPayException("When trying to load the tokens: ", str(e))
 
     def clear_access_token_cache(self):
         self.__token_cache = Tokens()
 
+    def get_access_token(self, key: str):
+        try:
+            return self.__token_cache[key]
+        except Exception as e:
+            raise BitPayException("There is no token for the specified key: ", str(e))
+
+    # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     def create_invoice(self, invoice: Invoice, facade, sign_request=True):
         try:
             invoice.set_token(self.get_access_token(facade))
-            print(invoice)
             invoice_json = invoice.to_json()
-
-            response = self.__restcli.post("invoices", invoice_json, sign_request)
-            print(response)
-
+            response_json = self.__restcli.post("invoices", invoice_json, sign_request)
         except BitPayException as e:
             print(e)
 
@@ -95,6 +140,7 @@ class Client:
         try:
             params = {"token": self.get_access_token(facade)}
             response_json = self.__restcli.get("invoices/%s" % invoice_id, params, sign_request)
+            return Invoice(**response_json)
         except BitPayException as e:
             print(e)
 
@@ -122,7 +168,6 @@ class Client:
                 params['buyer_email'] = buyer_email
 
             response_json = self.__restcli.update("invoices/%s" % invoice_id, json.dumps(params))
-
         except BitPayException as e:
             print(e)
 
@@ -139,11 +184,5 @@ class Client:
             params = {}
             # Conditions missing look from node
             response_json = self.__restcli.post("invoices/%s" % invoice_id + "/notifications", params)
-        except BitPayException as e:
-            print(e)
-
-    def get_access_token(self, key: str):
-        try:
-            return self.__token_cache[key]
         except BitPayException as e:
             print(e)

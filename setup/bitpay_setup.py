@@ -10,103 +10,172 @@ sys.path.append(os.path.dirname(root_dir))
 from src.bitpay_sdk.utils.key_utils import *
 from src.bitpay_sdk.exceptions.bitpay_exception import BitPayException
 
-is_prod = False  # Set to true if the environment for which the configuration file will be generated is Production.
 # Will be set to Test otherwise
-
 private_key_name = 'private_key.pem'  # Add here the name for your Private key
-generate_merchant_token = True  # Set to true to generate a token for the Merchant facade
-generate_payout_token = True  # Set to true to generate a token for the Payout facade
-your_master_password = 'YourMasterPassword'  # Will be used to encrypt your PrivateKey
+private_key_path = os.path.join(os.path.abspath(os.curdir), private_key_name)
+plain_private_key = None
 proxy = None
-base_url = 'https://bitpay.com' if is_prod else 'https://test.bitpay.com'
-env = 'Prod' if is_prod else 'Test'
+api_url = None
+environment = None
 merchant_token = None
 payout_token = None
 
-root_path = os.path.abspath(os.curdir)
 
-try:
-    private_key = generate_pem()
-    with open(os.path.join(root_path, private_key_name), "wb") as f:
-        f.write(private_key.encode())
-except BitPayException as e:
-    print(e)
+def select_env():
+    global environment
+    try:
+        print("Select target environment: ")
+        target_environment = input('Press T for testing or P for production: \n')
 
-# Generate the public key from the private key every time (no need to store the public key).
-try:
-    public_key = get_compressed_public_key_from_pem(private_key)
-except BitPayException as e:
-    print(e)
+        if target_environment.lower() == 't':
+            environment = 'Test'
+        elif target_environment.lower() == 'p':
+            environment = 'Prod'
+        else:
+            select_env()
 
-try:
-    sin = get_sin_from_pem(private_key)
-except BitPayException as e:
-    print(e)
+        set_environment(environment)
+        select_create_key()
+    except BitPayException as e:
+        print(e)
 
-try:
-    if generate_merchant_token:
-        facade = 'merchant'
-        payload = {'id': sin, 'facade': facade}
 
-        url = base_url + "/tokens"
+def set_environment(env):
+    global api_url
+    if env == 'Test':
+        api_url = 'https://test.bitpay.com'
+    else:
+        api_url = 'https://bitpay.com'
+
+
+def select_create_key():
+    try:
+        input_value = input('Press enter to generate a brand new key or enter your private key location:')
+        if input_value == '':
+            create_new_key()
+        else:
+            load_key()
+    except BitPayException as e:
+        print(e)
+
+
+def create_new_key():
+    try:
+        private_key = generate_pem()
+        store_key(private_key)
+    except BitPayException as e:
+        print(e)
+
+
+def store_key(private_key):
+    global plain_private_key, private_key_path
+    try:
+        print("Select the way you want to store your private key:")
+        input_value = input("Press F for storing in a pem file or T for plain text in your config file: ")
+
+        if input_value.lower() == 'f':
+            with open(str(private_key_path), "wb") as f:
+                f.write(private_key.encode())
+            plain_private_key = None
+            print("Private key saved at path:", private_key_path)
+            select_tokens(private_key)
+        elif input_value.lower() == 't':
+            plain_private_key = private_key
+            private_key_path = None
+            print("Saving private key... \n")
+            select_tokens(private_key)
+        else:
+            store_key(private_key)
+    except BitPayException as e:
+        print(e)
+
+
+def select_tokens(private_key):
+    try:
+        print("Select the tokens that you would like to request:")
+        input_value = input('Press M for merchant, P for payout, or B for both: \n')
+        if input_value.lower() in ['m', 'p', 'b']:
+            print("Requesting Tokens... \n")
+            request_tokens(input_value.lower(), private_key)
+        else:
+            select_tokens(private_key)
+    except BitPayException as e:
+        print(e)
+
+
+def request_tokens(token_type, private_key):
+    global merchant_token
+    global payout_token
+
+    try:
+        sin = get_sin_from_pem(private_key)
+        url = "%s/tokens" % api_url
         headers = {"content-type": "application/json", "X-accept-version": "2.0.0"}
-        response = requests.post(url, verify=True, data=json.dumps(payload), headers=headers)
 
-        if response.ok:
-            merchant_token = response.json()['data'][0]['token']
-            print("Merchant Token: ", response.json()['data'][0]['token'])
-            print("Merchant Token Pairing Code: ", response.json()['data'][0]['pairingCode'])
+        if token_type in ['m', 'b']:
+            print("Requesting Merchant token... \n")
+            facade = 'merchant'
+            payload = {'id': sin, 'facade': facade}
 
-    if generate_payout_token:
-        facade = 'payout'
-        payload = {'id': sin, 'facade': facade}
+            response = requests.post(url, verify=True, data=json.dumps(payload), headers=headers)
+            if response.ok:
+                merchant_token = response.json()['data'][0]['token']
+                print("Merchant Token: ", response.json()['data'][0]['token'])
+                print("Merchant Token Pairing Code: ", response.json()['data'][0]['pairingCode'] + "\n")
 
-        url = base_url + "/tokens"
-        headers = {"content-type": "application/json", "X-accept-version": "2.0.0"}
-        response = requests.post(url, verify=True, data=json.dumps(payload), headers=headers)
+        if token_type in ['p', 'b']:
+            print("Requesting Payout token... \n")
+            facade = 'payout'
+            payload = {'id': sin, 'facade': facade}
 
-        if response.ok:
-            payout_token = response.json()['data'][0]['token']
-            print("Payout Token: ", response.json()['data'][0]['token'])
-            print("Payout Token Pairing Code: ", response.json()['data'][0]['pairingCode'])
+            response = requests.post(url, verify=True, data=json.dumps(payload), headers=headers)
+            if response.ok:
+                payout_token = response.json()['data'][0]['token']
+                print("Payout Token: ", response.json()['data'][0]['token'])
+                print("Payout Token Pairing Code: ", response.json()['data'][0]['pairingCode'] + "\n")
 
-except BitPayException as e:
-    print(e)
+        update_config_file()
+    except BitPayException as e:
+        print(e)
 
-print("\r\nPlease, copy the above pairing code/s and approve on your BitPay Account at the following link:\r\n")
-print(f"{base_url}/dashboard/merchant/api-tokens\r\n")
-print("\r\nOnce you have this Pairing Code/s approved you can move the generated files to a secure location and start "
-      "using the Client.\r\n")
 
-# Generate config file
-config = {
-    "BitPayConfiguration": {
-        "Environment": env,
-        "EnvConfig": {
-            "Test": {
-                "PrivateKeyPath": None if is_prod else os.path.abspath("private_key.pem"),
-                "PrivateKeySecret": None if is_prod else your_master_password,
-                "ApiTokens": {
-                    "merchant": None if is_prod else merchant_token,
-                    "payout": None if is_prod else payout_token
-                },
-                "proxy": proxy
-            },
-            "Prod": {
-                "PrivateKeyPath": os.path.abspath("private.pem") if is_prod else None,
-                "PrivateKeySecret": your_master_password if is_prod else None,
-                "ApiTokens": {
-                    "merchant": merchant_token if is_prod else None,
-                    "payout": payout_token if is_prod else None
-                },
-                "proxy": proxy
+def update_config_file():
+    try:
+        config = {
+            "BitPayConfiguration": {
+                "Environment": environment,
+                "EnvConfig": {
+                    environment: {
+                        "PrivateKeyPath": private_key_path,
+                        "PrivateKey": plain_private_key,
+                        "ApiTokens": {
+                            "merchant": merchant_token,
+                            "payout": payout_token
+                        },
+                        "proxy": proxy
+                    }
+                }
             }
         }
-    }
-}
 
-try:
-    with open(os.path.abspath("bitpay.config.json"), 'w') as outfile:
-        json.dump(config, outfile)
-except BitPayException as e:
-    print(e)
+        with open(os.path.abspath("bitpay.config.json"), 'w') as outfile:
+            json.dump(config, outfile)
+            print('Generated configuration file at path: ', os.path.abspath("bitpay.config.json"))
+
+        print('Configuration generated successfully! \n')
+        print("\r\nPlease, copy the above pairing code/s and approve on your BitPay Account at the following link:\r\n")
+        print(f"{api_url}/dashboard/merchant/api-tokens\r\n")
+        print("\r\nOnce you have this Pairing Code/s approved you can move the generated files to a secure location "
+              "and start using the Client.\r\n")
+    except BitPayException as e:
+        print(e)
+
+
+def load_key():
+    # TODO: Need to implement this function
+    pass
+
+
+if __name__ == '__main__':
+    select_env()
+
