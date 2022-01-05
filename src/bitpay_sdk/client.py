@@ -6,6 +6,10 @@ from .tokens import Tokens
 from .models.facade import Facade
 from .utils.rest_cli import RESTcli
 from .models.invoice.invoice import Invoice
+from .exceptions.invoice_query_exception import InvoiceQueryException
+from .exceptions.invoice_update_exception import InvoiceUpdateException
+from .exceptions.invoice_cancellation_exception import InvoiceCancellationException
+from .exceptions.invoice_notification_exception import InvoiceNotificationException
 from .exceptions.bitpay_exception import BitPayException
 
 
@@ -128,61 +132,144 @@ class Client:
     # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    def create_invoice(self, invoice: Invoice, facade, sign_request=True):
+    def create_invoice(self, invoice: Invoice, facade: str = Facade.Merchant, sign_request: bool = True) -> Invoice:
         try:
             invoice.set_token(self.get_access_token(facade))
             invoice_json = invoice.to_json()
             response_json = self.__restcli.post("invoices", invoice_json, sign_request)
         except BitPayException as e:
-            print(e)
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+        except Exception as e:
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e)
 
-    def get_invoice(self, invoice_id, facade, sign_request=True):
+        try:
+            invoice = Invoice(**response_json)
+        except Exception as e:
+            raise InvoiceQueryException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
+
+        return invoice
+
+    def get_invoice(self, invoice_id: str, facade: str = Facade.Merchant, sign_request: bool = True) -> Invoice:
         try:
             params = {"token": self.get_access_token(facade)}
             response_json = self.__restcli.get("invoices/%s" % invoice_id, params, sign_request)
-            return Invoice(**response_json)
         except BitPayException as e:
-            print(e)
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+        except Exception as e:
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e)
 
-    def get_invoices(self, date_start, date_end, status, order_id, limit, offset):
+        try:
+            invoice = Invoice(**response_json)
+        except Exception as e:
+            raise InvoiceQueryException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
+
+        return invoice
+
+    def get_invoices(self, date_start: str, date_end: str, status: str = None, order_id: str = None, limit: int = None,
+                     offset: int = None) -> [Invoice]:
         try:
             params = {"token": self.get_access_token(Facade.Merchant), "dateStart": date_start, "date_end": date_end}
+            if status:
+                params["status"] = status
+            if order_id:
+                params["order_id"] = order_id
+            if limit:
+                params["limit"] = limit
+            if offset:
+                params["offset"] = offset
+
             response_json = self.__restcli.get("invoices/", parameters=params)
         except BitPayException as e:
-            print(e)
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+        except Exception as e:
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e)
 
-    def update_invoice(self, invoice_id, buyer_sms, sms_code, buyer_email):
         try:
-            params = {'token': self.get_access_token(Facade.Merchant)}
+            invoices = Invoice(**response_json)
+        except Exception as e:
+            raise InvoiceQueryException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
 
-            if buyer_sms & sms_code:
-                pass
+        return invoices
 
-            if buyer_sms is not None:
-                params['buyer_sms'] = buyer_sms
-
-            if sms_code is not None:
-                params['sms_code'] = sms_code
-
-            if buyer_email is not None:
-                params['buyer_email'] = buyer_email
-
+    def update_invoice(self, invoice_id: str, buyer_email: str) -> Invoice:
+        try:
+            params = {'token': self.get_access_token(Facade.Merchant), 'buyer_email': buyer_email}
             response_json = self.__restcli.update("invoices/%s" % invoice_id, json.dumps(params))
         except BitPayException as e:
-            print(e)
+            raise InvoiceUpdateException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+        except Exception as e:
+            raise InvoiceUpdateException("failed to serialize Invoice object : %s" % e)
 
-    def cancel_invoice(self, invoice_id):
+        try:
+            invoice = Invoice(**response_json)
+        except Exception as e:
+            raise InvoiceUpdateException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
+
+        return invoice
+
+    def cancel_invoice(self, invoice_id: str) -> Invoice:
         try:
             params = {'token': self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.delete("invoices/%s" % invoice_id, params)
         except BitPayException as e:
+            raise InvoiceCancellationException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+        except Exception as e:
+            raise InvoiceCancellationException("failed to serialize Invoice object : %s" % e)
+
+        try:
+            invoice = Invoice(**response_json)
+        except Exception as e:
+            raise InvoiceCancellationException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
+        return invoice
+
+    def request_invoice_notifications(self, invoice_id: str) -> bool:
+        try:
+            invoice = self.get_invoice(invoice_id)
+        except Exception as e:
+            raise InvoiceNotificationException(f"Invoice with ID: " + {invoice_id} + " Not Found : " + e.message, str(e))
+        params = {"token": invoice.get_token()}
+
+        try:
+            response_json = self.__restcli.post("invoices/%s" % invoice_id + "/notifications", params)
+        except Exception as e:
+            raise InvoiceNotificationException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
+
+    def create_refund(self, invoice_id, amount, currency, preview=False, immediate=False, buyer_pays_refund_fee=False):
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant), "invoiceId": invoice_id, "amount": amount,
+                      "currency": currency, "preview": preview, "immediate": immediate,
+                      "buyerPaysRefundFee": buyer_pays_refund_fee}
+
+            response_json = self.__restcli.post("refunds", params, True)
+        except Exception as e:
             print(e)
 
-    def get_invoice_webhook(self, invoice_id):
+    def get_refund(self, refund_id):
         try:
-            self.get_invoice(invoice_id)
-            params = {}
-            # Conditions missing look from node
-            response_json = self.__restcli.post("invoices/%s" % invoice_id + "/notifications", params)
-        except BitPayException as e:
+            params = {"token": self.get_access_token(Facade.Merchant)}
+            response_json = self.__restcli.get("refunds/%s" % refund_id, params)
+        except Exception as e:
             print(e)
+
+    def get_refunds(self, invoice_id):
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant), "invoiceId": invoice_id}
+            response_json = self.__restcli.get("refunds", params)
+        except Exception as e:
+            print(e)
+
+    def update_refund(self, refund_id, status):
+        params = {"token": self.get_access_token(Facade.Merchant)}
+
+        if status:
+            params["status"] = status
+        try:
+            response_json = self.__restcli.update("refunds/%s" % refund_id, params)
+        except Exception as e:
+            print(e)
+            
+    def cancel_refund(self, refund_id):
+        pass
+
+    def request_refund_notification(self, refund_id):
+        pass

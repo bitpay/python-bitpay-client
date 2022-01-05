@@ -1,4 +1,14 @@
 from .buyer import Buyer
+from .shopper import Shopper
+from .miner_fees import MinerFees
+from .refund_info import RefundInfo
+from .buyer_provided_info import BuyerProvidedInfo
+from .supported_transaction_currencies import SupportedTransactionCurrencies
+
+
+def change_camel_case_to_snake_case(string):
+    return ''.join(['_' + i.lower() if i.isupper()
+                    else i for i in string]).lstrip('_')
 
 
 class Invoice:
@@ -59,22 +69,27 @@ class Invoice:
     __display_amount_paid = None
     __exchange_rates = None
 
-    def __init__(self,  price=None, currency=None, **kwargs):
+    def __init__(self, price=None, currency=None, **kwargs):
         self.__price = kwargs.get('price', "") if not price else price
         self.__currency = kwargs.get('currency', "") if not currency else currency
 
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % key)(value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 pass
 
-        # TODO: Add buyer provided info
+        self.__buyer = Buyer()
+        self.__buyer_provided_info = BuyerProvidedInfo()
+        self.__supported_transaction_currencies = SupportedTransactionCurrencies()
+        self.__miner_fees = MinerFees()
+        self.__shopper = Shopper()
+        self.__refund_info = RefundInfo()
 
     def get_guid(self):
         return self.__guid
 
-    def set_currency(self, guid):
+    def set_guid(self, guid):
         self.__guid = guid
 
     def get_token(self):
@@ -281,26 +296,23 @@ class Invoice:
     def set_buyer_provided_email(self, buyer_provided_email):
         self.__buyer_provided_email = buyer_provided_email
 
-    # TODO
-    # def get_buyer_provided_info(self):
-    #     return self.__buyer_provided_info
-    #
-    # def set_buyer_provided_info(self, buyer_provided_info):
-    #     self.__buyer_provided_info = buyer_provided_info
+    def get_buyer_provided_info(self):
+        return self.__buyer_provided_info
 
-    # TODO
-    # def get_supported_transaction_currencies(self):
-    #     return self.__supported_transaction_currencies
-    #
-    # def set_supported_transaction_currencies(self, supported_transaction_currencies):
-    #     self.__supported_transaction_currencies = supported_transaction_currencies
+    def set_buyer_provided_info(self, buyer_provided_info: BuyerProvidedInfo):
+        self.__buyer_provided_info = buyer_provided_info
 
-    # TODO
-    # def get_miner_fees(self):
-    #     return self.__miner_fees
-    #
-    # def set_miner_fees(self, miner_fees):
-    #     self.__miner_fees = miner_fees
+    def get_supported_transaction_currencies(self):
+        return self.__supported_transaction_currencies
+
+    def set_supported_transaction_currencies(self, supported_transaction_currencies: SupportedTransactionCurrencies):
+        self.__supported_transaction_currencies = supported_transaction_currencies
+
+    def get_miner_fees(self):
+        return self.__miner_fees
+
+    def set_miner_fees(self, miner_fees: MinerFees):
+        self.__miner_fees = miner_fees
 
     def get_non_paypro_payment_received(self):
         return self.__non_paypro_payment_received
@@ -308,12 +320,11 @@ class Invoice:
     def set_non_paypro_payment_received(self, non_paypro_payment_received):
         self.__non_paypro_payment_received = non_paypro_payment_received
 
-    # TODO
-    # def get_shopper(self):
-    #     return self.__shopper
-    #
-    # def set_shopper(self, shopper):
-    #     self.__shopper = shopper
+    def get_shopper(self):
+        return self.__shopper
+
+    def set_shopper(self, shopper: Shopper):
+        self.__shopper = shopper
 
     def get_bill_id(self):
         return self.__bill_id
@@ -321,12 +332,11 @@ class Invoice:
     def set_bill_id(self, bill_id):
         self.__bill_id = bill_id
 
-    # TODO
-    # def get_refund_info(self):
-    #     return self.__refund_info
-    #
-    # def set_refund_info(self, refund_info):
-    #     self.__refund_info = refund_info
+    def get_refund_info(self):
+        return self.__refund_info
+
+    def set_refund_info(self, refund_info: RefundInfo):
+        self.__refund_info = refund_info
 
     def get_extended_notifications(self):
         return self.__extended_notifications
@@ -383,15 +393,15 @@ class Invoice:
         self.__currency = currency
 
     # Buyer Data
-    # TODO:
-    # def get_buyer(self):
-    #     return self.__buyer
-    #
-    # def set_buyer(self, buyer: Buyer):
-    #     self.__buyer = buyer
+    def get_buyer(self):
+        return self.__buyer
+
+    def set_buyer(self, buyer: Buyer):
+        self.__buyer = buyer
 
     def to_json(self):
         data = {
+            # TODO: Add more data
             "currency": self.get_currency(),
             "price": self.get_price(),
             "token": self.get_token()
