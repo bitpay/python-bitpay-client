@@ -1,31 +1,25 @@
 from .supported_transaction_currency import SupportedTransactionCurrency
 
 
-def change_camel_case_to_snake_case(string):
-    return ''.join(['_' + i.lower() if i.isupper()
-                    else i for i in string]).lstrip('_')
-
-
-class SupportedTransactionCurrencies:
-    __btc = None
-    __bch = None
-    __eth = None
-    __usdc = None
-    __gusd = None
-    __pax = None
+class SupportedTransactionCurrencies(object):
+    __btc = SupportedTransactionCurrency()
+    __bch = SupportedTransactionCurrency()
+    __eth = SupportedTransactionCurrency()
+    __usdc = SupportedTransactionCurrency()
+    __gusd = SupportedTransactionCurrency()
+    __pax = SupportedTransactionCurrency()
+    __xrp = SupportedTransactionCurrency()
+    __doge = SupportedTransactionCurrency()
+    __ltc = SupportedTransactionCurrency()
 
     def __init__(self, **kwargs):
-        self.__btc = SupportedTransactionCurrency()
-        self.__bch = SupportedTransactionCurrency()
-        self.__eth = SupportedTransactionCurrency()
-        self.__usdc = SupportedTransactionCurrency()
-        self.__gusd = SupportedTransactionCurrency()
-        self.__pax = SupportedTransactionCurrency()
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX", "XRP", "DOGE", "LTC"]:
+                    value = SupportedTransactionCurrency(**value)
+                getattr(self, 'set_%s' % key.lower())(value)
             except AttributeError as e:
-                pass
+                print(e)
 
     def get_btc(self):
         return self.__btc
@@ -63,6 +57,24 @@ class SupportedTransactionCurrencies:
     def set_pax(self, pax: SupportedTransactionCurrency):
         self.__pax = pax
 
+    def get_xrp(self):
+        return self.__xrp
+
+    def set_xrp(self, xrp: SupportedTransactionCurrency):
+        self.__xrp = xrp
+
+    def get_doge(self):
+        return self.__doge
+
+    def set_doge(self, doge: SupportedTransactionCurrency):
+        self.__doge = doge
+
+    def get_ltc(self):
+        return self.__ltc
+
+    def set_ltc(self, ltc: SupportedTransactionCurrency):
+        self.__ltc = ltc
+
     def to_json(self):
         data = {
             "btc": self.get_btc(),
@@ -70,6 +82,9 @@ class SupportedTransactionCurrencies:
             "eth": self.get_eth(),
             "usdc": self.get_usdc(),
             "gusd": self.get_gusd(),
-            "pax": self.get_pax()
+            "pax": self.get_pax(),
+            "xrp": self.get_xrp(),
+            "doge": self.get_doge(),
+            "ltc": self.get_ltc()
         }
         return data

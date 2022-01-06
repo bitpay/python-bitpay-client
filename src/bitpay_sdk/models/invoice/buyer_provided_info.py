@@ -1,4 +1,7 @@
-class BuyerProvidedInfo:
+from src.bitpay_sdk.utils.key_utils import change_camel_case_to_snake_case
+
+
+class BuyerProvidedInfo(object):
 
     __name = ""
     __phone_number = ""
@@ -6,8 +9,12 @@ class BuyerProvidedInfo:
     __email_address = ""
     __selected_transaction_currency = ""
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_name(self):
         return self.__name

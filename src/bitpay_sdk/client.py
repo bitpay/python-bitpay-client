@@ -267,7 +267,7 @@ class Client:
             response_json = self.__restcli.update("refunds/%s" % refund_id, params)
         except Exception as e:
             print(e)
-            
+
     def cancel_refund(self, refund_id):
         pass
 

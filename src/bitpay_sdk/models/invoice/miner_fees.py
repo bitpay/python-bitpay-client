@@ -1,31 +1,25 @@
 from .miner_fees_item import MinerFeesItem
 
 
-def change_camel_case_to_snake_case(string):
-    return ''.join(['_' + i.lower() if i.isupper()
-                    else i for i in string]).lstrip('_')
-
-
-class MinerFees:
-    __btc = None
-    __bch = None
-    __eth = None
-    __usdc = None
-    __gusd = None
-    __pax = None
+class MinerFees(object):
+    __btc = MinerFeesItem()
+    __bch = MinerFeesItem()
+    __eth = MinerFeesItem()
+    __usdc = MinerFeesItem()
+    __gusd = MinerFeesItem()
+    __pax = MinerFeesItem()
+    __doge = MinerFeesItem()
+    __ltc = MinerFeesItem()
 
     def __init__(self, **kwargs):
-        self.__btc = MinerFeesItem()
-        self.__bch = MinerFeesItem()
-        self.__eth = MinerFeesItem()
-        self.__usdc = MinerFeesItem()
-        self.__gusd = MinerFeesItem()
-        self.__pax = MinerFeesItem()
+
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX"]:
+                    value = MinerFeesItem(**value)
+                getattr(self, 'set_%s' % key.lower())(value)
             except AttributeError as e:
-                pass
+                print(e)
 
     def get_btc(self):
         return self.__btc
@@ -57,11 +51,17 @@ class MinerFees:
     def set_gusd(self, gusd: MinerFeesItem):
         self.__gusd = gusd
 
-    def get_pax(self):
-        return self.__pax
+    def get_doge(self):
+        return self.__doge
 
-    def set_pax(self, pax: MinerFeesItem):
-        self.__pax = pax
+    def set_doge(self, doge: MinerFeesItem):
+        self.__doge = doge
+
+    def get_ltc(self):
+        return self.__ltc
+
+    def set_pax(self, ltc: MinerFeesItem):
+        self.__ltc = ltc
 
     def to_json(self):
         data = {
@@ -70,6 +70,8 @@ class MinerFees:
             "eth": self.get_eth(),
             "usdc": self.get_usdc(),
             "gusd": self.get_gusd(),
-            "pax": self.get_pax()
+            "pax": self.get_pax(),
+            "doge": self.get_doge(),
+            "ltc": self.get_ltc()
         }
         return data

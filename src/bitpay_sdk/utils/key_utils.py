@@ -71,9 +71,14 @@ def compress_key(bts):
 
 
 def find_prefix(intval):
-    if (intval % 2 == 0):
+    if intval % 2 == 0:
         prefix = '02'
     else:
         prefix = '03'
     return prefix
 
+
+def change_camel_case_to_snake_case(string):
+    snake_case = ''.join(['_' + i.lower() if i.isupper()
+                          else i for i in string]).lstrip('_')
+    return snake_case

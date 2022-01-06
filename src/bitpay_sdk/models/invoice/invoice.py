@@ -4,14 +4,9 @@ from .miner_fees import MinerFees
 from .refund_info import RefundInfo
 from .buyer_provided_info import BuyerProvidedInfo
 from .supported_transaction_currencies import SupportedTransactionCurrencies
+from src.bitpay_sdk.utils.key_utils import change_camel_case_to_snake_case
 
-
-def change_camel_case_to_snake_case(string):
-    return ''.join(['_' + i.lower() if i.isupper()
-                    else i for i in string]).lstrip('_')
-
-
-class Invoice:
+class Invoice(object):
     __currency = ""
 
     __guid = ""
@@ -35,7 +30,7 @@ class Invoice:
     __payment_display_subtotals = None
     __payment_codes = None
     __acceptance_window = None
-    __buyer = None
+    __buyer = Buyer()
     __refund_addresses = None
     __close_url = ""
     __auto_redirect = False
@@ -53,13 +48,13 @@ class Invoice:
     __target_confirmations = None
     __refund_address_request_pending = None
     __buyer_provided_email = None
-    __buyer_provided_info = None
-    __supported_transaction_currencies = None
-    __miner_fees = None
+    __buyer_provided_info = BuyerProvidedInfo()
+    __supported_transaction_currencies = SupportedTransactionCurrencies()
+    __miner_fees = MinerFees()
     __non_paypro_payment_received = None
-    __shopper = None
+    __shopper = Shopper()
     __bill_id = None
-    __refund_info = None
+    __refund_info = RefundInfo()
     __extended_notifications = False
 
     __transaction_currency = None
@@ -70,21 +65,18 @@ class Invoice:
     __exchange_rates = None
 
     def __init__(self, price=None, currency=None, **kwargs):
+
         self.__price = kwargs.get('price', "") if not price else price
         self.__currency = kwargs.get('currency', "") if not currency else currency
 
         for key, value in kwargs.items():
             try:
+                if key in ["buyer", "buyerProvidedInfo", "shopper", "supportedTransactionCurrencies", "minerFees", "refundInfo"]:
+                    klass = globals()[key[0].upper() + key[1:]]
+                    value = klass(**value)
                 getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
-                pass
-
-        self.__buyer = Buyer()
-        self.__buyer_provided_info = BuyerProvidedInfo()
-        self.__supported_transaction_currencies = SupportedTransactionCurrencies()
-        self.__miner_fees = MinerFees()
-        self.__shopper = Shopper()
-        self.__refund_info = RefundInfo()
+                print(e)
 
     def get_guid(self):
         return self.__guid
