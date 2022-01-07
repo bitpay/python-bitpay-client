@@ -10,12 +10,14 @@ class MinerFees(object):
     __pax = MinerFeesItem()
     __doge = MinerFeesItem()
     __ltc = MinerFeesItem()
+    __busd = MinerFeesItem()
+    __xrp = MinerFeesItem()
 
     def __init__(self, **kwargs):
 
         for key, value in kwargs.items():
             try:
-                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX"]:
+                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX", "BUSD", "XRP"]:
                     value = MinerFeesItem(**value)
                 getattr(self, 'set_%s' % key.lower())(value)
             except AttributeError as e:
@@ -60,8 +62,26 @@ class MinerFees(object):
     def get_ltc(self):
         return self.__ltc
 
-    def set_pax(self, ltc: MinerFeesItem):
+    def set_ltc(self, ltc: MinerFeesItem):
         self.__ltc = ltc
+
+    def get_pax(self):
+        return self.__pax
+
+    def set_pax(self, pax: MinerFeesItem):
+        self.__pax = pax
+
+    def get_busd(self):
+        return self.__busd
+
+    def set_busd(self, busd: MinerFeesItem):
+        self.__busd = busd
+
+    def get_xrp(self):
+        return self.__xrp
+
+    def set_xrp(self, xrp: MinerFeesItem):
+        self.__xrp = xrp
 
     def to_json(self):
         data = {
@@ -72,6 +92,8 @@ class MinerFees(object):
             "gusd": self.get_gusd(),
             "pax": self.get_pax(),
             "doge": self.get_doge(),
-            "ltc": self.get_ltc()
+            "ltc": self.get_ltc(),
+            "xrp": self.get_xrp(),
+            "busd": self.get_busd()
         }
         return data

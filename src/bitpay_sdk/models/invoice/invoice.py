@@ -2,9 +2,12 @@ from .buyer import Buyer
 from .shopper import Shopper
 from .miner_fees import MinerFees
 from .refund_info import RefundInfo
+from .universal_codes import UniversalCodes
+from .itemized_details import ItemizedDetails
 from .buyer_provided_info import BuyerProvidedInfo
-from .supported_transaction_currencies import SupportedTransactionCurrencies
 from src.bitpay_sdk.utils.key_utils import change_camel_case_to_snake_case
+from .supported_transaction_currencies import SupportedTransactionCurrencies
+
 
 class Invoice(object):
     __currency = ""
@@ -64,6 +67,18 @@ class Invoice(object):
     __display_amount_paid = None
     __exchange_rates = None
 
+    # Newly added on January 7
+    __payment_string = None  # added
+    __verification_link = None  # added
+    __buyer_email = None  # added
+    __merchant_name = None  # added
+    __forced_buyer_selected_wallet = None
+    __forced_buyer_selected_transaction_currency = None
+    __itemized_details = ItemizedDetails()  # added but have doubt in set method
+    __universal_codes = UniversalCodes()  # added
+    __is_cancelled = None
+    __bitpay_id_required = None
+
     def __init__(self, price=None, currency=None, **kwargs):
 
         self.__price = kwargs.get('price', "") if not price else price
@@ -71,7 +86,8 @@ class Invoice(object):
 
         for key, value in kwargs.items():
             try:
-                if key in ["buyer", "buyerProvidedInfo", "shopper", "supportedTransactionCurrencies", "minerFees", "refundInfo"]:
+                if key in ["buyer", "buyerProvidedInfo", "shopper", "supportedTransactionCurrencies", "minerFees",
+                           "refundInfo", "universalCodes", "itemizedDetails"]:
                     klass = globals()[key[0].upper() + key[1:]]
                     value = klass(**value)
                 getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
@@ -384,7 +400,80 @@ class Invoice(object):
     def set_currency(self, currency):
         self.__currency = currency
 
+    def get_payment_string(self):
+        return self.__payment_string
+
+    def set_payment_string(self, payment_string):
+        self.__payment_string = payment_string
+
+    def get_verification_link(self):
+        return self.__verification_link
+
+    def set_verification_link(self, verification_link):
+        self.__verification_link = verification_link
+
+    def get_buyer_email(self):
+        return self.__buyer_email
+
+    def set_buyer_email(self, buyer_email):
+        self.__buyer_email = buyer_email
+
+    def get_merchant_name(self):
+        return self.__merchant_name
+
+    def set_merchant_name(self, merchant_name):
+        self.__merchant_name = merchant_name
+
+    def get_forced_buyer_selected_wallet(self):
+        return self.__forced_buyer_selected_wallet
+
+    def set_forced_buyer_selected_wallet(self, forced_buyer_selected_wallet):
+        self.__forced_buyer_selected_wallet = forced_buyer_selected_wallet
+
+    def get_forced_buyer_selected_transaction_currency(self):
+        return self.__forced_buyer_selected_transaction_currency
+
+    def set_forced_buyer_selected_transaction_currency(self, forced_buyer_selected_transaction_currency):
+        self.__forced_buyer_selected_transaction_currency = forced_buyer_selected_transaction_currency
+
+    def get_is_cancelled(self):
+        return self.__is_cancelled
+
+    def set_is_cancelled(self, is_cancelled):
+        self.__is_cancelled = is_cancelled
+
+    def get_bitpay_id_required(self):
+        return self.__bitpay_id_required
+
+    def set_bitpay_id_required(self, bitpay_id_required):
+        self.__bitpay_id_required = bitpay_id_required
+
+    def get_universal_codes(self):
+        return self.__universal_codes
+
+    def set_universal_codes(self, universal_codes: UniversalCodes):
+        self.__universal_codes = universal_codes
+
+    def get_itemized_details(self):
+        items = []
+        for item in items:
+            if isinstance(item, ItemizedDetails):
+                items.append(item.to_json())
+            else:
+                items.append(item)
+        return items
+
+    def set_itemized_details(self, itemized_details: ItemizedDetails):
+        items_array = []
+        for item in itemized_details:
+            if isinstance(item, ItemizedDetails):
+                items_array.append(item.to_json())
+            else:
+                items_array.append(item)
+        self.__itemized_details = items_array
+
     # Buyer Data
+
     def get_buyer(self):
         return self.__buyer
 
