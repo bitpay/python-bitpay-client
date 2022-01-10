@@ -2,6 +2,7 @@ import os
 import json
 
 from .config import Config
+from .models.bill.bill import Bill
 from .tokens import Tokens
 from .models.facade import Facade
 from .utils.rest_cli import RESTcli
@@ -9,8 +10,12 @@ from .models.wallet.wallet import Wallet
 from .models.invoice.refund import Refund
 from .models.invoice.invoice import Invoice
 from .exceptions.bitpay_exception import BitPayException
+from .exceptions.bill_query_exception import BillQueryException
+from .exceptions.bill_update_exception import BillUpdateException
 from .exceptions.wallet_query_exception import WalletQueryException
 from .exceptions.refund_query_exception import RefundQueryException
+from .exceptions.bill_creation_exception import BillCreationException
+from .exceptions.bill_delivery_exception import BillDeliveryException
 from .exceptions.refund_update_exception import RefundUpdateException
 from .exceptions.invoice_query_exception import InvoiceQueryException
 from .exceptions.invoice_update_exception import InvoiceUpdateException
@@ -146,9 +151,9 @@ class Client:
             invoice_json = invoice.to_json()
             response_json = self.__restcli.post("invoices", invoice_json, sign_request)
         except BitPayException as e:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(e), e.get_api_code())
         except Exception as e:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e)
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(e))
 
         try:
             invoice = Invoice(**response_json)
@@ -162,9 +167,9 @@ class Client:
             params = {"token": self.get_access_token(facade)}
             response_json = self.__restcli.get("invoices/%s" % invoice_id, params, sign_request)
         except BitPayException as e:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(e), e.get_api_code())
         except Exception as e:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e)
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(e))
 
         try:
             invoice = Invoice(**response_json)
@@ -188,12 +193,14 @@ class Client:
 
             response_json = self.__restcli.get("invoices/", parameters=params)
         except BitPayException as e:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(e), e.get_api_code())
         except Exception as e:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % e)
+            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(e))
 
         try:
-            invoices = Invoice(**response_json)
+            invoices = []
+            for invoice_data in response_json:
+                invoices.append(Invoice(**invoice_data))
         except Exception as e:
             raise InvoiceQueryException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
 
@@ -202,11 +209,11 @@ class Client:
     def update_invoice(self, invoice_id: str, buyer_email: str) -> Invoice:
         try:
             params = {'token': self.get_access_token(Facade.Merchant), 'buyer_email': buyer_email}
-            response_json = self.__restcli.update("invoices/%s" % invoice_id, json.dumps(params))
+            response_json = self.__restcli.update("invoices/%s" % invoice_id, params)
         except BitPayException as e:
-            raise InvoiceUpdateException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+            raise InvoiceUpdateException("failed to serialize Invoice object : %s" % str(e), e.get_api_code())
         except Exception as e:
-            raise InvoiceUpdateException("failed to serialize Invoice object : %s" % e)
+            raise InvoiceUpdateException("failed to serialize Invoice object : %s" % str(e))
 
         try:
             invoice = Invoice(**response_json)
@@ -220,9 +227,10 @@ class Client:
             params = {'token': self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.delete("invoices/%s" % invoice_id, params)
         except BitPayException as e:
-            raise InvoiceCancellationException("failed to serialize Invoice object : %s" % e.get_message(), e.get_api_code())
+            raise InvoiceCancellationException("failed to serialize Invoice object : %s" % str(e),
+                                               e.get_api_code())
         except Exception as e:
-            raise InvoiceCancellationException("failed to serialize Invoice object : %s" % e)
+            raise InvoiceCancellationException("failed to serialize Invoice object : %s" % str(e))
 
         try:
             invoice = Invoice(**response_json)
@@ -234,13 +242,16 @@ class Client:
         try:
             invoice = self.get_invoice(invoice_id)
         except Exception as e:
-            raise InvoiceNotificationException(f"Invoice with ID: " + {invoice_id} + " Not Found : " + e.message, str(e))
+            raise InvoiceNotificationException(f"Invoice with ID: " + {invoice_id} + " Not Found : ",
+                                               str(e))
         params = {"token": invoice.get_token()}
 
         try:
             response_json = self.__restcli.post("invoices/%s" % invoice_id + "/notifications", params)
         except Exception as e:
             raise InvoiceNotificationException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
+
+        return response_json.lower() == "success"
 
     def create_refund(self, invoice_id: str, amount: float, currency: str, preview: bool = False,
                       immediate: bool = False, buyer_pays_refund_fee: bool = False) -> Refund:
@@ -251,10 +262,10 @@ class Client:
 
             response_json = self.__restcli.post("refunds", params, True)
         except BitPayException as e:
-            raise RefundCreationException("failed to serialize refund object :  %s" % e.get_message(),
-                                               e.get_api_code())
+            raise RefundCreationException("failed to serialize refund object :  %s" % str(e),
+                                          e.get_api_code())
         except Exception as e:
-            raise RefundCreationException("failed to serialize refund object : %s" % e)
+            raise RefundCreationException("failed to serialize refund object : %s" % str(e))
 
         try:
             refund = Refund(**response_json)
@@ -268,8 +279,8 @@ class Client:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.get("refunds/%s" % refund_id, params)
         except BitPayException as e:
-            raise RefundQueryException("failed to serialize refund object :  %s" % e.get_message(),
-                                               e.get_api_code())
+            raise RefundQueryException("failed to serialize refund object :  %s" % str(e),
+                                       e.get_api_code())
         except Exception as e:
             raise RefundQueryException("failed to serialize refund object : %s" % e)
         try:
@@ -284,13 +295,16 @@ class Client:
             params = {"token": self.get_access_token(Facade.Merchant), "invoiceId": invoice_id}
             response_json = self.__restcli.get("refunds", params)
         except BitPayException as e:
-            raise RefundQueryException("failed to serialize refund object :  %s" % e.get_message(),
-                                               e.get_api_code())
+            raise RefundQueryException("failed to serialize refund object :  %s" % str(e),
+                                       e.get_api_code())
         except Exception as e:
-            raise RefundQueryException("failed to serialize refund object : %s" % e)
+            raise RefundQueryException("failed to serialize refund object : %s" % str(e))
 
         try:
-            refunds = Refund(**response_json)
+            # refunds = Refund(**response_json)
+            refunds = []
+            for refund_data in response_json:
+                refunds.append(Invoice(**refund_data))
         except Exception as e:
             raise RefundQueryException("failed to deserialize BitPay server response (Refund) : %s" % str(e))
 
@@ -302,10 +316,10 @@ class Client:
 
             response_json = self.__restcli.update("refunds/%s" % refund_id, params)
         except BitPayException as e:
-            raise RefundUpdateException("failed to serialize refund object :  %s" % e.get_message(),
-                                               e.get_api_code())
+            raise RefundUpdateException("failed to serialize refund object :  %s" % str(e),
+                                        e.get_api_code())
         except Exception as e:
-            raise RefundUpdateException("failed to serialize refund object : %s" % e)
+            raise RefundUpdateException("failed to serialize refund object : %s" % str(e))
 
         try:
             refund = Refund(**response_json)
@@ -319,10 +333,10 @@ class Client:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.delete("refunds/%s" % refund_id, params)
         except BitPayException as e:
-            raise RefundCancellationException("failed to serialize refund object :  %s" % e.get_message(),
-                                               e.get_api_code())
+            raise RefundCancellationException("failed to serialize refund object :  %s" % str(e),
+                                              e.get_api_code())
         except Exception as e:
-            raise RefundCancellationException("failed to serialize refund object : %s" % e)
+            raise RefundCancellationException("failed to serialize refund object : %s" % str(e))
 
         try:
             refund = Refund(**response_json)
@@ -331,15 +345,16 @@ class Client:
 
         return refund
 
+    #  TODO
     def request_refund_notification(self, refund_id: str) -> bool:
         try:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.post("refunds/%s" % refund_id + "/notifications", params, True)
         except BitPayException as e:
-            raise RefundNotificationException("failed to serialize refund object :  %s" % e.get_message(),
-                                               e.get_api_code())
+            raise RefundNotificationException("failed to serialize refund object :  %s" % str(e),
+                                              e.get_api_code())
         except Exception as e:
-            raise RefundNotificationException("failed to serialize refund object : %s" % e)
+            raise RefundNotificationException("failed to serialize refund object : %s" % str(e))
 
         try:
             refund = Refund(**response_json)
@@ -352,10 +367,10 @@ class Client:
         try:
             response_json = self.__restcli.get("supportedWallets/", None)
         except BitPayException as e:
-            raise WalletQueryException("failed to serialize wallet object :  %s" % e.get_message(),
-                                               e.get_api_code())
+            raise WalletQueryException("failed to serialize wallet object :  %s" % str(e),
+                                       e.get_api_code())
         except Exception as e:
-            raise WalletQueryException("failed to serialize wallet object : %s" % e)
+            raise WalletQueryException("failed to serialize wallet object : %s" % str(e))
 
         try:
             wallet = Wallet(**response_json)
@@ -363,3 +378,81 @@ class Client:
             raise WalletQueryException("failed to deserialize BitPay server response (Wallet) : %s" % str(e))
 
         return wallet
+
+    def create_bill(self, bill: Bill, facade: str = Facade.Merchant, sign_request: bool = True) -> Bill:
+        try:
+            bill.get_token(self.get_access_token(facade))
+            response_json = self.__restcli.post("bills", bill, sign_request)
+        except BitPayException as e:
+            raise BillCreationException("failed to serialize bill object :  %s" % str(e),
+                                        e.get_api_code())
+
+        try:
+            bill = Bill(**response_json)
+        except Exception as e:
+            raise BillCreationException("failed to deserialize BitPay server response (Bill) : %s" % str(e))
+
+        return bill
+
+    def get_bills(self, status: str = None) -> [Bill]:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant)}
+            if status:
+                params["status"] = status
+            response_json = self.__restcli.get("bills", params, True)
+        except BitPayException as e:
+            raise BillQueryException("failed to serialize bill object :  %s" % str(e),
+                                     e.get_api_code())
+
+        try:
+            bills = Bill(**response_json)
+        except Exception as e:
+            raise BillQueryException("failed to deserialize BitPay server response (Bill) : %s" % str(e))
+
+        return bills
+
+    def get_bill(self, bill_id: str) -> Bill:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant)}
+            response_json = self.__restcli.get("bills/%s" % bill_id, params)
+        except BitPayException as e:
+            raise BillQueryException("failed to serialize bill object :  %s" % str(e),
+                                     e.get_api_code())
+
+        try:
+            bill = Bill(**response_json)
+        except Exception as e:
+            raise BillQueryException("failed to deserialize BitPay server response (Bill) : %s" % str(e))
+        return bill
+
+    def update_bill(self, bill: Bill, bill_id: str) -> Bill:
+        try:
+            response_json = self.__restcli.update("bills/%s" % bill_id, bill)
+        except BitPayException as e:
+            raise BillUpdateException("failed to serialize bill object :  %s" % str(e),
+                                      e.get_api_code())
+
+        try:
+            bill = Bill(**response_json)
+        except Exception as e:
+            raise BillUpdateException("failed to deserialize BitPay server response (Bill) : %s" % str(e))
+        return bill
+
+    #  TODO
+    def deliver_bill(self, bill_id: str, bill_token: str) -> bool:
+        try:
+            params = {
+                "token": bill_token
+            }
+            response_json = self.__restcli.post("bills/%s" % bill_id + "/deliveries", params)
+        except BitPayException as e:
+            raise BillDeliveryException("failed to serialize bill object :  %s" % str(e),
+                                        e.get_api_code())
+
+        try:
+            bill = Bill(**response_json)
+        except Exception as e:
+            raise BillDeliveryException("failed to deserialize BitPay server response (Bill) : %s" % str(e))
+        return bill
+
+

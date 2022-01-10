@@ -1,3 +1,4 @@
+import json
 import urllib
 import requests
 from dotenv import load_dotenv, dotenv_values
@@ -43,8 +44,10 @@ class RESTcli:
 
     def post(self, uri, form_data, signature_required=True):
         full_url = self.__baseurl + uri
+        form_data = json.dumps(form_data)
+
         xidentity = get_compressed_public_key_from_pem(self.__eckey)
-        xsignature = sign(full_url, self.__eckey)
+        xsignature = sign(full_url+form_data, self.__eckey)
 
         headers = {"content-type": "application/json",
                    'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env['BitpayPluginInfo'],
@@ -54,6 +57,7 @@ class RESTcli:
         if signature_required:
             headers['x-signature'] = xsignature
             headers['x-identity'] = xidentity
+
         response = requests.post(full_url, data=form_data, headers=headers)
         json_response = self.response_to_json_string(response)
         return json_response
@@ -94,15 +98,16 @@ class RESTcli:
                    'X-bitpay-api-frame': env['BitpayApiFrame'],
                    'X-bitpay-api-frame-version': env['BitpayApiFrameVersion']}
 
-        response = requests.delete(full_url, data=parameters, headers=headers)
+        response = requests.delete(full_url, headers=headers)
         json_response = self.response_to_json_string(response)
         return json_response
 
-    def update(self, uri, form_data=[]):
+    def update(self, uri, form_data):
         full_url = self.__baseurl + uri
+        form_data = json.dumps(form_data)
 
         xidentity = get_compressed_public_key_from_pem(self.__eckey)
-        xsignature = sign(full_url, self.__eckey)
+        xsignature = sign(full_url+form_data, self.__eckey)
 
         headers = {"content-type": "application/json", 'X-Identity': xidentity, 'X-Signature': xsignature,
                    'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env['BitpayPluginInfo'],
@@ -114,4 +119,28 @@ class RESTcli:
         return json_response
 
     def response_to_json_string(self, response):
-        return response.json()['data']
+        # if not response:
+        #     raise BitPayException("Error: HTTP response is null")
+
+        respons_obj = response.json()
+
+        if "status" in respons_obj:
+            if respons_obj["status"] == 'error':
+                raise BitPayException("Error: " + respons_obj["error"], respons_obj["code"])
+
+        if "error" in respons_obj:
+            raise BitPayException("Error: " + respons_obj["error"], respons_obj["code"])
+        elif "errors" in respons_obj:
+            message = ''
+            for error in respons_obj["errors"]:
+                message += "\n" + error
+            raise BitPayException("Errors: " + message)
+
+        if "success" in respons_obj:
+            return respons_obj["success"]
+
+        if "data" in respons_obj:
+            return respons_obj["data"]
+
+        return respons_obj
+
