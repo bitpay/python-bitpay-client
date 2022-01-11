@@ -5,9 +5,9 @@ class Buyer(object):
     __name = ""
     __address1 = ""
     __address2 = ""
-    __locality = ""
-    __region = ""
-    __postal_code = ""
+    __city = ""
+    __state = ""
+    __zip = ""
     __country = ""
     __email = ""
     __phone = ""
@@ -38,23 +38,23 @@ class Buyer(object):
     def set_address2(self, address2):
         self.__address2 = address2
 
-    def get_locality(self):
-        return self.__locality
+    def get_city(self):
+        return self.__city
 
-    def set_locality(self, locality):
-        self.__locality = locality
+    def set_city(self, city):
+        self.__city = city
 
-    def get_region(self):
-        return self.__region
+    def get_state(self):
+        return self.__state
 
-    def set_region(self, region):
-        self.__region = region
+    def set_state(self, state):
+        self.__state = state
 
-    def get_postal_code(self):
-        return self.__postal_code
+    def get_zip(self):
+        return self.__zip
 
-    def set_postal_code(self, postal_code):
-        self.__postal_code = postal_code
+    def set_zip(self, zip):
+        self.__zip = zip
 
     def get_country(self):
         return self.__country
@@ -85,9 +85,9 @@ class Buyer(object):
             "name": self.get_name(),
             "address1": self.get_address1(),
             "address2": self.get_address2(),
-            "locality": self.get_locality(),
-            "region": self.get_region(),
-            "postalCode": self.get_postal_code(),
+            "city": self.get_city(),
+            "state": self.get_state(),
+            "zip": self.get_zip(),
             "country": self.get_country(),
             "email": self.get_email(),
             "phone": self.get_phone(),

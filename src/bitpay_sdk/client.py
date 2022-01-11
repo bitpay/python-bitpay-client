@@ -2,16 +2,19 @@ import os
 import json
 
 from .config import Config
-from .models.bill.bill import Bill
 from .tokens import Tokens
 from .models.facade import Facade
+from .models.bill.bill import Bill
 from .utils.rest_cli import RESTcli
+from .models.ledger.ledger import Ledger
 from .models.wallet.wallet import Wallet
 from .models.invoice.refund import Refund
 from .models.invoice.invoice import Invoice
+from .models.ledger.ledger_entry import LedgerEntry
 from .exceptions.bitpay_exception import BitPayException
 from .exceptions.bill_query_exception import BillQueryException
 from .exceptions.bill_update_exception import BillUpdateException
+from .exceptions.ledger_query_exception import LedgerQueryException
 from .exceptions.wallet_query_exception import WalletQueryException
 from .exceptions.refund_query_exception import RefundQueryException
 from .exceptions.bill_creation_exception import BillCreationException
@@ -58,6 +61,7 @@ class Client:
                     json_data = json.loads(read_file.read())
                     self.__env = json_data['BitPayConfiguration']['Environment']
                     env_config = json_data["BitPayConfiguration"]["EnvConfig"][self.__env]
+                    read_file.close()
                 except Exception as e:
                     raise BitPayException("Error when reading configuration file", str(e))
 
@@ -455,4 +459,40 @@ class Client:
             raise BillDeliveryException("failed to deserialize BitPay server response (Bill) : %s" % str(e))
         return bill
 
+    def get_ledger(self, currency: str, start_date: str, end_date: str) -> [Ledger]:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant)}
 
+            if currency:
+                params["currency"] = currency
+
+            if start_date:
+                params["startDate"] = start_date
+
+            if end_date:
+                params["endDate"] = end_date
+
+            response_json = self.__restcli.get("ledgers/%s" % currency, params)
+        except BitPayException as e:
+            raise LedgerQueryException("failed to serialize Ledger object :  %s" % str(e),
+                                       e.get_api_code())
+
+        try:
+            ledger = LedgerEntry(**response_json)
+        except Exception as e:
+            raise LedgerQueryException("failed to deserialize BitPay server response (Ledger) : %s" % str(e))
+        return ledger
+
+    def get_ledgers(self) -> [Ledger]:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant)}
+            response_json = self.__restcli.get("ledgers", params)
+        except BitPayException as e:
+            raise LedgerQueryException("failed to serialize Ledger object :  %s" % str(e),
+                                       e.get_api_code())
+
+        try:
+            ledgers = Ledger(**response_json)
+        except Exception as e:
+            raise LedgerQueryException("failed to deserialize BitPay server response (Ledger) : %s" % str(e))
+        return ledgers

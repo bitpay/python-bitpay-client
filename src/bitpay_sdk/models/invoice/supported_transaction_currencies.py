@@ -7,6 +7,7 @@ class SupportedTransactionCurrencies(object):
     __eth = SupportedTransactionCurrency()
     __usdc = SupportedTransactionCurrency()
     __gusd = SupportedTransactionCurrency()
+    __busd = SupportedTransactionCurrency()
     __pax = SupportedTransactionCurrency()
     __xrp = SupportedTransactionCurrency()
     __doge = SupportedTransactionCurrency()
@@ -15,7 +16,7 @@ class SupportedTransactionCurrencies(object):
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX", "XRP", "DOGE", "LTC"]:
+                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "BUSD", "PAX", "XRP", "DOGE", "LTC"]:
                     value = SupportedTransactionCurrency(**value)
                 getattr(self, 'set_%s' % key.lower())(value)
             except AttributeError as e:
@@ -51,6 +52,12 @@ class SupportedTransactionCurrencies(object):
     def set_gusd(self, gusd: SupportedTransactionCurrency):
         self.__gusd = gusd
 
+    def get_busd(self):
+        return self.__busd
+
+    def set_busd(self, busd: SupportedTransactionCurrency):
+        self.__busd = busd
+
     def get_pax(self):
         return self.__pax
 
@@ -82,6 +89,7 @@ class SupportedTransactionCurrencies(object):
             "eth": self.get_eth(),
             "usdc": self.get_usdc(),
             "gusd": self.get_gusd(),
+            "busd": self.get_busd(),
             "pax": self.get_pax(),
             "xrp": self.get_xrp(),
             "doge": self.get_doge(),

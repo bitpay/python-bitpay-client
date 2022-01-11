@@ -67,17 +67,17 @@ class Invoice(object):
     __display_amount_paid = None
     __exchange_rates = None
 
-    # Newly added on January 7
-    __payment_string = None  # added
-    __verification_link = None  # added
-    __buyer_email = None  # added
-    __merchant_name = None  # added
+    __payment_string = None
+    __verification_link = None
+    __buyer_email = None
+    __merchant_name = None
     __forced_buyer_selected_wallet = None
     __forced_buyer_selected_transaction_currency = None
-    __itemized_details = ItemizedDetails()  # added but have doubt in set method
-    __universal_codes = UniversalCodes()  # added
+    __itemized_details = ItemizedDetails()
+    __universal_codes = UniversalCodes()
     __is_cancelled = None
     __bitpay_id_required = None
+    __rate_refresh_time = None
 
     def __init__(self, price=None, currency=None, **kwargs):
 
@@ -89,7 +89,13 @@ class Invoice(object):
                 if key in ["buyer", "buyerProvidedInfo", "shopper", "supportedTransactionCurrencies", "minerFees",
                            "refundInfo", "universalCodes", "itemizedDetails"]:
                     klass = globals()[key[0].upper() + key[1:]]
-                    value = klass(**value)
+
+                    if isinstance(value, list):
+                        value = []
+                        for obj in value:
+                            value.append(klass(**obj))
+                    else:
+                        value = klass(**value)
                 getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
@@ -190,10 +196,10 @@ class Invoice(object):
     def set_payment_display_totals(self, payment_display_totals):
         self.__payment_display_totals = payment_display_totals
 
-    def get_payment_display_subtotals(self):
+    def get_payment_display_sub_totals(self):
         return self.__payment_display_subtotals
 
-    def set_payment_display_subtotals(self, payment_display_subtotals):
+    def set_payment_display_sub_totals(self, payment_display_subtotals):
         self.__payment_display_subtotals = payment_display_subtotals
 
     def get_payment_codes(self):
@@ -226,10 +232,10 @@ class Invoice(object):
     def set_auto_redirect(self, auto_redirect):
         self.__auto_redirect = auto_redirect
 
-    def get_json_paypro_required(self):
+    def get_json_pay_pro_required(self):
         return self.__json_paypro_required
 
-    def set_json_paypro_required(self, json_paypro_required):
+    def set_json_pay_pro_required(self, json_paypro_required):
         self.__json_paypro_required = json_paypro_required
 
     def get_id(self):
@@ -447,6 +453,12 @@ class Invoice(object):
 
     def set_bitpay_id_required(self, bitpay_id_required):
         self.__bitpay_id_required = bitpay_id_required
+
+    def get_rate_refresh_time(self):
+        return self.__rate_refresh_time
+
+    def set_rate_refresh_time(self, rate_refresh_time):
+        self.__rate_refresh_time = rate_refresh_time
 
     def get_universal_codes(self):
         return self.__universal_codes

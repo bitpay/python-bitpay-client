@@ -122,25 +122,25 @@ class RESTcli:
         # if not response:
         #     raise BitPayException("Error: HTTP response is null")
 
-        respons_obj = response.json()
+        response_obj = response.json()
 
-        if "status" in respons_obj:
-            if respons_obj["status"] == 'error':
-                raise BitPayException("Error: " + respons_obj["error"], respons_obj["code"])
+        if "status" in response_obj:
+            if response_obj["status"] == 'error':
+                raise BitPayException("Error: " + response_obj["error"], response_obj["code"])
 
-        if "error" in respons_obj:
-            raise BitPayException("Error: " + respons_obj["error"], respons_obj["code"])
-        elif "errors" in respons_obj:
+        if "error" in response_obj:
+            raise BitPayException("Error: " + response_obj["error"], response_obj["code"])
+        elif "errors" in response_obj:
             message = ''
-            for error in respons_obj["errors"]:
+            for error in response_obj["errors"]:
                 message += "\n" + error
             raise BitPayException("Errors: " + message)
 
-        if "success" in respons_obj:
-            return respons_obj["success"]
+        if "success" in response_obj:
+            return response_obj["success"]
 
-        if "data" in respons_obj:
-            return respons_obj["data"]
+        if "data" in response_obj:
+            return response_obj["data"]
 
-        return respons_obj
+        return response_obj
 

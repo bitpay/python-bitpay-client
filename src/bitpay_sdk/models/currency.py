@@ -210,6 +210,91 @@ class Currency:
     def __init__(self):
         pass
 
-    #  TODO: Add get set methods
+    def get_code(self):
+        return self.__code
 
-    
+    def set_code(self, code):
+        self.__code = code
+
+    def get_symbol(self):
+        return self.__symbol
+
+    def set_symbol(self, symbol):
+        self.__symbol = symbol
+
+    def get_precision(self):
+        return self.__precision
+
+    def set_precision(self, precision):
+        self.__precision = precision
+
+    def get_currently_settled(self):
+        return self.__currently_settled
+
+    def set_currently_settled(self, currently_settled):
+        self.__currently_settled = currently_settled
+
+    def get_name(self):
+        return self.__name
+
+    def set_name(self, name):
+        self.__name = name
+
+    def get_plural(self):
+        return self.__plural
+
+    def set_plural(self, plural):
+        self.__plural = plural
+
+    def get_alts(self):
+        return self.__alts
+
+    def set_alts(self, alts):
+        self.__alts = alts
+
+    def get_minimum(self):
+        return self.__minimum
+
+    def set_minimum(self, minimum):
+        self.__minimum = minimum
+
+    def get_sanctioned(self):
+        return self.__sanctioned
+
+    def set_sanctioned(self, sanctioned):
+        self.__sanctioned = sanctioned
+
+    def get_decimals(self):
+        return self.__decimals
+
+    def set_decimals(self, decimals):
+        self.__decimals = decimals
+
+    def get_payout_fields(self):
+        return self.__payout_fields
+
+    def set_payout_fields(self, payout_fields):
+        self.__payout_fields = payout_fields
+
+    def get_settlement_minimum(self):
+        return self.__settlement_minimum
+
+    def set_settlement_minimum(self, settlement_minimum):
+        self.__settlement_minimum = settlement_minimum
+
+    def to_json(self):
+        data = {
+            "code": self.get_code(),
+            "symbol": self.get_symbol(),
+            "precision": self.get_precision(),
+            "currentlySettled": self.get_currently_settled(),
+            "name": self.get_name(),
+            "plural": self.get_plural(),
+            "alts": self.get_alts(),
+            "minimum": self.get_minimum(),
+            "sanctioned": self.get_sanctioned(),
+            "decimals": self.get_decimals(),
+            "payoutFields": self.get_payout_fields(),
+            "settlementMinimum": self.get_settlement_minimum(),
+        }
+        return data
