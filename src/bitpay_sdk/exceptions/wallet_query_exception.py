@@ -1,4 +1,4 @@
-from src.bitpay_sdk.exceptions.wallet_exception import WalletException
+from .wallet_exception import WalletException
 
 
 class WalletQueryException(WalletException):

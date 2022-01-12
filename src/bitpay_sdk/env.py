@@ -1,0 +1,8 @@
+Test="Test"
+Prod="Prod"
+TestUrl="https://test.bitpay.com/"
+ProdUrl="https://bitpay.com/"
+BitpayApiVersion="2.0.0"
+BitpayPluginInfo="BitPay_Python_Client_v6.0.2111"
+BitpayApiFrame="std"
+BitpayApiFrameVersion="1.0.0"

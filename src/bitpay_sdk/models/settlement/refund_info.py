@@ -1,17 +1,10 @@
-from ...utils.key_utils import change_camel_case_to_snake_case
-
-
-class RefundInfo(object):
+class RefundInfo:
     __support_request = None
     __currency = None
     __amounts = None
 
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+    def __init__(self):
+        pass
 
     def get_support_request(self):
         return self.__support_request
@@ -34,7 +27,7 @@ class RefundInfo(object):
     def to_json(self):
         data = {
             "supportRequest": self.get_support_request(),
-            "currency": self.get_currency(),
-            "amounts": self.get_amounts()
+            "amounts": self.get_amounts(),
+            "currency": self.get_currency()
         }
         return data

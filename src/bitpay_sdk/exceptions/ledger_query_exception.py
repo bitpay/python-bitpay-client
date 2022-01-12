@@ -1,4 +1,4 @@
-from src.bitpay_sdk.exceptions.ledger_exception import LedgerException
+from .ledger_exception import LedgerException
 
 
 class LedgerQueryException(LedgerException):

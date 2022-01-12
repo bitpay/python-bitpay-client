@@ -1,5 +1,5 @@
-from src.bitpay_sdk.utils import key_utils
 from .currencies import Currencies
+from ...utils import key_utils
 
 
 class Wallet(object):

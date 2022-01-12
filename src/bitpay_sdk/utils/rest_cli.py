@@ -1,13 +1,10 @@
 import json
 import urllib
 import requests
-from dotenv import load_dotenv, dotenv_values
+
+from .. import env
 from ..exceptions.bitpay_exception import BitPayException
 from .key_utils import get_compressed_public_key_from_pem, sign
-
-
-load_dotenv()
-env = dotenv_values()
 
 
 class RESTcli:
@@ -19,7 +16,7 @@ class RESTcli:
 
     def __init__(self, environment, eckey, proxy=None):
         self.__eckey = eckey
-        self.__baseurl = env["TestUrl"] if environment == env["Test"] else env["ProdUrl"]
+        self.__baseurl = env.TestUrl if environment == env.Test else env.ProdUrl
         self.__proxy = proxy
         self.init()
 
@@ -29,10 +26,10 @@ class RESTcli:
                 'base_url': self.__baseurl,
                 'defaults': {
                     'headers': {
-                        'x-accept-version': env["BitpayApiVersion"],
-                        'x-bitpay-plugin-info': env["BitpayPluginInfo"],
-                        'x-bitpay-api-frame': env["BitpayApiFrame"],
-                        'x-bitpay-api-frame-version': env["BitpayApiFrameVersion"],
+                        'x-accept-version': env.BitpayApiVersion,
+                        'x-bitpay-plugin-info': env.BitpayPluginInfo,
+                        'x-bitpay-api-frame': env.BitpayApiFrame,
+                        'x-bitpay-api-frame-version': env.BitpayApiFrameVersion,
                     },
                 }
             }
@@ -50,9 +47,9 @@ class RESTcli:
         xsignature = sign(full_url+form_data, self.__eckey)
 
         headers = {"content-type": "application/json",
-                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env['BitpayPluginInfo'],
-                   'X-bitpay-api-frame': env['BitpayApiFrame'],
-                   'X-bitpay-api-frame-version': env['BitpayApiFrameVersion']}
+                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BitpayPluginInfo,
+                   'X-bitpay-api-frame': env.BitpayApiFrame,
+                   'X-bitpay-api-frame-version': env.BitpayApiFrameVersion}
 
         if signature_required:
             headers['x-signature'] = xsignature
@@ -72,9 +69,9 @@ class RESTcli:
         xsignature = sign(full_url, self.__eckey)
 
         headers = {"content-type": "application/json",
-                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env['BitpayPluginInfo'],
-                   'X-bitpay-api-frame': env['BitpayApiFrame'],
-                   'X-bitpay-api-frame-version': env['BitpayApiFrameVersion']}
+                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BitpayPluginInfo,
+                   'X-bitpay-api-frame': env.BitpayApiFrame,
+                   'X-bitpay-api-frame-version': env.BitpayApiFrameVersion}
 
         if signature_required:
             headers['x-signature'] = xsignature
@@ -94,9 +91,9 @@ class RESTcli:
         xsignature = sign(full_url, self.__eckey)
 
         headers = {"content-type": "application/json", 'X-Identity': xidentity, 'X-Signature': xsignature,
-                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env['BitpayPluginInfo'],
-                   'X-bitpay-api-frame': env['BitpayApiFrame'],
-                   'X-bitpay-api-frame-version': env['BitpayApiFrameVersion']}
+                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BitpayPluginInfo,
+                   'X-bitpay-api-frame': env.BitpayApiFrame,
+                   'X-bitpay-api-frame-version': env.BitpayApiFrameVersion}
 
         response = requests.delete(full_url, headers=headers)
         json_response = self.response_to_json_string(response)
@@ -110,9 +107,9 @@ class RESTcli:
         xsignature = sign(full_url+form_data, self.__eckey)
 
         headers = {"content-type": "application/json", 'X-Identity': xidentity, 'X-Signature': xsignature,
-                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env['BitpayPluginInfo'],
-                   'X-bitpay-api-frame': env['BitpayApiFrame'],
-                   'X-bitpay-api-frame-version': env['BitpayApiFrameVersion']}
+                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BitpayPluginInfo,
+                   'X-bitpay-api-frame': env.BitpayApiFrame,
+                   'X-bitpay-api-frame-version': env.BitpayApiFrameVersion}
 
         response = requests.put(full_url, data=form_data, headers=headers)
         json_response = self.response_to_json_string(response)

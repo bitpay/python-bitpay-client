@@ -1,4 +1,4 @@
-from src.bitpay_sdk.exceptions.refund_exception import RefundException
+from .refund_exception import RefundException
 
 
 class RefundUpdateException(RefundException):

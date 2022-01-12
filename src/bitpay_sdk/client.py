@@ -2,6 +2,7 @@ import os
 import json
 
 from .config import Config
+from .exceptions.invoice_creation_exception import InvoiceCreationException
 from .tokens import Tokens
 from .models.facade import Facade
 from .models.bill.bill import Bill
@@ -30,6 +31,13 @@ from .exceptions.invoice_notification_exception import InvoiceNotificationExcept
 
 
 class Client:
+    """
+     * Class Client
+     * @package Bitpay
+     * @author  Antonio Buedo
+     * @version 1.0.0
+     * See bitpay.com/api for more information.
+    """
     __configuration = None
     __env = None
     __ec_key = None
@@ -150,23 +158,46 @@ class Client:
     # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     def create_invoice(self, invoice: Invoice, facade: str = Facade.Merchant, sign_request: bool = True) -> Invoice:
+        """
+        Create a BitPay invoice
+
+        :param Invoice invoice: An Invoice object with request parameters defined
+        :param str facade: The facade used to create it
+        :param str sign_request: Signed request
+        :return: A BitPay generated Invoice object
+        :rtype: Invoice
+        :raises BitPayException
+        :raises InvoiceCreationException
+        """
         try:
             invoice.set_token(self.get_access_token(facade))
             invoice_json = invoice.to_json()
             response_json = self.__restcli.post("invoices", invoice_json, sign_request)
         except BitPayException as e:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(e), e.get_api_code())
+            raise InvoiceCreationException("failed to serialize Invoice object : %s" % str(e), e.get_api_code())
         except Exception as e:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(e))
+            raise InvoiceCreationException("failed to serialize Invoice object : %s" % str(e))
 
         try:
             invoice = Invoice(**response_json)
         except Exception as e:
-            raise InvoiceQueryException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
+            raise InvoiceCreationException("failed to deserialize BitPay server response (Invoice) : %s" % str(e))
 
         return invoice
 
     def get_invoice(self, invoice_id: str, facade: str = Facade.Merchant, sign_request: bool = True) -> Invoice:
+        """
+        Retrieve a BitPay invoice by invoice id using the specified facade.  The client must have been previously
+        authorized for the specified facade (the public facade requires no authorization)
+
+        :param str invoice_id: The id of the invoice to retrieve
+        :param str facade: The facade used to create it
+        :param bool sign_request: Signed request
+        :return: A BitPay Invoice object
+        :rtype: Invoice
+        :raises BitPayException
+        :raises InvoiceQueryException
+        """
         try:
             params = {"token": self.get_access_token(facade)}
             response_json = self.__restcli.get("invoices/%s" % invoice_id, params, sign_request)
@@ -184,6 +215,20 @@ class Client:
 
     def get_invoices(self, date_start: str, date_end: str, status: str = None, order_id: str = None, limit: int = None,
                      offset: int = None) -> [Invoice]:
+        """
+        Retrieve a collection of BitPay invoices.
+
+        :param str date_start: The first date for the query filter.
+        :param str date_end: The last date for the query filter.
+        :param str status: The invoice status you want to query on.
+        :param str order_id: The optional order id specified at time of invoice creation.
+        :param int limit: Maximum results that the query will return (useful for paging results).
+        :param int offset: Number of results to offset (ex. skip 10 will give you results starting with the 11th
+        :return: A list of BitPay Invoice objects.
+        :rtype: [Invoice]
+        :raises BitPayException
+        :raises InvoiceQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Merchant), "dateStart": date_start, "date_end": date_end}
             if status:
@@ -211,6 +256,16 @@ class Client:
         return invoices
 
     def update_invoice(self, invoice_id: str, buyer_email: str) -> Invoice:
+        """
+        Update a BitPay invoice with communication method.
+
+        :param str invoice_id: The id of the invoice to updated.
+        :param str buyer_email: The buyer's email address.
+        :return: A BitPay generated Invoice object.
+        :rtype: Invoice
+        :raises BitPayException
+        :raises InvoiceUpdateException
+        """
         try:
             params = {'token': self.get_access_token(Facade.Merchant), 'buyer_email': buyer_email}
             response_json = self.__restcli.update("invoices/%s" % invoice_id, params)
@@ -227,6 +282,15 @@ class Client:
         return invoice
 
     def cancel_invoice(self, invoice_id: str) -> Invoice:
+        """
+        Delete a previously created BitPay invoice.
+
+        :param str invoice_id: The Id of the BitPay invoice to be canceled.
+        :return: A BitPay generated Invoice object.
+        :rtype: Invoice
+        :raises BitPayException
+        :raises InvoiceCancellationException
+        """
         try:
             params = {'token': self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.delete("invoices/%s" % invoice_id, params)
@@ -243,6 +307,15 @@ class Client:
         return invoice
 
     def request_invoice_notifications(self, invoice_id: str) -> bool:
+        """
+        Request a BitPay Invoice Webhook.
+
+        :param str invoice_id: A BitPay invoice ID.
+        :return: True if the webhook was successfully requested, false otherwise.
+        :rtype: bool
+        :raises BitPayException
+        :raises InvoiceNotificationException
+        """
         try:
             invoice = self.get_invoice(invoice_id)
         except Exception as e:

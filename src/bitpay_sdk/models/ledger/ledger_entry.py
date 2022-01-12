@@ -1,4 +1,4 @@
-from src.bitpay_sdk.models.ledger.buyer import Buyer
+from ...models.ledger.buyer import Buyer
 
 
 class LedgerEntry:

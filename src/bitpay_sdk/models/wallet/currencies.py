@@ -1,5 +1,5 @@
-from src.bitpay_sdk.models.wallet.currency_qr import CurrencyQr
-from src.bitpay_sdk.utils import key_utils
+from ...models.wallet.currency_qr import CurrencyQr
+from ...utils import key_utils
 
 
 class Currencies(object):

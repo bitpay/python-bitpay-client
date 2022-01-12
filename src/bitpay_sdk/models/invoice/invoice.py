@@ -5,7 +5,7 @@ from .refund_info import RefundInfo
 from .universal_codes import UniversalCodes
 from .itemized_details import ItemizedDetails
 from .buyer_provided_info import BuyerProvidedInfo
-from src.bitpay_sdk.utils.key_utils import change_camel_case_to_snake_case
+from ...utils.key_utils import change_camel_case_to_snake_case
 from .supported_transaction_currencies import SupportedTransactionCurrencies
 
 

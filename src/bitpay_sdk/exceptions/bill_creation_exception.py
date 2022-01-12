@@ -1,4 +1,4 @@
-from src.bitpay_sdk.exceptions.bill_exception import BillException
+from .bill_exception import BillException
 
 
 class BillCreationException(BillException):

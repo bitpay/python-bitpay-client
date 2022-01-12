@@ -1,4 +1,4 @@
-from src.bitpay_sdk.utils.key_utils import change_camel_case_to_snake_case
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class BuyerProvidedInfo(object):

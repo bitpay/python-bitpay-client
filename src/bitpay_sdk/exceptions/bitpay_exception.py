@@ -1,5 +1,3 @@
-
-
 class BitPayException(Exception):
     __bitpay_message = "Unexpected Bitpay exception."
     __bitpay_code = "BITPAY-GENERIC";
