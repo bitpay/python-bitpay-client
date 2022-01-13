@@ -62,7 +62,7 @@ class BitPayTest(unittest.TestCase):
 
     def test_should_get_invoice_status(self):
         basic_invoice = self.bitpay.create_invoice(Invoice(5.0, "usd"))
-        self.assertEqual(InvoiceStatus._InvoiceStatus__new, basic_invoice.get_status())
+        self.assertEqual(InvoiceStatus._InvoiceStatus__New, basic_invoice.get_status())
 
     def test_should_create_invoice_one_tenth_btc(self):
         basic_invoice = self.bitpay.create_invoice(Invoice(0.1, "btc"))

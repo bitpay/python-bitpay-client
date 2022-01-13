@@ -1,6 +1,9 @@
 class BillStatus:
-    __draft = "draft"
-    __sent = "sent"
-    __new = "new"
-    __paid = "paid"
-    __complete = "complete"
+    """
+    Bill Status
+    """
+    Draft = "draft"
+    Sent = "sent"
+    New = "new"
+    Paid = "paid"
+    Complete = "complete"

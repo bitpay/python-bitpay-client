@@ -1,8 +1,11 @@
 class RefundStatus(object):
-    __pending = "pending"
-    __success = "success"
-    __failure = "failure"
-    __preview = "preview"
-    __created = "created"
-    __cancelled = "cancelled"
+    """
+    Refund Status
+    """
+    Pending = "pending"
+    Success = "success"
+    Failure = "failure"
+    Preview = "preview"
+    Created = "created"
+    Cancelled = "cancelled"
     

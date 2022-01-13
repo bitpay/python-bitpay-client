@@ -16,10 +16,10 @@ class InvoiceCancellationException(InvoiceException):
         """
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
-        super.__init__(message, code)
+        super(InvoiceCancellationException, self).__init__(message, code)
 
-    def get_api_code(self):
-        """
-        :return: Error code provided by the BitPay REST API
-        """
-        return self.__api_code
+    # def get_api_code(self):
+    #     """
+    #     :return: Error code provided by the BitPay REST API
+    #     """
+    #     return self.__api_code

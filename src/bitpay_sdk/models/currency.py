@@ -1,190 +1,191 @@
 class Currency:
-
+    """
+    Currency: Crypto and fiat
+    """
     # Crypto
-    __bch = "BCH"
-    __btc = "BTC"
-    __eth = "ETH"
-    __usdc = "USDC"
-    __gusd = "GUSD"
-    __pax = "PAX"
-    __xrp = "XRP"
-    __busd = "BUSD"
-    __doge = "DOGE"
-    __wbtc = "WBTC"
-    __dai = "DAI"
-    __ltc = "LTC"
-    __shib = "SHIB"
+    BCH = "BCH"
+    BTC = "BTC"
+    ETH = "ETH"
+    USDC = "USDC"
+    GUSD = "GUSD"
+    PAX = "PAX"
+    XRP = "XRP"
+    BUSD = "BUSD"
+    DOGE = "DOGE"
+    WBTC = "WBTC"
+    DAI = "DAI"
+    LTC = "LTC"
+    SHIB = "SHIB"
 
     # Fiat
-    __aed = "AED"
-    __afn = "AFN"
-    __all = "ALL"
-    __amd = "AMD"
-    __ang = "ANG"
-    __aoa = "AOA"
-    __ars = "ARS"
-    __aud = "AUD"
-    __awg = "AWG"
-    __azn = "AZN"
-    __bam = "BAM"
-    __bbd = "BBD"
-    __bdt = "BDT"
-    __bgn = "BGN"
-    __bhd = "BHD"
-    __bif = "BIF"
-    __bmd = "BMD"
-    __bnd = "BND"
-    __bob = "BOB"
-    __bov = "BOV"
-    __brl = "BRL"
-    __bsd = "BSD"
-    __btn = "BTN"
-    __bwp = "BWP"
-    __byr = "BYR"
-    __bzd = "BZD"
-    __cad = "CAD"
-    __cdf = "CDF"
-    __che = "CHE"
-    __chf = "CHF"
-    __chw = "CHW"
-    __clf = "CLF"
-    __clp = "CLP"
-    __cny = "CNY"
-    __cop = "COP"
-    __cou = "COU"
-    __crc = "CRC"
-    __cuc = "CUC"
-    __cup = "CUP"
-    __cve = "CVE"
-    __czk = "CZK"
-    __djf = "DJF"
-    __dkk = "DKK"
-    __dop = "DOP"
-    __dzd = "DZD"
-    __egp = "EGP"
-    __ern = "ERN"
-    __etb = "ETB"
-    __eur = "EUR"
-    __fjd = "FJD"
-    __fkp = "FKP"
-    __gbp = "GBP"
-    __gel = "GEL"
-    __ghs = "GHS"
-    __gip = "GIP"
-    __gmd = "GMD"
-    __gnf = "GNF"
-    __gtq = "GTQ"
-    __gyd = "GYD"
-    __hkd = "HKD"
-    __hnl = "HNL"
-    __hrk = "HRK"
-    __htg = "HTG"
-    __huf = "HUF"
-    __idr = "IDR"
-    __ils = "ILS"
-    __inr = "INR"
-    __iqd = "IQD"
-    __irr = "IRR"
-    __isk = "ISK"
-    __jmd = "JMD"
-    __jod = "JOD"
-    __jpy = "JPY"
-    __kes = "KES"
-    __kgs = "KGS"
-    __khr = "KHR"
-    __kmf = "KMF"
-    __kpw = "KPW"
-    __krw = "KRW"
-    __kwd = "KWD"
-    __kyd = "KYD"
-    __kzt = "KZT"
-    __lak = "LAK"
-    __lbp = "LBP"
-    __lkr = "LKR"
-    __lrd = "LRD"
-    __lsl = "LSL"
-    __lyd = "LYD"
-    __mad = "MAD"
-    __mdl = "MDL"
-    __mga = "MGA"
-    __mkd = "MKD"
-    __mmk = "MMK"
-    __mnt = "MNT"
-    __mop = "MOP"
-    __mru = "MRU"
-    __mur = "MUR"
-    __mvr = "MVR"
-    __mwk = "MWK"
-    __mxn = "MXN"
-    __mxv = "MXV"
-    __myr = "MYR"
-    __mzn = "MZN"
-    __nad = "NAD"
-    __ngn = "NGN"
-    __nio = "NIO"
-    __nok = "NOK"
-    __npr = "NPR"
-    __nzd = "NZD"
-    __omr = "OMR"
-    __pab = "PAB"
-    __pen = "PEN"
-    __pgk = "PGK"
-    __php = "PHP"
-    __pkr = "PKR"
-    __pln = "PLN"
-    __pyg = "PYG"
-    __qar = "QAR"
-    __ron = "RON"
-    __rsd = "RSD"
-    __rub = "RUB"
-    __rwf = "RWF"
-    __sar = "SAR"
-    __sbd = "SBD"
-    __scr = "SCR"
-    __sdg = "SDG"
-    __sek = "SEK"
-    __sgd = "SGD"
-    __shp = "SHP"
-    __sll = "SLL"
-    __sos = "SOS"
-    __srd = "SRD"
-    __ssp = "SSP"
-    __stn = "STN"
-    __svc = "SVC"
-    __syp = "SYP"
-    __szl = "SZL"
-    __thb = "THB"
-    __tjs = "TJS"
-    __tmt = "TMT"
-    __tnd = "TND"
-    __top = "TOP"
-    __try = "TRY"
-    __ttd = "TTD"
-    __twd = "TWD"
-    __tzs = "TZS"
-    __uah = "UAH"
-    __ugx = "UGX"
-    __usd = "USD"
-    __usn = "USN"
-    __uyi = "UYI"
-    __uyu = "UYU"
-    __uzs = "UZS"
-    __vef = "VEF"
-    __vnd = "VND"
-    __vuv = "VUV"
-    __wst = "WST"
-    __xaf = "XAF"
-    __xcd = "XCD"
-    __xdr = "XDR"
-    __xof = "XOF"
-    __xpf = "XPF"
-    __xsu = "XSU"
-    __xua = "XUA"
-    __yer = "YER"
-    __zar = "ZAR"
-    __zmw = "ZMW"
-    __zwl = "ZWL"
-    
+    AED = "AED"
+    AFN = "AFN"
+    ALL = "ALL"
+    AMD = "AMD"
+    ANG = "ANG"
+    AOA = "AOA"
+    ARS = "ARS"
+    AUD = "AUD"
+    AWG = "AWG"
+    AZN = "AZN"
+    BAM = "BAM"
+    BBD = "BBD"
+    BDT = "BDT"
+    BGN = "BGN"
+    BHD = "BHD"
+    BIF = "BIF"
+    BMD = "BMD"
+    BND = "BND"
+    BOB = "BOB"
+    BOV = "BOV"
+    BRL = "BRL"
+    BSD = "BSD"
+    BTN = "BTN"
+    BWP = "BWP"
+    BYR = "BYR"
+    BZD = "BZD"
+    CAD = "CAD"
+    CDF = "CDF"
+    CHE = "CHE"
+    CHF = "CHF"
+    CHW = "CHW"
+    CLF = "CLF"
+    CLP = "CLP"
+    CNY = "CNY"
+    COP = "COP"
+    COU = "COU"
+    CRC = "CRC"
+    CUC = "CUC"
+    CUP = "CUP"
+    CVE = "CVE"
+    CZK = "CZK"
+    DJF = "DJF"
+    DKK = "DKK"
+    DOP = "DOP"
+    DZD = "DZD"
+    EGP = "EGP"
+    ERN = "ERN"
+    ETB = "ETB"
+    EUR = "EUR"
+    FJD = "FJD"
+    FKP = "FKP"
+    GBP = "GBP"
+    GEL = "GEL"
+    GHS = "GHS"
+    GIP = "GIP"
+    GMD = "GMD"
+    GNF = "GNF"
+    GTQ = "GTQ"
+    GYD = "GYD"
+    HKD = "HKD"
+    HNL = "HNL"
+    HRK = "HRK"
+    HTG = "HTG"
+    HUF = "HUF"
+    IDR = "IDR"
+    ILS = "ILS"
+    INR = "INR"
+    IQD = "IQD"
+    IRR = "IRR"
+    ISK = "ISK"
+    JMD = "JMD"
+    JOD = "JOD"
+    JPY = "JPY"
+    KES = "KES"
+    KGS = "KGS"
+    KHR = "KHR"
+    KMF = "KMF"
+    KPW = "KPW"
+    KRW = "KRW"
+    KWD = "KWD"
+    KYD = "KYD"
+    KZT = "KZT"
+    LAK = "LAK"
+    LBP = "LBP"
+    LKR = "LKR"
+    LRD = "LRD"
+    LSL = "LSL"
+    LYD = "LYD"
+    MAD = "MAD"
+    MDL = "MDL"
+    MGA = "MGA"
+    MKD = "MKD"
+    MMK = "MMK"
+    MNT = "MNT"
+    MOP = "MOP"
+    MRU = "MRU"
+    MUR = "MUR"
+    MVR = "MVR"
+    MWK = "MWK"
+    MXN = "MXN"
+    MXV = "MXV"
+    MYR = "MYR"
+    MZN = "MZN"
+    NAD = "NAD"
+    NGN = "NGN"
+    NIO = "NIO"
+    NOK = "NOK"
+    NPR = "NPR"
+    NZD = "NZD"
+    OMR = "OMR"
+    PAB = "PAB"
+    PEN = "PEN"
+    PGK = "PGK"
+    PHP = "PHP"
+    PKR = "PKR"
+    PLN = "PLN"
+    PYG = "PYG"
+    QAR = "QAR"
+    RON = "RON"
+    RSD = "RSD"
+    RUB = "RUB"
+    RWF = "RWF"
+    SAR = "SAR"
+    SBD = "SBD"
+    SCR = "SCR"
+    SDG = "SDG"
+    SEK = "SEK"
+    SGD = "SGD"
+    SHP = "SHP"
+    SLL = "SLL"
+    SOS = "SOS"
+    SRD = "SRD"
+    SSP = "SSP"
+    STN = "STN"
+    SVC = "SVC"
+    SYP = "SYP"
+    SZL = "SZL"
+    THB = "THB"
+    TJS = "TJS"
+    TMT = "TMT"
+    TND = "TND"
+    TOP = "TOP"
+    TRY = "TRY"
+    TTD = "TTD"
+    TWD = "TWD"
+    TZS = "TZS"
+    UAH = "UAH"
+    UGX = "UGX"
+    USD = "USD"
+    USN = "USN"
+    UYI = "UYI"
+    UYU = "UYU"
+    UZS = "UZS"
+    VEF = "VEF"
+    VND = "VND"
+    VUV = "VUV"
+    WST = "WST"
+    XAF = "XAF"
+    XCD = "XCD"
+    XDR = "XDR"
+    XOF = "XOF"
+    XPF = "XPF"
+    XSU = "XSU"
+    XUA = "XUA"
+    YER = "YER"
+    ZAR = "ZAR"
+    ZMW = "ZMW"
+    ZWL = "ZWL"
     __code = None
     __symbol = None
     __precision = None
@@ -204,85 +205,184 @@ class Currency:
             if hasattr(obj, value):
                 return True
             return False
-        except:
+        except Exception as e:
             return False
 
     def __init__(self):
         pass
 
     def get_code(self):
+        """
+        Get method for to code
+        :return: code
+        """
         return self.__code
 
     def set_code(self, code):
+        """
+        Set method for to code
+        :param code: code
+        """
         self.__code = code
 
     def get_symbol(self):
+        """
+        Get method for to symbol
+        :return: symbol
+        """
         return self.__symbol
 
     def set_symbol(self, symbol):
+        """
+        Set method for to symbol
+        :param symbol: symbol
+        """
         self.__symbol = symbol
 
     def get_precision(self):
+        """
+        Get method for to precision
+        :return: precision
+        """
         return self.__precision
 
     def set_precision(self, precision):
+        """
+        Set method for to precision
+        :param precision: precision
+        """
         self.__precision = precision
 
     def get_currently_settled(self):
+        """
+        Get method for to currently_settled
+        :return: currently_settled
+        """
         return self.__currently_settled
 
     def set_currently_settled(self, currently_settled):
+        """
+        Set method for to currently_settled
+        :param currently_settled: currently_settled
+        """
         self.__currently_settled = currently_settled
 
     def get_name(self):
+        """
+        Get method for to name
+        :return: name
+        """
         return self.__name
 
     def set_name(self, name):
+        """
+        Set method for to name
+        :param name: name
+        """
         self.__name = name
 
     def get_plural(self):
+        """
+        Get method for to plural
+        :return: plural
+        """
         return self.__plural
 
     def set_plural(self, plural):
+        """
+        Set method for to plural
+        :param plural: plural
+        """
         self.__plural = plural
 
     def get_alts(self):
+        """
+        Get method for to alts
+        :return: alts
+        """
         return self.__alts
 
     def set_alts(self, alts):
+        """
+        Set method for to alts
+        :param alts: alts
+        """
         self.__alts = alts
 
     def get_minimum(self):
+        """
+        Get method for to minimum
+        :return: minimum
+        """
         return self.__minimum
 
     def set_minimum(self, minimum):
+        """
+        Set method for to minimum
+        :param minimum: minimum
+        """
         self.__minimum = minimum
 
     def get_sanctioned(self):
+        """
+        Get method for to sanctioned
+        :return: sanctioned
+        """
         return self.__sanctioned
 
     def set_sanctioned(self, sanctioned):
+        """
+        Set method for to sanctioned
+        :param sanctioned: sanctioned
+        """
         self.__sanctioned = sanctioned
 
     def get_decimals(self):
+        """
+        Get method for to decimals
+        :return: decimals
+        """
         return self.__decimals
 
     def set_decimals(self, decimals):
+        """
+        Set method for to decimals
+        :param decimals: decimals
+        """
         self.__decimals = decimals
 
     def get_payout_fields(self):
+        """
+        Get method for to payout_fields
+        :return: payout_fields
+        """
         return self.__payout_fields
 
     def set_payout_fields(self, payout_fields):
+        """
+        Set method for to payout_fields
+        :param payout_fields: payout_fields
+        """
         self.__payout_fields = payout_fields
 
     def get_settlement_minimum(self):
+        """
+        Get method for to settlement_minimum
+        :return: settlement_minimum
+        """
         return self.__settlement_minimum
 
     def set_settlement_minimum(self, settlement_minimum):
+        """
+        Set method for to code
+        :param settlement_minimum: settlement_minimum
+        """
         self.__settlement_minimum = settlement_minimum
 
     def to_json(self):
+        """
+        :return: data in json
+        """
         data = {
             "code": self.get_code(),
             "symbol": self.get_symbol(),
