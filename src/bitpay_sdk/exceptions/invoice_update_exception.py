@@ -1,7 +1,13 @@
+"""
+Invoice Update Exception gets raised when it fails to update invoice
+"""
 from .invoice_exception import InvoiceException
 
 
 class InvoiceUpdateException(InvoiceException):
+    """
+    InvoiceUpdateException
+    """
     __bitpay_message = "Failed to update invoice"
     __bitpay_code = "BITPAY-INVOICE-UPDATE"
     __api_code = ""
@@ -16,7 +22,7 @@ class InvoiceUpdateException(InvoiceException):
         """
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
-        super(InvoiceUpdateException, self).__init__(message, code)
+        super().__init__(message, code)
 
     # def get_api_code(self):
     #     """

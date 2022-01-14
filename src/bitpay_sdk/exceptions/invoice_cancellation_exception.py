@@ -1,7 +1,13 @@
+"""
+Invoice Cancellation exception gets raised when it fails to cancel invoice.
+"""
 from .invoice_exception import InvoiceException
 
 
 class InvoiceCancellationException(InvoiceException):
+    """
+    InvoiceCancellationException
+    """
     __bitpay_message = "Failed to cancel invoice object"
     __bitpay_code = "BITPAY-INVOICE-CANCEL"
     __api_code = ""
@@ -16,7 +22,7 @@ class InvoiceCancellationException(InvoiceException):
         """
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
-        super(InvoiceCancellationException, self).__init__(message, code)
+        super().__init__(message, code)
 
     # def get_api_code(self):
     #     """

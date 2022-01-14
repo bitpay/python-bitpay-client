@@ -1,7 +1,13 @@
+"""
+Invoice Notification Exception gets raised when webhook fails to send notification
+"""
 from .invoice_exception import InvoiceException
 
 
 class InvoiceNotificationException(InvoiceException):
+    """
+    InvoiceNotificationException
+    """
     __bitpay_message = "Failed to send invoice notification"
     __bitpay_code = "BITPAY-INVOICE-NOTIFICATION"
     __api_code = ""
@@ -16,7 +22,7 @@ class InvoiceNotificationException(InvoiceException):
         """
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
-        super(InvoiceNotificationException, self).__init__(message, code)
+        super().__init__(message, code)
 
     # def get_api_code(self):
     #     """

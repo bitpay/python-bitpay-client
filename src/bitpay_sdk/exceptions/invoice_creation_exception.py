@@ -1,7 +1,13 @@
+"""
+Invoice Creation Exception gets raised when request for invoice creation gets failed.
+"""
 from .invoice_exception import InvoiceException
 
 
 class InvoiceCreationException(InvoiceException):
+    """
+    InvoiceCreationException
+    """
     __bitpay_message = "Failed to create invoice"
     __bitpay_code = "BITPAY-INVOICE-CREATE"
     __api_code = ""
@@ -16,7 +22,7 @@ class InvoiceCreationException(InvoiceException):
         """
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
-        super(InvoiceCreationException, self).__init__(message, code)
+        super().__init__(message, code)
 
     # def get_api_code(self):
     #     """

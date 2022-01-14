@@ -1,7 +1,14 @@
+"""
+Invoice Exception gets raised when some unexpected error occurs while processing a request
+or trying to manage invoice.
+"""
 from .bitpay_exception import BitPayException
 
 
 class InvoiceException(BitPayException):
+    """
+    InvoiceException
+    """
     __bitpay_message = "An unexpected error occurred while trying to manage the invoice"
     __bitpay_code = "BITPAY-INVOICE-GENERIC"
     __api_code = ""
@@ -16,7 +23,7 @@ class InvoiceException(BitPayException):
         """
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
-        super(InvoiceException, self).__init__(message, code)
+        super().__init__(message, code)
 
     # def get_api_code(self):
     #     """

@@ -1,7 +1,13 @@
+"""
+Invoice Query Exception gets raised when request for invoice retrieval gets failed .
+"""
 from .invoice_exception import InvoiceException
 
 
 class InvoiceQueryException(InvoiceException):
+    """
+    InvoiceQueryException
+    """
     __bitpay_message = "Failed to retrieve invoice"
     __bitpay_code = "BITPAY-INVOICE-GET"
     __api_code = ""
@@ -16,7 +22,7 @@ class InvoiceQueryException(InvoiceException):
         """
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
-        super(InvoiceQueryException, self).__init__(message, code)
+        super().__init__(message, code)
 
     # def get_api_code(self):
     #     """

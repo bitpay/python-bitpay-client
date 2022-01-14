@@ -1,3 +1,6 @@
+"""
+BitPay Unit Tests
+"""
 import os
 import unittest
 from datetime import date, timedelta
@@ -9,7 +12,9 @@ from src.bitpay_sdk.models.invoice.invoice_status import InvoiceStatus
 
 
 class BitPayTest(unittest.TestCase):
-
+    """
+    Unit Test functions
+    """
     def setUp(self):
         self.bitpay = Client(os.path.abspath("bitpay.config.json").encode())
 
@@ -62,7 +67,7 @@ class BitPayTest(unittest.TestCase):
 
     def test_should_get_invoice_status(self):
         basic_invoice = self.bitpay.create_invoice(Invoice(5.0, "usd"))
-        self.assertEqual(InvoiceStatus._InvoiceStatus__New, basic_invoice.get_status())
+        self.assertEqual("new", basic_invoice.get_status())
 
     def test_should_create_invoice_one_tenth_btc(self):
         basic_invoice = self.bitpay.create_invoice(Invoice(0.1, "btc"))
@@ -94,7 +99,8 @@ class BitPayTest(unittest.TestCase):
 
         basic_invoice = self.bitpay.create_invoice(Invoice(2, "btc"))
         retrieved_invoice = self.bitpay.get_invoice(basic_invoice.get_id())
-        updated_invoice = self.bitpay.update_invoice(retrieved_invoice.get_id(), "sandbox@bitpay.com")
+        updated_invoice = self.bitpay.update_invoice(retrieved_invoice.get_id(),
+                                                     "sandbox@bitpay.com")
         cancelled_invoice = self.bitpay.cancel_invoice(updated_invoice.get_id())
         retrieved_cancelled_invoice = self.bitpay.get_invoice(cancelled_invoice.get_id())
 

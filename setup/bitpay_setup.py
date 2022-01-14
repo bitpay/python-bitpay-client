@@ -36,8 +36,8 @@ def select_env():
 
         set_environment(environment)
         select_create_key()
-    except BitPayException as e:
-        print(e)
+    except BitPayException as exe:
+        print(exe)
 
 
 def set_environment(env):
@@ -55,16 +55,16 @@ def select_create_key():
             create_new_key()
         else:
             load_key()
-    except BitPayException as e:
-        print(e)
+    except BitPayException as exe:
+        print(exe)
 
 
 def create_new_key():
     try:
         private_key = generate_pem()
         store_key(private_key)
-    except BitPayException as e:
-        print(e)
+    except BitPayException as exe:
+        print(exe)
 
 
 def store_key(private_key):
@@ -86,8 +86,8 @@ def store_key(private_key):
             select_tokens(private_key)
         else:
             store_key(private_key)
-    except BitPayException as e:
-        print(e)
+    except BitPayException as exe:
+        print(exe)
 
 
 def select_tokens(private_key):
@@ -99,8 +99,8 @@ def select_tokens(private_key):
             request_tokens(input_value.lower(), private_key)
         else:
             select_tokens(private_key)
-    except BitPayException as e:
-        print(e)
+    except BitPayException as exe:
+        print(exe)
 
 
 def request_tokens(token_type, private_key):
@@ -135,8 +135,8 @@ def request_tokens(token_type, private_key):
                 print("Payout Token Pairing Code: ", response.json()['data'][0]['pairingCode'] + "\n")
 
         update_config_file()
-    except BitPayException as e:
-        print(e)
+    except BitPayException as exe:
+        print(exe)
 
 
 def update_config_file():
@@ -167,8 +167,8 @@ def update_config_file():
         print(f"{api_url}/dashboard/merchant/api-tokens\r\n")
         print("\r\nOnce you have this Pairing Code/s approved you can move the generated files to a secure location "
               "and start using the Client.\r\n")
-    except BitPayException as e:
-        print(e)
+    except BitPayException as exe:
+        print(exe)
 
 
 def load_key():

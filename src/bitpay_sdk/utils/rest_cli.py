@@ -1,3 +1,6 @@
+"""
+HTTP methods
+"""
 import json
 import urllib
 import requests
@@ -16,7 +19,7 @@ class RESTcli:
 
     def __init__(self, environment, eckey, proxy=None):
         self.__eckey = eckey
-        self.__baseurl = env.TestUrl if environment == env.Test else env.ProdUrl
+        self.__baseurl = env.TESTURL if environment == env.TEST else env.PRODURL
         self.__proxy = proxy
         self.init()
 
@@ -26,10 +29,10 @@ class RESTcli:
                 'base_url': self.__baseurl,
                 'defaults': {
                     'headers': {
-                        'x-accept-version': env.BitpayApiVersion,
-                        'x-bitpay-plugin-info': env.BitpayPluginInfo,
-                        'x-bitpay-api-frame': env.BitpayApiFrame,
-                        'x-bitpay-api-frame-version': env.BitpayApiFrameVersion,
+                        'x-accept-version': env.BITPAYAPIVERSION,
+                        'x-bitpay-plugin-info': env.BITPAYPLUGININFO,
+                        'x-bitpay-api-frame': env.BITPAYAPIFRAME,
+                        'x-bitpay-api-frame-version': env.BITPAYAPIFRAMEVERSION,
                     },
                 }
             }
@@ -40,6 +43,13 @@ class RESTcli:
             print(e)
 
     def post(self, uri, form_data, signature_required=True):
+        """
+        :param uri: Url at which user wants to post the data
+        :param form_data: the data to be posted
+        :param signature_required: Signature of the full request URL concatenated
+        with the request body
+        :return: json response
+        """
         full_url = self.__baseurl + uri
         form_data = json.dumps(form_data)
 
@@ -47,9 +57,9 @@ class RESTcli:
         xsignature = sign(full_url+form_data, self.__eckey)
 
         headers = {"content-type": "application/json",
-                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BitpayPluginInfo,
-                   'X-bitpay-api-frame': env.BitpayApiFrame,
-                   'X-bitpay-api-frame-version': env.BitpayApiFrameVersion}
+                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BITPAYPLUGININFO,
+                   'X-bitpay-api-frame': env.BITPAYAPIFRAME,
+                   'X-bitpay-api-frame-version': env.BITPAYAPIFRAMEVERSION}
 
         if signature_required:
             headers['x-signature'] = xsignature
@@ -60,6 +70,13 @@ class RESTcli:
         return json_response
 
     def get(self, uri, parameters=None, signature_required=True):
+        """
+
+        :param uri: Url from which user wants to get the data
+        :param parameters: These are query parameters
+        :param signature_required: Signature of the full request URL concatenated
+        :return: json response
+        """
         full_url = self.__baseurl + uri
 
         if parameters is not None:
@@ -69,9 +86,9 @@ class RESTcli:
         xsignature = sign(full_url, self.__eckey)
 
         headers = {"content-type": "application/json",
-                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BitpayPluginInfo,
-                   'X-bitpay-api-frame': env.BitpayApiFrame,
-                   'X-bitpay-api-frame-version': env.BitpayApiFrameVersion}
+                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BITPAYPLUGININFO,
+                   'X-bitpay-api-frame': env.BITPAYAPIFRAME,
+                   'X-bitpay-api-frame-version': env.BITPAYAPIFRAMEVERSION}
 
         if signature_required:
             headers['x-signature'] = xsignature
@@ -82,6 +99,12 @@ class RESTcli:
         return json_response
 
     def delete(self, uri, parameters=None):
+        """
+
+        :param uri: Url from which user wants to delete the data
+        :param parameters: These are query parameters
+        :return: json response
+        """
         full_url = self.__baseurl + uri
 
         if parameters is not None:
@@ -90,26 +113,33 @@ class RESTcli:
         xidentity = get_compressed_public_key_from_pem(self.__eckey)
         xsignature = sign(full_url, self.__eckey)
 
-        headers = {"content-type": "application/json", 'X-Identity': xidentity, 'X-Signature': xsignature,
-                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BitpayPluginInfo,
-                   'X-bitpay-api-frame': env.BitpayApiFrame,
-                   'X-bitpay-api-frame-version': env.BitpayApiFrameVersion}
+        headers = {"content-type": "application/json", 'X-Identity': xidentity,
+                   'X-Signature': xsignature, 'X-accept-version': '2.0.0',
+                   'X-bitpay-plugin-info': env.BITPAYPLUGININFO,
+                   'X-bitpay-api-frame': env.BITPAYAPIFRAME,
+                   'X-bitpay-api-frame-version': env.BITPAYAPIFRAMEVERSION}
 
         response = requests.delete(full_url, headers=headers)
         json_response = self.response_to_json_string(response)
         return json_response
 
     def update(self, uri, form_data):
+        """
+        :param uri: Url from which user wants to delete the data
+        :param form_data: the data to be updated
+        :return: json response
+        """
         full_url = self.__baseurl + uri
         form_data = json.dumps(form_data)
 
         xidentity = get_compressed_public_key_from_pem(self.__eckey)
         xsignature = sign(full_url+form_data, self.__eckey)
 
-        headers = {"content-type": "application/json", 'X-Identity': xidentity, 'X-Signature': xsignature,
-                   'X-accept-version': '2.0.0', 'X-bitpay-plugin-info': env.BitpayPluginInfo,
-                   'X-bitpay-api-frame': env.BitpayApiFrame,
-                   'X-bitpay-api-frame-version': env.BitpayApiFrameVersion}
+        headers = {"content-type": "application/json", 'X-Identity': xidentity,
+                   'X-Signature': xsignature,'X-accept-version': '2.0.0',
+                   'X-bitpay-plugin-info': env.BITPAYPLUGININFO,
+                   'X-bitpay-api-frame': env.BITPAYAPIFRAME,
+                   'X-bitpay-api-frame-version': env.BITPAYAPIFRAMEVERSION}
 
         response = requests.put(full_url, data=form_data, headers=headers)
         json_response = self.response_to_json_string(response)
@@ -140,4 +170,3 @@ class RESTcli:
             return response_obj["data"]
 
         return response_obj
-
