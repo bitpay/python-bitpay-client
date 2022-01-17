@@ -11,7 +11,7 @@ class Tokens:
     __merchant = ""
     __payout = ""
 
-    def __init__(self, merchant=None, payout = None):
+    def __init__(self, merchant=None, payout=None):
         """
         :param merchant:The broadest set of capabilities against a merchant organization.
         Allows for create, search,and view actions for Invoices and Bills; ledger download,
@@ -36,9 +36,9 @@ class Tokens:
 
         token = None
 
-        if Facade.Merchant == "Merchant":
+        if Facade.Merchant == facade:
             token = self.__merchant
-        elif Facade.Payout == "Payout":
+        elif Facade.Payout == facade:
             token = self.__payout
 
         if token:

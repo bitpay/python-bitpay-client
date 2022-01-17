@@ -8,7 +8,6 @@ from datetime import date, timedelta
 from src.bitpay_sdk.client import Client
 from src.bitpay_sdk.models.invoice.buyer import Buyer
 from src.bitpay_sdk.models.invoice.invoice import Invoice
-from src.bitpay_sdk.models.invoice.invoice_status import InvoiceStatus
 
 
 class BitPayTest(unittest.TestCase):

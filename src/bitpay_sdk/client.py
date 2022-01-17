@@ -9,7 +9,6 @@ import os
 import json
 
 from .config import Config
-from .exceptions.invoice_creation_exception import InvoiceCreationException
 from .tokens import Tokens
 from .models.facade import Facade
 from .models.bill.bill import Bill
@@ -20,6 +19,8 @@ from .models.invoice.refund import Refund
 from .models.invoice.invoice import Invoice
 from .models.ledger.ledger_entry import LedgerEntry
 from .exceptions.bitpay_exception import BitPayException
+from .models.payout.payout_recipient import PayoutRecipient
+from .models.payout.payout_recipients import PayoutRecipients
 from .exceptions.bill_query_exception import BillQueryException
 from .exceptions.bill_update_exception import BillUpdateException
 from .exceptions.ledger_query_exception import LedgerQueryException
@@ -31,10 +32,16 @@ from .exceptions.refund_update_exception import RefundUpdateException
 from .exceptions.invoice_query_exception import InvoiceQueryException
 from .exceptions.invoice_update_exception import InvoiceUpdateException
 from .exceptions.refund_creation_exception import RefundCreationException
+from .exceptions.invoice_creation_exception import InvoiceCreationException
 from .exceptions.refund_notification_exception import RefundNotificationException
 from .exceptions.refund_cancellation_exception import RefundCancellationException
 from .exceptions.invoice_cancellation_exception import InvoiceCancellationException
 from .exceptions.invoice_notification_exception import InvoiceNotificationException
+from .exceptions.payout_recipient_query_exception import PayoutRecipientQueryException
+from .exceptions.payout_recipient_update_exception import PayoutRecipientUpdateException
+from .exceptions.payout_recipient_creation_exception import PayoutRecipientCreationException
+from .exceptions.payout_recipient_cancellation_exception import PayoutRecipientCancellationException
+from .exceptions.payout_recipient_notification_exception import PayoutRecipientNotificationException
 
 
 class Client:
@@ -100,6 +107,7 @@ class Client:
                 read_file = open(private_key_path, 'r')
                 plain_private_key = read_file.read()
                 self.__ec_key = plain_private_key
+                read_file.close()
             else:
                 raise BitPayException("Private Key file not found")
 
@@ -132,7 +140,10 @@ class Client:
 
     def init(self):
         try:
-            proxy = self.__configuration.get_envconfig()[self.__env]["proxy"]
+            proxy = None
+            if "proxy" in self.__configuration.get_envconfig()[self.__env]:
+                proxy = self.__configuration.get_envconfig()[self.__env]["proxy"]
+
             self.__restcli = RESTcli(self.__env, self.__ec_key, proxy)
             self.load_access_tokens()
             self.__currencies_info = self.load_currencies()
@@ -754,3 +765,102 @@ class Client:
             raise LedgerQueryException("failed to deserialize BitPay server response"
                                        " (Ledger) : %s" % str(exe))
         return ledgers
+
+    def submit_payout_recipients(self, recipients: PayoutRecipients) -> [PayoutRecipient]:
+        try:
+            recipients.set_token(self.get_access_token(Facade.Payout))
+            recipients.to_json()
+
+            response_json = self.__restcli.post("recipients", recipients, True)
+        except BitPayException as exe:
+            raise PayoutRecipientCreationException("failed to serialize PayoutRecipients object :  %s" % str(exe),
+                                                   exe.get_api_code())
+
+        try:
+            payout_recipients = PayoutRecipient(**response_json)
+        except Exception as exe:
+            raise PayoutRecipientCreationException("failed to deserialize BitPay server response "
+                                                   " (PayoutRecipients) : %s" % str(exe))
+        return payout_recipients
+
+    def get_payout_recipient(self, recipient_id: str) -> PayoutRecipient:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.get("recipients/%s" % recipient_id, params)
+        except BitPayException as exe:
+            raise PayoutRecipientQueryException("failed to serialize PayoutRecipients object :  %s" % str(exe),
+                                                exe.get_api_code())
+
+        try:
+            payout_recipient = PayoutRecipient(**response_json)
+        except Exception as exe:
+            raise PayoutRecipientQueryException("failed to deserialize BitPay server response "
+                                                " (PayoutRecipients) : %s" % str(exe))
+        return payout_recipient
+
+    def get_payout_recipients(self, status, limit=100, offset=0) -> [PayoutRecipient]:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout),
+                      "limit": str(limit), "offset": str(offset)}
+            if status:
+                params["status"] = status
+
+            response_json = self.__restcli.get("recipients", params)
+        except BitPayException as exe:
+            raise PayoutRecipientQueryException("failed to serialize PayoutRecipients object :  %s" % str(exe),
+                                                exe.get_api_code())
+
+        try:
+            payout_recipients = []
+            for payout_recipient in response_json:
+                payout_recipients.append(PayoutRecipient(**payout_recipient))
+        except Exception as exe:
+            raise PayoutRecipientQueryException("failed to deserialize BitPay server response "
+                                                " (PayoutRecipients) : %s" % str(exe))
+        return payout_recipients
+
+    def update_payout_recipient(self, recipient_id, recipient: PayoutRecipient) -> PayoutRecipient:
+        try:
+            recipient.set_token(self.get_access_token(Facade.Payout))
+
+            response_json = self.__restcli.update("recipients/%s" % recipient_id, recipient.to_json())
+        except BitPayException as exe:
+            raise PayoutRecipientUpdateException("failed to serialize PayoutRecipients object :  %s" % str(exe),
+                                                 exe.get_api_code())
+
+        try:
+            payout_recipient = PayoutRecipient(**response_json)
+        except Exception as exe:
+            raise PayoutRecipientUpdateException("failed to deserialize BitPay server response "
+                                                 " (PayoutRecipients) : %s" % str(exe))
+        return payout_recipient
+
+    def delete_payout_recipient(self, recipient_id) -> bool:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.delete("recipients/%s" % recipient_id, params)
+        except BitPayException as exe:
+            raise PayoutRecipientCancellationException("failed to serialize PayoutRecipients object :  %s" % str(exe),
+                                                       exe.get_api_code())
+
+        try:
+            payout_recipient = PayoutRecipient(**response_json)
+        except Exception as exe:
+            raise PayoutRecipientCancellationException("failed to deserialize BitPay server response "
+                                                       " (PayoutRecipients) : %s" % str(exe))
+        return payout_recipient
+
+    def request_payout_recipient_notification(self, recipient_id) -> bool:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.post("recipients/%s" % recipient_id + "/notifications", params)
+        except BitPayException as exe:
+            raise PayoutRecipientNotificationException("failed to serialize PayoutRecipients object :  %s" % str(exe),
+                                                       exe.get_api_code())
+
+        try:
+            payout_recipient = PayoutRecipient(**response_json)
+        except Exception as exe:
+            raise PayoutRecipientNotificationException("failed to deserialize BitPay server response "
+                                                       " (PayoutRecipients) : %s" % str(exe))
+        return payout_recipient
