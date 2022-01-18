@@ -625,7 +625,9 @@ class Client:
                                      exe.get_api_code())
 
         try:
-            bills = Bill(**response_json)
+            bills = []
+            for bill_data in response_json:
+                bills.append(Bill(**bill_data))
         except Exception as exe:
             raise BillQueryException("failed to deserialize BitPay server response"
                                      " (Bill) : %s" % str(exe))
@@ -702,11 +704,11 @@ class Client:
                                         exe.get_api_code())
 
         try:
-            bill = Bill(**response_json)
+            result = response_json
         except Exception as exe:
             raise BillDeliveryException("failed to deserialize BitPay server response"
                                         " (Bill) : %s" % str(exe))
-        return bill
+        return result
 
     def get_ledger(self, currency: str, start_date: str, end_date: str) -> [Ledger]:
         """

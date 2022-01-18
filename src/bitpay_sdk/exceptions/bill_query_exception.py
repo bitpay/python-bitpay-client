@@ -9,7 +9,7 @@ class BillQueryException(BillException):
     BillQueryException
     """
     __bitpay_message = "Failed to retrieve bill"
-    __bitpay_code = "BITPAY-REFUND-GET"
+    __bitpay_code = "BITPAY-BILL-GET"
     __api_code = ""
 
     def __init__(self, message, code=113, api_code="000000"):

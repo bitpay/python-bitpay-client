@@ -6,8 +6,8 @@ class PayoutRecipients:
     __recipients = []
     __token = ""
 
-    def __init__(self):
-        pass
+    def __init__(self, recipients=[]):
+        self.__recipients = recipients
 
     def get_guid(self):
         """
