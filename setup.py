@@ -6,7 +6,7 @@ setuptools.setup(
     name="bitpay",
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
-    version="2.0.0",
+    version="1.0.2201",
     description="Accept bitcoin with BitPay",
     author="Antonio Buedo",
     author_email="sales-engineering@bitpay.com",
