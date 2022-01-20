@@ -15,8 +15,10 @@ from .models.bill.bill import Bill
 from .utils.rest_cli import RESTcli
 from .models.ledger.ledger import Ledger
 from .models.wallet.wallet import Wallet
+from .models.payout.payout import Payout
 from .models.invoice.refund import Refund
 from .models.invoice.invoice import Invoice
+from .models.payout.payout_batch import PayoutBatch
 from .models.ledger.ledger_entry import LedgerEntry
 from .exceptions.bitpay_exception import BitPayException
 from .models.payout.payout_recipient import PayoutRecipient
@@ -26,19 +28,27 @@ from .exceptions.bill_update_exception import BillUpdateException
 from .exceptions.ledger_query_exception import LedgerQueryException
 from .exceptions.wallet_query_exception import WalletQueryException
 from .exceptions.refund_query_exception import RefundQueryException
+from .exceptions.payout_query_exception import PayoutQueryException
 from .exceptions.bill_creation_exception import BillCreationException
 from .exceptions.bill_delivery_exception import BillDeliveryException
 from .exceptions.refund_update_exception import RefundUpdateException
 from .exceptions.invoice_query_exception import InvoiceQueryException
 from .exceptions.invoice_update_exception import InvoiceUpdateException
 from .exceptions.refund_creation_exception import RefundCreationException
+from .exceptions.payout_creation_exception import PayoutCreationException
 from .exceptions.invoice_creation_exception import InvoiceCreationException
+from .exceptions.payoutbatch_query_exception import PayoutBatchQueryException
 from .exceptions.refund_notification_exception import RefundNotificationException
 from .exceptions.refund_cancellation_exception import RefundCancellationException
+from .exceptions.payout_cancellation_exception import PayoutCancellationException
+from .exceptions.payout_notification_exception import PayoutNotificationException
 from .exceptions.invoice_cancellation_exception import InvoiceCancellationException
 from .exceptions.invoice_notification_exception import InvoiceNotificationException
+from .exceptions.payoutbatch_creation_exception import PayoutBatchCreationException
 from .exceptions.payout_recipient_query_exception import PayoutRecipientQueryException
 from .exceptions.payout_recipient_update_exception import PayoutRecipientUpdateException
+from .exceptions.payoutbatch_cancellation_exception import PayoutBatchCancellationException
+from .exceptions.payoutbatch_notification_exception import PayoutBatchNotificationException
 from .exceptions.payout_recipient_creation_exception import PayoutRecipientCreationException
 from .exceptions.payout_recipient_cancellation_exception import PayoutRecipientCancellationException
 from .exceptions.payout_recipient_notification_exception import PayoutRecipientNotificationException
@@ -800,7 +810,8 @@ class Client:
                                                 " (PayoutRecipients) : %s" % str(exe))
         return payout_recipient
 
-    def get_payout_recipients(self, status, limit=100, offset=0) -> [PayoutRecipient]:
+    def get_payout_recipients(self, status: str = None, limit: int = 100,
+                              offset: int = 0) -> [PayoutRecipient]:
         try:
             params = {"token": self.get_access_token(Facade.Payout),
                       "limit": str(limit), "offset": str(offset)}
@@ -821,7 +832,7 @@ class Client:
                                                 " (PayoutRecipients) : %s" % str(exe))
         return payout_recipients
 
-    def update_payout_recipient(self, recipient_id, recipient: PayoutRecipient) -> PayoutRecipient:
+    def update_payout_recipient(self, recipient_id: str, recipient: PayoutRecipient) -> PayoutRecipient:
         try:
             recipient.set_token(self.get_access_token(Facade.Payout))
 
@@ -837,7 +848,7 @@ class Client:
                                                  " (PayoutRecipients) : %s" % str(exe))
         return payout_recipient
 
-    def delete_payout_recipient(self, recipient_id) -> bool:
+    def delete_payout_recipient(self, recipient_id: str) -> bool:
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.delete("recipients/%s" % recipient_id, params)
@@ -852,7 +863,7 @@ class Client:
                                                        " (PayoutRecipients) : %s" % str(exe))
         return payout_recipient
 
-    def request_payout_recipient_notification(self, recipient_id) -> bool:
+    def request_payout_recipient_notification(self, recipient_id: str) -> bool:
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.post("recipients/%s" % recipient_id + "/notifications", params)
@@ -866,3 +877,188 @@ class Client:
             raise PayoutRecipientNotificationException("failed to deserialize BitPay server response "
                                                        " (PayoutRecipients) : %s" % str(exe))
         return payout_recipient
+
+    def submit_payout(self, payout: Payout) -> Payout:
+        try:
+            payout.set_token(self.get_access_token(Facade.Payout))
+            payout.to_json()
+
+            response_json = self.__restcli.post("payouts", payout, True)
+        except BitPayException as exe:
+            raise PayoutCreationException("failed to serialize Payout object :  %s" % str(exe),
+                                          exe.get_api_code())
+
+        try:
+            payout = Payout(**response_json)
+        except Exception as exe:
+            raise PayoutCreationException("failed to deserialize BitPay server response "
+                                          " (Payout) : %s" % str(exe))
+        return payout
+
+    def get_payout(self, payout_id: str) -> Payout:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.get("payouts/%s" % payout_id, params)
+        except BitPayException as exe:
+            raise PayoutQueryException("failed to serialize Payout object :  %s" % str(exe),
+                                       exe.get_api_code())
+
+        try:
+            payout = Payout(**response_json)
+        except Exception as exe:
+            raise PayoutQueryException("failed to deserialize BitPay server response "
+                                       " (Payout) : %s" % str(exe))
+        return payout
+
+    def get_payouts(self, start_date: str = None, end_date: str = None,
+                    status: str = None, reference: str = None, limit: int = None,
+                    offset: int = None) -> [Payout]:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            if start_date:
+                params["startDate"] = start_date
+            if end_date:
+                params["endDate"] = end_date
+            if status:
+                params["status"] = status
+            if reference:
+                params["reference"] = reference
+            if limit:
+                params["limit"] = limit
+            if offset:
+                params["offset"] = offset
+
+            response_json = self.__restcli.get("payouts", params)
+        except BitPayException as exe:
+            raise PayoutQueryException("failed to serialize Payout object :  %s" % str(exe),
+                                       exe.get_api_code())
+
+        try:
+            payouts = []
+            for payout in response_json:
+                payouts.append(Payout(**payout))
+        except Exception as exe:
+            raise PayoutQueryException("failed to deserialize BitPay server response "
+                                       " (Payout) : %s" % str(exe))
+        return payouts
+
+    def cancel_payout(self, payout_id: str) -> bool:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.delete("payouts/%s" % payout_id, params)
+        except BitPayException as exe:
+            raise PayoutCancellationException("failed to serialize Payout object :  %s" % str(exe),
+                                              exe.get_api_code())
+
+        try:
+            payout = Payout(**response_json)
+        except Exception as exe:
+            raise PayoutCancellationException("failed to deserialize BitPay server response "
+                                              " (Payout) : %s" % str(exe))
+        return payout
+
+    def request_payout_notification(self, payout_id: str) -> bool:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.post("payouts/%s" % payout_id + "/notifications", params)
+        except BitPayException as exe:
+            raise PayoutNotificationException("failed to serialize Payout object :  %s" % str(exe),
+                                              exe.get_api_code())
+
+        try:
+            payout = Payout(**response_json)
+        except Exception as exe:
+            raise PayoutNotificationException("failed to deserialize BitPay server response "
+                                              " (Payout) : %s" % str(exe))
+        return payout
+
+    def submit_payout_batch(self, batch: PayoutBatch) -> PayoutBatch:
+        try:
+            batch.set_token(self.get_access_token(Facade.Payout))
+            batch.to_json()
+
+            response_json = self.__restcli.post("payoutBatches", batch, True)
+        except BitPayException as exe:
+            raise PayoutBatchCreationException("failed to serialize PayoutBatch object :  %s" % str(exe),
+                                               exe.get_api_code())
+
+        try:
+            payout_batch = PayoutBatch(**response_json)
+        except Exception as exe:
+            raise PayoutBatchCreationException("failed to deserialize BitPay server response "
+                                               " (PayoutBatch) : %s" % str(exe))
+        return payout_batch
+
+    def get_payout_batch(self, payout_batch_id: str) -> PayoutBatch:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.get("payoutBatches/%s" % payout_batch_id, params)
+        except BitPayException as exe:
+            raise PayoutBatchQueryException("failed to serialize Payout object :  %s" % str(exe),
+                                            exe.get_api_code())
+
+        try:
+            payout_batch = PayoutBatch(**response_json)
+        except Exception as exe:
+            raise PayoutBatchQueryException("failed to deserialize BitPay server response "
+                                            " (Payout) : %s" % str(exe))
+        return payout_batch
+
+    def get_payout_batches(self, start_date: str = None, end_date: str = None, status: str = None,
+                           limit: int = None, offset: int = None) -> [PayoutBatch]:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            if start_date:
+                params["startDate"] = start_date
+            if end_date:
+                params["endDate"] = end_date
+            if status:
+                params["status"] = status
+            if limit:
+                params["limit"] = limit
+            if offset:
+                params["offset"] = offset
+
+            response_json = self.__restcli.get("payoutBatches", params)
+        except BitPayException as exe:
+            raise PayoutBatchQueryException("failed to serialize PayoutBatch object :  %s" % str(exe),
+                                            exe.get_api_code())
+
+        try:
+            payout_batches = []
+            for payout_batch in response_json:
+                payout_batches.append(PayoutBatch(**payout_batch))
+        except Exception as exe:
+            raise PayoutBatchQueryException("failed to deserialize BitPay server response "
+                                            " (PayoutBatch) : %s" % str(exe))
+        return payout_batches
+
+    def cancel_payout_batch(self, payout_batch_id: str) -> bool:
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.delete("payoutBatches/%s" % payout_batch_id, params)
+        except BitPayException as exe:
+            raise PayoutBatchCancellationException("failed to serialize PayoutBatch object :  %s" % str(exe),
+                                                   exe.get_api_code())
+
+        try:
+            payout_batch = PayoutBatch(**response_json)
+        except Exception as exe:
+            raise PayoutBatchCancellationException("failed to deserialize BitPay server response "
+                                                   " (PayoutBatch) : %s" % str(exe))
+        return payout_batch
+
+    def request_payout_batch_notification(self, payout_batch_id: str):
+        try:
+            params = {"token": self.get_access_token(Facade.Payout)}
+            response_json = self.__restcli.post("payoutBatches/%s" % payout_batch_id + "/notifications", params)
+        except BitPayException as exe:
+            raise PayoutBatchNotificationException("failed to serialize PayoutBatch object :  %s" % str(exe),
+                                                   exe.get_api_code())
+
+        try:
+            payout_batch = PayoutBatch(**response_json)
+        except Exception as exe:
+            raise PayoutBatchNotificationException("failed to deserialize BitPay server response "
+                                                   " (PayoutBatch) : %s" % str(exe))
+        return payout_batch

@@ -9,9 +9,14 @@ from src.bitpay_sdk.models.bill.bill import Bill
 from src.bitpay_sdk.models.bill.item import Item
 from src.bitpay_sdk.models.currency import Currency
 from src.bitpay_sdk.models.invoice.buyer import Buyer
+from src.bitpay_sdk.models.payout.payout import Payout
 from src.bitpay_sdk.models.invoice.invoice import Invoice
 from src.bitpay_sdk.models.bill.bill_status import BillStatus
+from src.bitpay_sdk.models.payout.payout_batch import PayoutBatch
+from src.bitpay_sdk.models.payout.payout_instruction import PayoutInstruction
 from src.bitpay_sdk.models.payout.payout_recipient import PayoutRecipient
+from src.bitpay_sdk.models.payout.payout_status import PayoutStatus
+from src.bitpay_sdk.models.payout.recipient_reference_method import RecipientReferenceMethod
 from src.bitpay_sdk.models.payout.recipient_status import RecipientStatus
 from src.bitpay_sdk.models.payout.payout_recipients import PayoutRecipients
 
@@ -456,3 +461,130 @@ class BitPayTest(unittest.TestCase):
         result = self.bitpay.request_payout_recipient_notification(first_recipient.get_id())
 
         self.assertTrue(result)
+
+    def test_should_submit_payout(self):
+        recipients = self.bitpay.get_payout_recipients(None, 1)
+        currency = Currency.USD
+        ledger_currency = Currency.ETH
+
+        payout = Payout(5.0, currency, ledger_currency)
+        payout.set_recipient_id(recipients[0].get_id())
+
+        create_payout = self.bitpay.submit_payout(payout)
+        cancel_payout = self.bitpay.cancel_payout(create_payout.get_id())
+
+        self.assertIsNotNone(create_payout.get_id())
+        self.assertTrue(cancel_payout)
+
+    def test_should_get_payouts(self):
+        payouts = self.bitpay.get_payouts()
+        self.assertGreater(0, len(payouts))
+
+    def test_should_get_payouts_by_status(self):
+        payouts = self.bitpay.get_payouts(None, None, PayoutStatus.New)
+        self.assertGreater(0, len(payouts))
+
+    def test_should_submit_get_and_delete_payout(self):
+        recipients = self.bitpay.get_payout_recipients(None, 1)
+        currency = Currency.USD
+        ledger_currency = Currency.ETH
+
+        payout = Payout(5.0, currency, ledger_currency)
+        payout.set_recipient_id(recipients[0].get_id())
+
+        create_payout = self.bitpay.submit_payout(payout)
+        retrieve_payout = self.bitpay.get_payout(create_payout.get_id())
+        cancel_payout = self.bitpay.cancel_payout(retrieve_payout.get_id())
+
+        self.assertIsNotNone(create_payout.get_id())
+        self.assertIsNotNone(retrieve_payout.get_id())
+        self.assertTrue(cancel_payout)
+        self.assertEqual(create_payout.get_id(), retrieve_payout.get_id())
+        self.assertEqual(PayoutStatus.New, retrieve_payout.get_status())
+
+    def test_should_request_payout_notification(self):
+        recipients = self.bitpay.get_payout_recipients(None, 1)
+        currency = Currency.USD
+        ledger_currency = Currency.ETH
+
+        payout = Payout(5.0, currency, ledger_currency)
+        payout.set_recipient_id(recipients[0].get_id())
+        payout.set_notification_email('sandbox@bitpay.com')
+        payout.set_notification_uRL('https://hookb.in/QJOPBdMgRkukpp2WO60o')
+
+        create_payout = self.bitpay.submit_payout(payout)
+        payout_notification = self.bitpay.request_payout_notification(create_payout.get_id())
+        cancel_payout = self.bitpay.cancel_payout(create_payout.get_id())
+
+        self.assertIsNotNone(create_payout.get_id())
+        self.assertTrue(payout_notification)
+        self.assertTrue(cancel_payout)
+
+    def test_should_submit_payout_batch(self):
+        recipients = self.bitpay.get_payout_recipients(None, 2)
+        currency = Currency.USD
+        ledger_currency = Currency.ETH
+        effective_date = (date.today() + timedelta(days=3)).strftime("%Y%m%d")
+
+        # TODO: Need to correct
+        instructions = PayoutInstruction()[(5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()),
+                                           (6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email())]
+        batch = PayoutBatch(currency, effective_date, instructions, ledger_currency)
+        submit_batch = self.bitpay.submit_payout_batch(batch)
+        cancel_batch = self.bitpay.cancel_payout_batch(submit_batch.get_id())
+
+        self.assertIsNotNone(submit_batch.get_id())
+        self.assertEqual(2, len(submit_batch.get_instructions()))
+        self.assertTrue(cancel_batch)
+
+    def test_should_submit_get_and_delete_payout_batch(self):
+        recipients = self.bitpay.get_payout_recipients(None, 2)
+        currency = Currency.USD
+        ledger_currency = Currency.ETH
+        effective_date = (date.today() + timedelta(days=3)).strftime("%Y%m%d")
+
+        # TODO: Need to correct
+        instructions = PayoutInstruction()[(5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()),
+                                           (6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email())]
+        batch = PayoutBatch(currency, effective_date, instructions, ledger_currency)
+        batch.set_notification_uRL("https://hookbin.com/yDEDeWJKyasG9yjj9X9P")
+        submit_batch = self.bitpay.submit_payout_batch(batch)
+        retrieve_batch = self.bitpay.get_payout_batch(submit_batch.get_id())
+        cancel_batch = self.bitpay.cancel_payout_batch(submit_batch.get_id())
+
+        self.assertIsNotNone(submit_batch.get_id())
+        self.assertIsNotNone(retrieve_batch.get_id())
+        self.assertTrue(cancel_batch)
+        self.assertEqual(2, len(submit_batch.get_instructions()))
+        self.assertEqual(submit_batch.get_id(), retrieve_batch.get_id())
+        self.assertEqual(PayoutStatus.New, retrieve_batch.get_status())
+
+    def test_should_request_payout_betch_notification(self):
+        recipients = self.bitpay.get_payout_recipients(None, 2)
+        currency = Currency.USD
+        ledger_currency = Currency.ETH
+        effective_date = (date.today() + timedelta(days=3)).strftime("%Y%m%d")
+
+        # TODO: Need to correct
+        instructions = PayoutInstruction()[(5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()),
+                                           (6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email())]
+        batch = PayoutBatch(currency, effective_date, instructions, ledger_currency)
+        batch.set_notification_email("sandbox@bitpay.com")
+        batch.set_notification_uRL("https://hookbin.com/yDEDeWJKyasG9yjj9X9P")
+        submit_batch = self.bitpay.submit_payout_batch(batch)
+        payout_batch_notification = self.bitpay.request_payout_batch_notification(submit_batch.get_id())
+        cancel_batch = self.bitpay.cancel_payout_batch(submit_batch.get_id())
+
+        self.assertIsNotNone(submit_batch.get_id())
+        self.assertTrue(payout_batch_notification)
+        self.assertEqual(2, len(submit_batch.get_instructions()))
+        self.assertTrue(cancel_batch)
+
+    def test_should_get_payout_batches(self):
+        payout_batches = self.bitpay.get_payout_batches()
+        self.assertGreater(0, len(payout_batches))
+
+    def test_should_get_payout_batches_by_status(self):
+        payout_batches = self.bitpay.get_payout_batches(None, None, PayoutStatus.New)
+        self.assertGreater(0, len(payout_batches))
+

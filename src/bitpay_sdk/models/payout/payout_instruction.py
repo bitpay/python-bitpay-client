@@ -113,7 +113,7 @@ class PayoutInstruction:
         """
         return self.__id
 
-    def set_label(self, id):
+    def set_id(self, id):
         """
         Set method for to id
         :param id: id
