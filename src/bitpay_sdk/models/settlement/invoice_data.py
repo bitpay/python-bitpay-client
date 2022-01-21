@@ -158,8 +158,7 @@ class InvoiceData:
             "currency": self.get_currency(),
             "transactionCurrency": self.get_transaction_currency(),
             "payoutPercentage": self.get_payout_percentage(),
-            "refundInfo": self.get(),
-            "btcPrice": self.get_id()
+            "refundInfo": self.get_refund_info().to_json(),
+            "btcPrice": self.get_btc_price()
         }
         return data
-

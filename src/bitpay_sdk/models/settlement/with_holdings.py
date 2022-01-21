@@ -39,3 +39,73 @@ class WithHoldings:
         :param code: code
         """
         self.__code = code
+
+    def get_description(self):
+        """
+        Get method for to description
+        :return: description
+        """
+        return self.__description
+
+    def set_description(self, description):
+        """
+        Set method for to description
+        :param description: description
+        """
+        self.__description = description
+
+    def get_notes(self):
+        """
+        Get method for to notes
+        :return: notes
+        """
+        return self.__notes
+
+    def set_notes(self, notes):
+        """
+        Set method for to notes
+        :param notes: notes
+        """
+        self.__notes = notes
+
+    def get_label(self):
+        """
+        Get method for to label
+        :return: label
+        """
+        return self.__label
+
+    def set_label(self, label):
+        """
+        Set method for to label
+        :param label: label
+        """
+        self.__label = label
+
+    def get_bank_country(self):
+        """
+        Get method for to bank_country
+        :return: bank_country
+        """
+        return self.__bank_country
+
+    def set_bank_country(self, bank_country):
+        """
+        Set method for to bank_country
+        :param bank_country: bank_country
+        """
+        self.__bank_country = bank_country
+
+    def to_json(self):
+        """
+        :return: data in json
+        """
+        data = {
+            "amount": self.get_amount(),
+            "code": self.get_code(),
+            "description": self.get_description(),
+            "notes": self.get_notes(),
+            "label": self.get_label(),
+            "bankCountry": self.get_bank_country()
+        }
+        return data

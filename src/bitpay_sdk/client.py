@@ -12,7 +12,10 @@ from .config import Config
 from .tokens import Tokens
 from .models.facade import Facade
 from .models.bill.bill import Bill
+from .models.Rate.rate import Rate
 from .utils.rest_cli import RESTcli
+from .models.Rate.rates import Rates
+from .models.currency import Currency
 from .models.ledger.ledger import Ledger
 from .models.wallet.wallet import Wallet
 from .models.payout.payout import Payout
@@ -20,10 +23,13 @@ from .models.invoice.refund import Refund
 from .models.invoice.invoice import Invoice
 from .models.payout.payout_batch import PayoutBatch
 from .models.ledger.ledger_entry import LedgerEntry
+from .models.settlement.settlement import Settlement
 from .exceptions.bitpay_exception import BitPayException
+from .models.subscription.subscription import Subscription
 from .models.payout.payout_recipient import PayoutRecipient
 from .models.payout.payout_recipients import PayoutRecipients
 from .exceptions.bill_query_exception import BillQueryException
+from .exceptions.rate_query_exception import RateQueryException
 from .exceptions.bill_update_exception import BillUpdateException
 from .exceptions.ledger_query_exception import LedgerQueryException
 from .exceptions.wallet_query_exception import WalletQueryException
@@ -34,10 +40,14 @@ from .exceptions.bill_delivery_exception import BillDeliveryException
 from .exceptions.refund_update_exception import RefundUpdateException
 from .exceptions.invoice_query_exception import InvoiceQueryException
 from .exceptions.invoice_update_exception import InvoiceUpdateException
+from .exceptions.currency_query_exception import CurrencyQueryException
 from .exceptions.refund_creation_exception import RefundCreationException
 from .exceptions.payout_creation_exception import PayoutCreationException
+from .exceptions.settlement_query_exception import SettlementQueryException
 from .exceptions.invoice_creation_exception import InvoiceCreationException
 from .exceptions.payoutbatch_query_exception import PayoutBatchQueryException
+from .exceptions.subscription_query_exception import SubscriptionQueryException
+from .exceptions.subscription_update_exception import SubscriptionUpdateException
 from .exceptions.refund_notification_exception import RefundNotificationException
 from .exceptions.refund_cancellation_exception import RefundCancellationException
 from .exceptions.payout_cancellation_exception import PayoutCancellationException
@@ -45,6 +55,7 @@ from .exceptions.payout_notification_exception import PayoutNotificationExceptio
 from .exceptions.invoice_cancellation_exception import InvoiceCancellationException
 from .exceptions.invoice_notification_exception import InvoiceNotificationException
 from .exceptions.payoutbatch_creation_exception import PayoutBatchCreationException
+from .exceptions.subscription_creation_exception import SubscriptionCreationException
 from .exceptions.payout_recipient_query_exception import PayoutRecipientQueryException
 from .exceptions.payout_recipient_update_exception import PayoutRecipientUpdateException
 from .exceptions.payoutbatch_cancellation_exception import PayoutBatchCancellationException
@@ -1062,3 +1073,187 @@ class Client:
             raise PayoutBatchNotificationException("failed to deserialize BitPay server response "
                                                    " (PayoutBatch) : %s" % str(exe))
         return payout_batch
+
+    def get_settlements(self, currency: str, date_start, date_end, status: str,
+                        limit: int = 100, offset: int = 0) -> [Settlement]:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant),
+                      "startDate": date_start, "endDate": date_end,
+                      "currency": currency, "status": status, "limit": limit,
+                      "offset": offset}
+            response_json = self.__restcli.get("settlements", params)
+        except BitPayException as exe:
+            raise SettlementQueryException("failed to serialize Settlement object :  %s" % str(exe),
+                                           exe.get_api_code())
+
+        try:
+            settlements = []
+            for settlement in response_json:
+                settlements.append(Settlement(**settlement))
+        except Exception as exe:
+            raise SettlementQueryException("failed to deserialize BitPay server response "
+                                           " (Settlement) : %s" % str(exe))
+        return settlements
+
+    def get_settlement(self, settlement_id: str) -> Settlement:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant)}
+            response_json = self.__restcli.get("settlements/%s" % settlement_id, params)
+        except BitPayException as exe:
+            raise SettlementQueryException("failed to serialize Settlement object :  %s" % str(exe),
+                                           exe.get_api_code())
+
+        try:
+            settlement = Settlement(**response_json)
+        except Exception as exe:
+            raise SettlementQueryException("failed to deserialize BitPay server response "
+                                           " (Settlement) : %s" % str(exe))
+        return settlement
+
+    def get_settlement_reconciliation_report(self, settlement: Settlement) -> Settlement:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant)}
+            response_json = self.__restcli.get("settlements/%s" % settlement.get_id() + "/reconciliationReport",
+                                               params)
+        except BitPayException as exe:
+            raise SettlementQueryException("failed to serialize Settlement object :  %s" % str(exe),
+                                           exe.get_api_code())
+
+        try:
+            settlement = Settlement(**response_json)
+        except Exception as exe:
+            raise SettlementQueryException("failed to deserialize BitPay server response "
+                                           " (Settlement) : %s" % str(exe))
+        return settlement
+
+    def create_subscription(self, subscription: Subscription) -> Subscription:
+        try:
+            subscription.set_token(self.get_access_token(Facade.Merchant))
+            subscription.to_json()
+
+            response_json = self.__restcli.post("subscriptions", subscription, True)
+        except BitPayException as exe:
+            raise SubscriptionCreationException("failed to serialize Subscription object :  %s" % str(exe),
+                                                exe.get_api_code())
+
+        try:
+            subscription = Subscription(**response_json)
+        except Exception as exe:
+            raise SubscriptionCreationException("failed to deserialize BitPay server response "
+                                                " (Subscription) : %s" % str(exe))
+        return subscription
+
+    def get_subscription(self, subscription_id: str) -> Subscription:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant)}
+            response_json = self.__restcli.get("subscriptions/%s" % subscription_id, params)
+        except BitPayException as exe:
+            raise SubscriptionQueryException("failed to serialize Subscription object :  %s" % str(exe),
+                                             exe.get_api_code())
+
+        try:
+            subscription = Subscription(**response_json)
+        except Exception as exe:
+            raise SubscriptionQueryException("failed to deserialize BitPay server response "
+                                             " (Subscription) : %s" % str(exe))
+        return subscription
+
+    def get_subscriptions(self, status: str = None) -> [Subscription]:
+        try:
+            params = {"token": self.get_access_token(Facade.Merchant)}
+            if status:
+                params["status"] = status
+            response_json = self.__restcli.get("subscriptions", params)
+        except BitPayException as exe:
+            raise SubscriptionQueryException("failed to serialize Subscription object :  %s" % str(exe),
+                                             exe.get_api_code())
+
+        try:
+            subscriptions = []
+            for subscription in response_json:
+                subscriptions.append(Subscription(**subscription))
+        except Exception as exe:
+            raise SubscriptionQueryException("failed to deserialize BitPay server response "
+                                             " (Subscription) : %s" % str(exe))
+        return subscriptions
+
+    def update_subscription(self, subscription: Subscription, subscription_id) -> Subscription:
+        try:
+            subscription_token = self.get_subscription(subscription.get_id()).get_token()
+            subscription.set_token(subscription_token)
+            subscription.to_json()
+
+            response_json = self.__restcli.update("subscriptions/%s" % subscription_id, subscription)
+        except BitPayException as exe:
+            raise SubscriptionUpdateException("failed to serialize Subscription object :  %s" % str(exe),
+                                              exe.get_api_code())
+
+        try:
+            subscription = Subscription(**response_json)
+        except Exception as exe:
+            raise SubscriptionUpdateException("failed to deserialize BitPay server response "
+                                              " (Subscription) : %s" % str(exe))
+        return subscription
+
+    def get_currencies(self) -> [Currency]:
+        try:
+            response_json = self.__restcli.get("currencies", None, False)
+        except BitPayException as exe:
+            raise CurrencyQueryException("failed to serialize Currency object :  %s" % str(exe),
+                                         exe.get_api_code())
+
+        try:
+            subscriptions = []
+            for subscription in response_json:
+                subscriptions.append(Subscription(**subscription))
+        except Exception as exe:
+            raise CurrencyQueryException("failed to deserialize BitPay server response "
+                                         " (Currency) : %s" % str(exe))
+        return subscriptions
+
+    def get_rates(self) -> [Rates]:
+        try:
+            response_json = self.__restcli.get("rates", None, False)
+        except BitPayException as exe:
+            raise RateQueryException("failed to serialize Rates object :  %s" % str(exe),
+                                     exe.get_api_code())
+
+        try:
+            rates = []
+            for rate in response_json:
+                rates.append(Rates(**rate))
+        except Exception as exe:
+            raise RateQueryException("failed to deserialize BitPay server response "
+                                     " (Rates) : %s" % str(exe))
+        return rates
+
+    def get_currency_rates(self, base_currency: str) -> [Rates]:
+        try:
+            response_json = self.__restcli.get("rates/%s" % base_currency, None, False)
+        except BitPayException as exe:
+            raise RateQueryException("failed to serialize Rates object :  %s" % str(exe),
+                                     exe.get_api_code())
+
+        try:
+            rates = []
+            for rate in response_json:
+                rates.append(Rates(**rate))
+        except Exception as exe:
+            raise RateQueryException("failed to deserialize BitPay server response "
+                                     " (Rates) : %s" % str(exe))
+        return rates
+
+    def get_currency_pair_rate(self, base_currency, currency) -> Rate:
+        try:
+            response_json = self.__restcli.get("rates/%s" % base_currency + "/%s" % currency,
+                                               None, False)
+        except BitPayException as exe:
+            raise RateQueryException("failed to serialize Rates object :  %s" % str(exe),
+                                     exe.get_api_code())
+
+        try:
+            rate = Rate(**response_json)
+        except Exception as exe:
+            raise RateQueryException("failed to deserialize BitPay server response "
+                                     " (Rate) : %s" % str(exe))
+        return rate
