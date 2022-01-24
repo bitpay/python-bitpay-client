@@ -145,6 +145,7 @@ class BitPayTest(unittest.TestCase):
         supported_wallets = self.bitpay.get_supported_wallets()
 
         self.assertIsNotNone(invoices)
+        self.assertIsNotNone(create_refund.get_id())
         self.assertIsNotNone(retrieved_refunds)
         self.assertEqual("created", update_refund.get_status())
         self.assertEqual(last_refund.get_id(), retrieved_refund.get_id())
@@ -803,4 +804,3 @@ class BitPayTest(unittest.TestCase):
     def test_should_get_eth_to_usd_exchange_rate(self):
         rate = self.bitpay.get_currency_pair_rate(Currency.ETH, Currency.USD)
         self.assertIsNotNone(rate)
-

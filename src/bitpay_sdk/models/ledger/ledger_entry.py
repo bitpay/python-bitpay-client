@@ -1,4 +1,5 @@
 from ...models.ledger.buyer import Buyer
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class LedgerEntry:
@@ -24,8 +25,21 @@ class LedgerEntry:
     __invoice_currency = None
     __transaction_currency = None
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                if key in ["buyerFields"]:
+                    klass = globals()[key[0].upper() + key[1:]]
+
+                    if isinstance(value, list):
+                        value = []
+                        for obj in value:
+                            value.append(klass(**obj))
+                    else:
+                        value = klass(**value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_type(self):
         """

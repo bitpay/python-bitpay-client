@@ -1,7 +1,7 @@
 # TODO Client import ?
 from .rate import Rate
 from ..currency import Currency
-from src.bitpay_sdk.client import Client
+# from src.bitpay_sdk.client import Client
 from ...exceptions.bitpay_exception import BitPayException
 
 
@@ -9,7 +9,7 @@ class Rates:
     __bp = None
     __rates = None
 
-    def __init__(self, rates, bp: Client):
+    def __init__(self, rates, bp):  # TODO: bp as a client type
         self.__bp = bp
         self.__rates = rates
 

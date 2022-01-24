@@ -481,10 +481,9 @@ class Client:
             raise RefundQueryException("failed to serialize refund object : %s" % str(exe))
 
         try:
-            # refunds = Refund(**response_json)
             refunds = []
             for refund_data in response_json:
-                refunds.append(Invoice(**refund_data))
+                refunds.append(Refund(**refund_data))
         except Exception as exe:
             raise RefundQueryException("failed to deserialize BitPay server response"
                                        " (Refund) : %s" % str(exe))
@@ -568,12 +567,12 @@ class Client:
             raise RefundNotificationException("failed to serialize refund object : %s" % str(exe))
 
         try:
-            refund = Refund(**response_json)
+            result = response_json["status"].lower() == "success"
         except Exception as exe:
             raise RefundNotificationException("failed to deserialize BitPay server response"
                                               " (Refund) : %s" % str(exe))
 
-        return refund
+        return result
 
     def get_supported_wallets(self) -> [Wallet]:
         """
@@ -593,7 +592,9 @@ class Client:
             raise WalletQueryException("failed to serialize wallet object : %s" % str(exe))
 
         try:
-            wallet = Wallet(**response_json)
+            wallets = []
+            for wallet in response_json:
+                wallets.append(Wallet(**wallet))
         except Exception as exe:
             raise WalletQueryException("failed to deserialize BitPay server response (Wallet) : %s" % str(exe))
 
@@ -613,7 +614,7 @@ class Client:
         :raises BillCreationException
         """
         try:
-            bill.get_token(self.get_access_token(facade))
+            bill.set_token(self.get_access_token(facade))
             response_json = self.__restcli.post("bills", bill, sign_request)
         except BitPayException as exe:
             raise BillCreationException("failed to serialize bill object :  %s" % str(exe),
@@ -783,13 +784,24 @@ class Client:
                                        exe.get_api_code())
 
         try:
-            ledgers = Ledger(**response_json)
+            ledgers = []
+            for ledger in response_json:
+                ledgers.append(Ledger(**ledger))
         except Exception as exe:
             raise LedgerQueryException("failed to deserialize BitPay server response"
                                        " (Ledger) : %s" % str(exe))
         return ledgers
 
     def submit_payout_recipients(self, recipients: PayoutRecipients) -> [PayoutRecipient]:
+        """
+        Submit BitPay Payout Recipients.
+
+        :param PayoutRecipient recipients:
+        :return: A PayoutRecipients object with request parameters defined.
+        :rtype: [PayoutRecipient]
+        :raises BitPayException
+        :raises PayoutRecipientCreationException
+        """
         try:
             recipients.set_token(self.get_access_token(Facade.Payout))
             recipients.to_json()
@@ -807,6 +819,16 @@ class Client:
         return payout_recipients
 
     def get_payout_recipient(self, recipient_id: str) -> PayoutRecipient:
+        """
+        Retrieve a BitPay payout recipient by batch id using.The client must have been
+        previously authorized for the payout facade.
+
+        :param str recipient_id: The id of the recipient to retrieve.
+        :return: A BitPay PayoutRecipient object.
+        :rtype: PayoutRecipient
+        :raises BitPayException
+        :raises PayoutRecipientQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.get("recipients/%s" % recipient_id, params)
@@ -823,6 +845,17 @@ class Client:
 
     def get_payout_recipients(self, status: str = None, limit: int = 100,
                               offset: int = 0) -> [PayoutRecipient]:
+        """
+        Retrieve a collection of BitPay Payout Recipients.
+
+        :param str status: The recipient status you want to query on.
+        :param int limit: Maximum results that the query will return (useful for paging results).
+        :param int offset: Offset for paging
+        :return: A list of BitPayRecipient objects.
+        :rtype: [PayoutRecipient]
+        :raises BitPayException
+        :raises PayoutRecipientQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout),
                       "limit": str(limit), "offset": str(offset)}
@@ -844,6 +877,16 @@ class Client:
         return payout_recipients
 
     def update_payout_recipient(self, recipient_id: str, recipient: PayoutRecipient) -> PayoutRecipient:
+        """
+        Update a Payout Recipient.
+
+        :param str recipient_id: The recipient id for the recipient to be updated.
+        :param str recipient: A PayoutRecipient object with updated parameters defined.
+        :return: The updated recipient object.
+        :rtype: PayoutRecipient
+        :raises BitPayException
+        :raises PayoutRecipientUpdateException
+        """
         try:
             recipient.set_token(self.get_access_token(Facade.Payout))
 
@@ -860,6 +903,12 @@ class Client:
         return payout_recipient
 
     def delete_payout_recipient(self, recipient_id: str) -> bool:
+        """
+        Cancel a BitPay Payout recipient.
+
+        :param str recipient_id: The id of the recipient to cancel.
+        :return: True if the delete operation was successfull, false otherwise.
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.delete("recipients/%s" % recipient_id, params)
@@ -875,6 +924,15 @@ class Client:
         return payout_recipient
 
     def request_payout_recipient_notification(self, recipient_id: str) -> bool:
+        """
+        Send a payout recipient notification
+
+        :param str recipient_id: The id of the recipient to notify.
+        :return: True if the notification was successfully sent, false otherwise.
+        :rtype bool
+        :raises BitPayException
+        :raises PayoutRecipientNotificationException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.post("recipients/%s" % recipient_id + "/notifications", params)
@@ -890,6 +948,15 @@ class Client:
         return payout_recipient
 
     def submit_payout(self, payout: Payout) -> Payout:
+        """
+        Submit a BitPay Payout.
+
+        :param Payout payout: A Payout object with request parameters defined.
+        :return: A BitPay generated Payout object.
+        :rtype: Payout
+        :raises BitPayException
+        :raises PayoutCreationException
+        """
         try:
             payout.set_token(self.get_access_token(Facade.Payout))
             payout.to_json()
@@ -907,6 +974,16 @@ class Client:
         return payout
 
     def get_payout(self, payout_id: str) -> Payout:
+        """
+        Retrieve a BitPay payout by payout id using.The client must have been
+        previously authorized for the payout facade.
+
+        :param str payout_id: The id of the payout to retrieve.
+        :return: A BitPay generated Payout object.
+        :rtype Payout
+        :raises BitPayException
+        :raises PayoutQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.get("payouts/%s" % payout_id, params)
@@ -924,6 +1001,20 @@ class Client:
     def get_payouts(self, start_date: str = None, end_date: str = None,
                     status: str = None, reference: str = None, limit: int = None,
                     offset: int = None) -> [Payout]:
+        """
+        Retrieve a collection of BitPay payouts.
+
+        :param str start_date: The start date for the query.
+        :param str end_date: The end date for the query.
+        :param str status: The status to filter (optional).
+        :param str reference: The optional reference specified at payout request creation.
+        :param int limit: Maximum results that the query will return (useful for paging results).
+        :param int offset: Offset for paging
+        :return: A list of BitPay Payout objects.
+        :rtype [Payout]
+        :raises BitPayException
+        :raises PayoutQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             if start_date:
@@ -954,6 +1045,15 @@ class Client:
         return payouts
 
     def cancel_payout(self, payout_id: str) -> bool:
+        """
+        Cancel a BitPay Payout.
+
+        :param str payout_id: The id of the payout to cancel.
+        :return: True if payout was successfully canceled, false otherwise.
+        :rtype: bool
+        :raises BitPayException
+        :raises PayoutCancellationException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.delete("payouts/%s" % payout_id, params)
@@ -969,6 +1069,15 @@ class Client:
         return payout
 
     def request_payout_notification(self, payout_id: str) -> bool:
+        """
+        Send a payout notification
+
+        :param str payout_id: The id of the payout to notify.
+        :return: True if the notification was successfully sent, false otherwise.
+        :rtype: bool
+        :raises BitPayException
+        :raises PayoutNotificationException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.post("payouts/%s" % payout_id + "/notifications", params)
@@ -984,6 +1093,15 @@ class Client:
         return payout
 
     def submit_payout_batch(self, batch: PayoutBatch) -> PayoutBatch:
+        """
+        Submit a BitPay Payout batch.
+
+        :param PayoutBatch batch: A PayoutBatch object with request parameters defined.
+        :return: A BitPay generated PayoutBatch object.
+        :rtype PayoutBatch
+        :raises BitPayException
+        :raises PayoutBatchCreationException
+        """
         try:
             batch.set_token(self.get_access_token(Facade.Payout))
             batch.to_json()
@@ -1001,6 +1119,16 @@ class Client:
         return payout_batch
 
     def get_payout_batch(self, payout_batch_id: str) -> PayoutBatch:
+        """
+        Retrieve a BitPay payout batch by batch id using.
+        The client must have been previously authorized for the payout facade.
+
+        :param str payout_batch_id: The id of the payout batch to retrieve.
+        :return: A BitPay PayoutBatch object.
+        :rtype: PayoutBatch
+        :raises BitPayException
+        :raises PayoutBatchQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.get("payoutBatches/%s" % payout_batch_id, params)
@@ -1017,6 +1145,19 @@ class Client:
 
     def get_payout_batches(self, start_date: str = None, end_date: str = None, status: str = None,
                            limit: int = None, offset: int = None) -> [PayoutBatch]:
+        """
+        Retrieve a collection of BitPay payout batches.
+
+        :param str start_date: The start date for the query.
+        :param str end_date: The end date for the query.
+        :param str status: The status to filter (optional).
+        :param int limit: Maximum results that the query will return (useful for paging results).
+        :param int offset: Offset for paging
+        :return: A list of BitPay PayoutBatch objects.
+        :rtype: PayoutBatch
+        :raises BitPayException
+        :raises PayoutBatchQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             if start_date:
@@ -1045,6 +1186,15 @@ class Client:
         return payout_batches
 
     def cancel_payout_batch(self, payout_batch_id: str) -> bool:
+        """
+        Cancel a BitPay Payout batch.
+
+        :param str payout_batch_id: The id of the payout batch to cancel.
+        :return: True if the refund was successfully canceled, false otherwise.
+        :rtype: bool
+        :raises BitPayException
+        :raises PayoutBatchCancellationException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.delete("payoutBatches/%s" % payout_batch_id, params)
@@ -1059,7 +1209,16 @@ class Client:
                                                    " (PayoutBatch) : %s" % str(exe))
         return payout_batch
 
-    def request_payout_batch_notification(self, payout_batch_id: str):
+    def request_payout_batch_notification(self, payout_batch_id: str) -> bool:
+        """
+        Send a payout batch notification
+
+        :param str payout_batch_id: The id of the payout batch to notify.
+        :return: True if the notification was successfully sent, false otherwise.
+        :rtype: bool
+        :raises BitPayException
+        :raises PayoutBatchNotificationException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.post("payoutBatches/%s" % payout_batch_id + "/notifications", params)
@@ -1074,8 +1233,23 @@ class Client:
                                                    " (PayoutBatch) : %s" % str(exe))
         return payout_batch
 
-    def get_settlements(self, currency: str, date_start, date_end, status: str,
+    def get_settlements(self, currency: str, date_start: str, date_end: str, status: str,
                         limit: int = 100, offset: int = 0) -> [Settlement]:
+        """
+        Retrieves settlement reports for the calling merchant filtered by query. The `limit`
+        and `offset` parameters specify pages for large query sets.
+
+        :param str currency: The three digit currency string for the ledger to retrieve.
+        :param str date_start: The start date for the query.
+        :param str date_end: The end date for the query.
+        :param str status: Can be `processing`, `completed`, or `failed`.
+        :param int limit: Maximum number of settlements to retrieve.
+        :param int offset: Offset for paging
+        :return: A list of BitPay Settlement objects
+        :rtype: [Settlement]
+        :raises BitPayException
+        :raises SettlementQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Merchant),
                       "startDate": date_start, "endDate": date_end,
@@ -1096,6 +1270,15 @@ class Client:
         return settlements
 
     def get_settlement(self, settlement_id: str) -> Settlement:
+        """
+        Retrieves a summary of the specified settlement.
+
+        :param str settlement_id: Settlement Id
+        :return: A BitPay Settlement object.
+        :rtype: Settlement
+        :raises BitPayException
+        :raises SettlementQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.get("settlements/%s" % settlement_id, params)
@@ -1111,6 +1294,15 @@ class Client:
         return settlement
 
     def get_settlement_reconciliation_report(self, settlement: Settlement) -> Settlement:
+        """
+        Gets a detailed reconciliation report of the activity within the settlement period
+
+        :param Settlement settlement: Settlement to generate report for.
+        :return: A detailed BitPay Settlement object.
+        :rtype: Settlement
+        :raises BitPayException
+        :raises SettlementQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.get("settlements/%s" % settlement.get_id() + "/reconciliationReport",
@@ -1127,6 +1319,15 @@ class Client:
         return settlement
 
     def create_subscription(self, subscription: Subscription) -> Subscription:
+        """
+        Create a BitPay Subscription.
+
+        :param Subscription subscription: A Subscription object with request parameters defined.
+        :return: A BitPay generated Subscription object.
+        :rtype: Subscription
+        :raises BitPayException
+        :raises SubscriptionCreationException
+        """
         try:
             subscription.set_token(self.get_access_token(Facade.Merchant))
             subscription.to_json()
@@ -1144,6 +1345,15 @@ class Client:
         return subscription
 
     def get_subscription(self, subscription_id: str) -> Subscription:
+        """
+        Retrieve a BitPay subscription by subscription id using the specified facade.
+
+        :param subscription_id: The id of the subscription to retrieve.
+        :return: A BitPay Subscription object.
+        :rtype: Subscription
+        :raises BitPayException
+        :raises SubscriptionQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.get("subscriptions/%s" % subscription_id, params)
@@ -1159,6 +1369,15 @@ class Client:
         return subscription
 
     def get_subscriptions(self, status: str = None) -> [Subscription]:
+        """
+        Retrieve a collection of BitPay subscriptions.
+
+        :param str|None status: The status to filter the subscriptions.
+        :return: A list of BitPay Subscription objects.
+        :rtype: [Subscription]
+        :raises BitPayException
+        :raises SubscriptionQueryException
+        """
         try:
             params = {"token": self.get_access_token(Facade.Merchant)}
             if status:
@@ -1178,6 +1397,16 @@ class Client:
         return subscriptions
 
     def update_subscription(self, subscription: Subscription, subscription_id) -> Subscription:
+        """
+        Update a BitPay Subscription.
+
+        :param Subscription subscription: A Subscription object with the parameters to update defined.
+        :param str subscription_id: The Id of the Subscription to update.
+        :return: An updated Subscription object.
+        :rtype: Subscription
+        :raises BitPayException
+        :raises SubscriptionUpdateException
+        """
         try:
             subscription_token = self.get_subscription(subscription.get_id()).get_token()
             subscription.set_token(subscription_token)
@@ -1196,6 +1425,14 @@ class Client:
         return subscription
 
     def get_currencies(self) -> [Currency]:
+        """
+        Fetch the supported currencies.
+
+        :return: A list of BitPay Invoice objects.
+        :rtype: [Currency]
+        :raises BitPayException
+        :raises CurrencyQueryException
+        """
         try:
             response_json = self.__restcli.get("currencies", None, False)
         except BitPayException as exe:
@@ -1212,6 +1449,14 @@ class Client:
         return subscriptions
 
     def get_rates(self) -> [Rates]:
+        """
+        Retrieve the exchange rate table maintained by BitPay.  See https://bitpay.com/bitcoin-exchange-rates.
+
+        :return: A Rates object populated with the BitPay exchange rate table.
+        :rtype: [Rates]
+        :raises BitPayException
+        :raises RateQueryException
+        """
         try:
             response_json = self.__restcli.get("rates", None, False)
         except BitPayException as exe:
@@ -1228,6 +1473,16 @@ class Client:
         return rates
 
     def get_currency_rates(self, base_currency: str) -> [Rates]:
+        """
+        Retrieve all the rates for a given cryptocurrency
+
+        :param str base_currency: The cryptocurrency for which you want to fetch the rates.
+        Current supported values are BTC, BCH, ETH, XRP, DOGE and LTC
+        :return: A Rates object populated with the currency rates for the requested baseCurrency.
+        :rtype: [Rates]
+        :raises BitPayException
+        :raises RateQueryException
+        """
         try:
             response_json = self.__restcli.get("rates/%s" % base_currency, None, False)
         except BitPayException as exe:
@@ -1243,7 +1498,18 @@ class Client:
                                      " (Rates) : %s" % str(exe))
         return rates
 
-    def get_currency_pair_rate(self, base_currency, currency) -> Rate:
+    def get_currency_pair_rate(self, base_currency: str, currency: str) -> Rate:
+        """
+        Retrieve the rate for a cryptocurrency / fiat pair
+
+        :param str base_currency: The cryptocurrency for which you want to fetch the fiat-equivalent rate.
+        Current supported values are BTC, BCH, ETH, XRP, DOGE and LTC
+        :param str currency: The fiat currency for which you want to fetch the baseCurrency rate
+        :return: A Rate object populated with the currency rate for the requested baseCurrency.
+        :rtype: Rate
+        :raises BitPayException
+        :raises RateQueryException
+        """
         try:
             response_json = self.__restcli.get("rates/%s" % base_currency + "/%s" % currency,
                                                None, False)
