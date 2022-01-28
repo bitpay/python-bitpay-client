@@ -286,4 +286,5 @@ class Refund:
             "preview": self.get_preview(),
             "invoiceId": self.get_invoice_id()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

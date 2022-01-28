@@ -1,5 +1,5 @@
-from ...models.wallet.currency_qr import CurrencyQr
 from ...utils import key_utils
+from ...models.wallet.currency_qr import CurrencyQr
 
 
 class Currencies(object):
@@ -16,11 +16,9 @@ class Currencies(object):
     __currencies = None
 
     def __init__(self, **kwargs):
-
-        # TODO: Recheck
         for key, value in kwargs.items():
             try:
-                if key in ["currencies"]:
+                if key in ["qr"]:
                     klass = globals()[key[0].upper() + key[1:]]
                     value = klass(**value)
                 getattr(self, 'set_%s' % key_utils.change_camel_case_to_snake_case(key))(value)

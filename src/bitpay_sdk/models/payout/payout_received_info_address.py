@@ -1,3 +1,6 @@
+from src.bitpay_sdk.utils.key_utils import change_camel_case_to_snake_case
+
+
 class PayoutReceivedInfoAddress:
     __address1 = None
     __address2 = None
@@ -6,8 +9,12 @@ class PayoutReceivedInfoAddress:
     __postal_code = None
     __country = None
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_address1(self):
         """

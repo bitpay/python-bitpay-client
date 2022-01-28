@@ -51,4 +51,5 @@ class UniversalCodes:
             "paymentString": self.get_payment_string(),
             "verificationLink": self.get_verification_link()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

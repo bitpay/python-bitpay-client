@@ -2,7 +2,7 @@ from ..currency import Currency
 from .payout_instruction import PayoutInstruction
 from .payout_transaction import PayoutTransaction
 from ...exceptions.bitpay_exception import BitPayException
-from .payout_instruction_transaction import PayoutInstructionTransaction
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class Payout:
@@ -14,7 +14,7 @@ class Payout:
 
     __reference = ""
     __notification_email = ""
-    __notification_uRL = ""
+    __notification_url = ""
     __redirect_url = ""
     __ledger_currency = ""
 
@@ -36,12 +36,36 @@ class Payout:
     __request_date = None
     __date_executed = None
     __transactions = None
+    __account_id = None
 
-    def __init__(self, amount=None, currency=None, ledger_currency=None):
+    def __init__(self, amount=None, currency=None, ledger_currency=None, **kwargs):
         self.__amount = amount
-        self.__currency = currency
-        self.__ledger_currency = ledger_currency
+        self.set_currency(currency)
+        if ledger_currency:
+            self.set_ledger_currency(ledger_currency)
         self.__transactions = PayoutTransaction()
+
+        for key, value in kwargs.items():
+            try:
+                # TODO: exchangeRates need to be implemented
+                if key in ["transactions"]:
+                    if key == "transactions":
+                        klass = PayoutTransaction
+                    elif key == "exchangeRates":
+                        klass = PayoutInstruction
+                    else:
+                        klass = globals()[key[0].upper() + key[1:]]
+
+                    if isinstance(value, list):
+                        objs = []
+                        for obj in value:
+                            objs.append(klass(**obj))
+                        value = objs
+                    else:
+                        value = klass(**value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_token(self):
         """
@@ -70,6 +94,20 @@ class Payout:
         :param amount: amount
         """
         self.__amount = amount
+
+    def get_account_id(self):
+        """
+        Get method for to account_id
+        :return: account_id
+        """
+        return self.__account_id
+
+    def set_account_id(self, account_id):
+        """
+        Set method for to account_id
+        :param account_id: account_id
+        """
+        self.__account_id = account_id
 
     def get_currency(self):
         """
@@ -129,19 +167,19 @@ class Payout:
         """
         self.__notification_email = notification_email
 
-    def get_notification_uRL(self):
+    def get_notification_url(self):
         """
-        Get method for to notification_uRL
-        :return: notification_uRL
+        Get method for to notification_url
+        :return: notification_url
         """
-        return self.__notification_uRL
+        return self.__notification_url
 
-    def set_notification_uRL(self, notification_uRL):
+    def set_notification_url(self, notification_url):
         """
-        Set method for to notification_uRL
-        :param notification_uRL: notification_uRL
+        Set method for to notification_url
+        :param notification_url: notification_url
         """
-        self.__notification_uRL = notification_uRL
+        self.__notification_url = notification_url
 
     def get_redirect_url(self):
         """
@@ -418,7 +456,7 @@ class Payout:
         """
         return self.__transactions
 
-    def set_transactions(self, transactions: PayoutInstructionTransaction):
+    def set_transactions(self, transactions: [PayoutTransaction]):
         """
         Set method for to transactions
         :param transactions: transactions
@@ -436,7 +474,7 @@ class Payout:
             "effectiveDate": self.get_effective_date(),
             "ledgerCurrency": self.get_ledger_currency(),
             "reference": self.get_reference(),
-            "notificationURL": self.get_notification_uRL(),
+            "notificationURL": self.get_notification_url(),
             "notificationEmail": self.get_notification_email(),
             "email": self.get_email(),
             "recipientId": self.get_recipient_id(),
@@ -447,7 +485,7 @@ class Payout:
             "status": self.get_status(),
             "requestDate": self.get_request_date(),
             "exchangeRates": self.get_exchange_rates(),
-            "transactions": self.get_transactions(),
+            "transactions": self.get_transactions().to_json(),
             "dateExecuted": self.get_date_executed(),
             "rate": self.get_rate(),
             "depositTotal": self.get_deposit_total(),
@@ -458,6 +496,5 @@ class Payout:
             "redirectUrl": self.get_redirect_url(),
             "btc": self.get_btc()
         }
+        data = {key: value for key, value in data.items() if value}
         return data
-
-    

@@ -44,7 +44,7 @@ class PayoutRecipients:
         """
         return self.__recipients
 
-    def set_recipients(self, recipients: PayoutRecipient):
+    def set_recipients(self, recipients: [PayoutRecipient]):
         """
         Set method for recipients
         :param recipients: recipients
@@ -55,9 +55,13 @@ class PayoutRecipients:
         """
         :return: data in json
         """
+        recipients = []
+        for recipient in self.get_recipients():
+            recipients.append(recipient.to_json())
         data = {
             "guid": self.get_guid(),
             "token": self.get_token(),
-            "recipients": self.get_recipients()
+            "recipients": recipients
         }
+        data = {key: value for key, value in data.items() if value}
         return data

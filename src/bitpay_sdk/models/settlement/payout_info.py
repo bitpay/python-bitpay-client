@@ -1,3 +1,6 @@
+from ...utils.key_utils import change_camel_case_to_snake_case
+
+
 class PayoutInfo:
     __name = None
     __account = None
@@ -23,9 +26,16 @@ class PayoutInfo:
     __account_holder_postal_code = None
     __account_holder_city = None
     __account_holder_country = None
-    
-    def __init__(self):
-        pass
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                if key == "merchantEIN":
+                    self.set_merchant_ein(value)
+                else:
+                    getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_name(self):
         """
@@ -389,4 +399,5 @@ class PayoutInfo:
             "accountHolderCity": self.get_account_holder_city(),
             "accountHolderCountry": self.get_account_holder_country()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

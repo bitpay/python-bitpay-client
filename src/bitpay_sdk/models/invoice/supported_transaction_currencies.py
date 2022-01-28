@@ -179,4 +179,5 @@ class SupportedTransactionCurrencies:
             "doge": self.get_doge(),
             "ltc": self.get_ltc()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

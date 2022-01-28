@@ -1,6 +1,7 @@
 from .payout_info import PayoutInfo
 from .with_holdings import WithHoldings
 from .settlement_ledger_entry import SettlementLedgerEntry
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class Settlement:
@@ -16,14 +17,29 @@ class Settlement:
     __closing_date = None
     __opening_balance = None
     __ledger_entries_sum = None
-    __with_holdings = None
-    __with_holdings_sum = None
+    __withholdings = None
+    __withholdings_sum = None
     __total_amount = None
-    __ledger_entries = None
+    __ledger_entries = []
     __token = None
+    __amount_usd_unlocked = None
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+
+                if key in ["withHoldings", "ledgerEntries", "payoutInfo"]:
+                    klass = SettlementLedgerEntry if key == "ledgerEntries" else globals()[key[0].upper() + key[1:]]
+
+                    if isinstance(value, list):
+                        value = []
+                        for obj in value:
+                            value.append(klass(**obj))
+                    else:
+                        value = klass(**value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_id(self):
         """
@@ -66,6 +82,20 @@ class Settlement:
         :param currency: currency
         """
         self.__currency = currency
+
+    def get_amount_usd_unlocked(self):
+        """
+        Get method for to amount_usd_unlocked
+        :return: amount_usd_unlocked
+        """
+        return self.__amount_usd_unlocked
+
+    def set_amount_usd_unlocked(self, amount_usd_unlocked):
+        """
+        Set method for to amount_usd_unlocked
+        :param amount_usd_unlocked: amount_usd_unlocked
+        """
+        self.__amount_usd_unlocked = amount_usd_unlocked
 
     def get_payout_info(self):
         """
@@ -193,33 +223,33 @@ class Settlement:
         """
         self.__ledger_entries_sum = ledger_entries_sum
 
-    def get_with_holdings(self):
+    def get_withholdings(self):
         """
-        Get method for to with_holdings
-        :return: with_holdings
+        Get method for to withholdings
+        :return: withholdings
         """
-        return self.__with_holdings
+        return self.__withholdings
 
-    def set_with_holdings(self, with_holdings: WithHoldings):
+    def set_withholdings(self, withholdings: WithHoldings):
         """
-        Set method for to with_holdings
-        :param with_holdings: with_holdings
+        Set method for to withholdings
+        :param withholdings: withholdings
         """
-        self.__with_holdings = with_holdings
+        self.__withholdings = withholdings
 
-    def get_with_holdings_sum(self):
+    def get_withholdings_sum(self):
         """
-        Get method for to with_holdings_sum
-        :return: with_holdings_sum
+        Get method for to withholdings_sum
+        :return: withholdings_sum
         """
         return self.__with_holdings_sum
 
-    def set_with_holdings_sum(self, with_holdings_sum):
+    def set_withholdings_sum(self, withholdings_sum):
         """
-        Set method for to with_holdings_sum
-        :param with_holdings_sum: with_holdings_sum
+        Set method for to withholdings_sum
+        :param withholdings_sum: withholdings_sum
         """
-        self.__with_holdings_sum = with_holdings_sum
+        self.__withholdings_sum = withholdings_sum
 
     def get_total_amount(self):
         """
@@ -242,7 +272,7 @@ class Settlement:
         """
         return self.__ledger_entries
 
-    def set_ledger_entries(self, ledger_entries: SettlementLedgerEntry):
+    def set_ledger_entries(self, ledger_entries: [SettlementLedgerEntry]):
         """
         Set method for to ledger_entries
         :param ledger_entries: ledger_entries
@@ -267,23 +297,31 @@ class Settlement:
         """
         :return: data in json
         """
+        ledger_entries = []
+        for ledger in self.get_ledger_entries():
+            ledger_entries.append(ledger)
+        with_holdings = []
+        for items in self.get_withholdings():
+            with_holdings.append(items)
         data = {
-            "id": self.get_label(),
-            "accountId": self.get_bank_country(),
-            "currency": self.get_name(),
-            "payoutInfo": self.get_bank(),
-            "status": self.get_swift(),
-            "dateCreated": self.get_address(),
-            "dateExecuted": self.get_city(),
-            "dateCompleted": self.get_postal(),
-            "openingDate": self.get_sort(),
-            "closingDate": self.get_wire(),
-            "openingBalance": self.get_bank_name(),
-            "ledgerEntriesSum": self.get_bank_address(),
-            "withHoldings": self.get_iban(),
-            "withHoldingsSum": self.get_additional_information(),
-            "totalAmount": self.get_account_holder_name(),
-            "ledgerEntries": self.get_account_holder_address(),
-            "token": self.get_account_holder_address2()
+            "id": self.get_id(),
+            "accountId": self.get_account_id(),
+            "currency": self.get_currency(),
+            "payoutInfo": self.get_payout_info().to_json(),
+            "status": self.get_status(),
+            "dateCreated": self.get_date_created(),
+            "dateExecuted": self.get_date_executed(),
+            "dateCompleted": self.get_date_completed(),
+            "openingDate": self.get_opening_date(),
+            "closingDate": self.get_closing_date(),
+            "openingBalance": self.get_opening_balance(),
+            "amountUsdUnlocked": self.get_amount_usd_unlocked(),
+            "ledgerEntriesSum": self.get_ledger_entries_sum(),
+            "withHoldings": with_holdings,
+            "withHoldingsSum": self.get_withholdings_sum(),
+            "totalAmount": self.get_total_amount(),
+            "ledgerEntries": ledger_entries,
+            "token": self.get_token()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

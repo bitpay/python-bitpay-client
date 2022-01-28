@@ -1,4 +1,5 @@
 from .invoice_data import InvoiceData
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class SettlementLedgerEntry:
@@ -10,8 +11,13 @@ class SettlementLedgerEntry:
     __reference = None
     __invoice_data = InvoiceData()
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        # TODO
+        for key, value in kwargs.items():
+            try:
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_code(self):
         """
@@ -124,4 +130,5 @@ class SettlementLedgerEntry:
             "reference": self.get_reference(),
             "invoiceData": self.get_invoice_data().to_json(),
         }
+        data = {key: value for key, value in data.items() if value}
         return data

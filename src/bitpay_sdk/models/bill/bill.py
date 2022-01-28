@@ -1,4 +1,7 @@
 from .item import Item
+from ..currency import Currency
+from ...exceptions.bitpay_exception import BitPayException
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class Bill:
@@ -17,22 +20,40 @@ class Bill:
     __city = None
     __state = None
     __zip = None
-    __country = None
+    # TODO: Country should not have default value
+    __country = "US"
     __cc = None
+    __delivered = None
     __phone = None
     __due_date = None
     __pass_processing_fee = None
     __status = None
     __url = None
-    __create_date = None
+    __created_date = None
+    __email_bill = None
     __id = None
     __merchant = None
 
-    def __init__(self, number=None, currency=None, email=None, items: Item = None):
+    def __init__(self, number=None, currency=None, email=None, **kwargs):
         self.__number = number
         self.__currency = currency
         self.__email = email
-        self.__items = items
+
+        for key, value in kwargs.items():
+            try:
+                if key in ["items"]:
+                    klass = Item if key == "items" else globals()[key[0].upper() + key[1:]]
+
+                    if isinstance(value, list):
+                        objs = []
+                        for obj in value:
+                            objs.append(klass(**obj))
+                        value = objs
+                    else:
+                        value = klass(**value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_currency(self):
         """
@@ -46,7 +67,9 @@ class Bill:
         Set method for to currency
         :param currency: currency
         """
-        # TODO : Reflection Class problem
+        if not Currency.is_valid(currency):
+            raise BitPayException("currency code must be a type of Model.Currency")
+        self.__currency = currency
 
     def get_token(self):
         """
@@ -61,6 +84,20 @@ class Bill:
         :param token: token
         """
         self.__token = token
+
+    def get_delivered(self):
+        """
+        Get method for to delivered
+        :return: delivered
+        """
+        return self.__delivered
+
+    def set_delivered(self, delivered):
+        """
+        Set method for to delivered
+        :param delivered: delivered
+        """
+        self.__delivered = delivered
 
     def get_email(self):
         """
@@ -272,19 +309,33 @@ class Bill:
         """
         self.__url = url
 
-    def get_create_date(self):
+    def get_created_date(self):
         """
-        Get method for to create_date
-        :return: create_date
+        Get method for to created_date
+        :return: created_date
         """
-        return self.__create_date
+        return self.__created_date
 
-    def set_create_date(self, create_date):
+    def set_created_date(self, created_date):
         """
-        Set method for to create_date
-        :param create_date: create_date
+        Set method for to created_date
+        :param created_date: created_date
         """
-        self.__create_date = create_date
+        self.__created_date = created_date
+
+    def get_email_bill(self):
+        """
+        Get method for to email_bill
+        :return: email_bill
+        """
+        return self.__email_bill
+
+    def set_email_bill(self, email_bill):
+        """
+        Set method for to email_bill
+        :param email_bill: email_bill
+        """
+        self.__email_bill = email_bill
 
     def get_id(self):
         """
@@ -321,7 +372,7 @@ class Bill:
         """
         return self.__items
 
-    def set_items(self, item: Item):
+    def set_items(self, item: [Item]):
         """
         Set method for to item
         :param item: item
@@ -332,11 +383,14 @@ class Bill:
         """
         :return: data in json
         """
+        items = []
+        for item in self.get_items():
+            items.append(item.to_json())
         data = {
             "currency": self.get_currency(),
             "token": self.get_token(),
             "email": self.get_email(),
-            "items": self.get_items(),
+            "items": items,
             "number": self.get_number(),
             "name": self.get_name(),
             "address1": self.get_address1(),
@@ -351,8 +405,11 @@ class Bill:
             "passProcessingFee": self.get_pass_processing_fee(),
             "status": self.get_status(),
             "url": self.get_url(),
-            "createDate": self.get_create_date(),
+            "createdDate": self.get_created_date(),
+            "delivered": self.get_delivered(),
+            "emailBill": self.get_email_bill(),
             "id": self.get_id(),
             "merchant": self.get_merchant()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

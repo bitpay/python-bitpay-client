@@ -1,6 +1,7 @@
 from .item import Item
 from ..currency import Currency
 from ...exceptions.bitpay_exception import BitPayException
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class BillData:
@@ -22,11 +23,26 @@ class BillData:
     __items = None
     __merchant = None
 
-    def __init__(self, currency, email, due_date, items):
+    def __init__(self, currency, email, due_date=None, **kwargs):
         self.__currency = currency
         self.__email = email
         self.__due_date = due_date
-        self.__items = items
+
+        for key, value in kwargs.items():
+            try:
+                if key in ["items"]:
+                    klass = Item if key == "items" else globals()[key[0].upper() + key[1:]]
+
+                    if isinstance(value, list):
+                        objs = []
+                        for obj in value:
+                            objs.append(klass(**obj))
+                        value = objs
+                    else:
+                        value = klass(**value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_email_bill(self):
         """
@@ -247,7 +263,7 @@ class BillData:
         """
         return self.__items
 
-    def set_items(self, items: Item):
+    def set_items(self, items: [Item]):
         """
         Set method for the items
         :param items: items
@@ -272,6 +288,9 @@ class BillData:
         """
         :return: data in json
         """
+        items = []
+        for item in self.get_items():
+            items.append(item.to_json())
         data = {
             "emailBill": self.get_email_bill(),
             "cc": self.get_cc(),
@@ -288,7 +307,8 @@ class BillData:
             "phone": self.get_phone(),
             "dueDate": self.get_due_date(),
             "passProcessingFee": self.get_pass_processing_fee(),
-            "items": self.get_items(),
+            "items": items,
             "merchant": self.get_merchant()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

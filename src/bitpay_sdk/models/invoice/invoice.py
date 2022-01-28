@@ -28,12 +28,12 @@ class Invoice:
     __transaction_speed = ""
     __full_notifications = False
     __notification_email = ""
-    __redirect_url = ""
+    __redirect_URL = ""
     __order_id = ""
     __item_desc = ""
     __item_code = ""
     __physical = False
-    __payment_currencies = None
+    __payment_currencies = []
     __payment_subtotals = None
     __payment_totals = None
     __payment_display_totals = None
@@ -77,6 +77,7 @@ class Invoice:
     __payment_string = None
     __verification_link = None
     __buyer_email = None
+    __declined_amount = None
     __merchant_name = None
     __forced_buyer_selected_wallet = None
     __forced_buyer_selected_transaction_currency = None
@@ -134,6 +135,20 @@ class Invoice:
         :param token: token
         """
         self.__token = token
+
+    def get_declined_amount(self):
+        """
+        Get method for the declined_amount
+        :return: declined_amount
+        """
+        return self.__declined_amount
+
+    def set_declined_amount(self, declined_amount):
+        """
+        Set method for the declined_amount
+        :param declined_amount: declined_amount
+        """
+        self.__declined_amount = declined_amount
 
     def get_pos_data(self):
         """
@@ -205,19 +220,19 @@ class Invoice:
         """
         self.__notification_email = notification_email
 
-    def get_redirect_url(self):
+    def get_redirect_u_r_l(self):
         """
-        Get method for the redirect_url
-        :return: redirect_url
+        Get method for the redirect_URL
+        :return: redirect_URL
         """
-        return self.__redirect_url
+        return self.__redirect_URL
 
-    def set_redirect_url(self, redirect_url):
+    def set_redirect_u_r_l(self, redirect_URL):
         """
-        Set method for the redirect_url
-        :param redirect_url: redirect_url
+        Set method for the redirect_URL
+        :param redirect_URL: redirect_URL
         """
-        self.__redirect_url = redirect_url
+        self.__redirect_URL = redirect_URL
 
     def get_order_id(self):
         """
@@ -1007,10 +1022,55 @@ class Invoice:
         """
         :return: data in json
         """
+        supported_transaction_currencies = {}
+        for key, value in self.get_supported_transaction_currencies().to_json().items():
+            supported_transaction_currencies[key] = value.to_json()
+
+        miner_fees = {}
+        for key, value in self.get_miner_fees().to_json().items():
+            miner_fees[key] = value.to_json()
+
         data = {
-            # TODO: Add more data
             "currency": self.get_currency(),
             "price": self.get_price(),
-            "token": self.get_token()
+            "token": self.get_token(),
+            "posData": self.get_pos_data(),
+            "notificationURL": self.get_notification_url(),
+            "transactionSpeed": self.get_transaction_speed(),
+            "fullNotifications": self.get_full_notifications(),
+            "notificationEmail": self.get_notification_email(),
+            "redirectURL": self.get_redirect_u_r_l(),
+            "orderId": self.get_order_id(),
+            "itemDesc": self.get_item_desc(),
+            "itemCode": self.get_item_code(),
+            "physical": self.get_physical(),
+            "paymentCurrencies": self.get_payment_currencies(),
+            "acceptanceWindow": self.get_acceptance_window(),
+            "closeURL": self.get_close_url(),
+            "buyer": self.get_buyer().to_json(),
+            "refundAddresses": self.get_refund_addresses(),
+            "id": self.get_id(),
+            "url": self.get_url(),
+            "status": self.get_status(),
+            "lowFeeDetected": self.get_low_fee_detected(),
+            "invoiceTime": self.get_invoice_time(),
+            "expirationTime": self.get_expiration_time(),
+            "transactions": self.get_transactions(),
+            "exceptionStatus": self.get_exception_status(),
+            "targetConfirmations": self.get_target_confirmations(),
+            "refundAddressRequestPending": self.get_refund_address_request_pending(),
+            "buyerProvidedEmail": self.get_buyer_provided_email(),
+            "buyerProvidedInfo": self.get_buyer_provided_info().to_json(),
+            "supportedTransactionCurrencies": supported_transaction_currencies,
+            "minerFees": miner_fees,
+            "billId": self.get_bill_id(),
+            "refundInfo": self.get_refund_info().to_json(),
+            "extendedNotifications": self.get_extended_notifications(),
+            "transactionCurrency": self.get_transaction_currency(),
+            "amountPaid": self.get_amount_paid(),
+            "exchangeRates": self.get_exchange_rates(),
+            "currentTime": self.get_current_time(),
+            "declinedAmount": self.get_declined_amount()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

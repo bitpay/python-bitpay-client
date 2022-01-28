@@ -29,8 +29,7 @@ class LedgerEntry:
         for key, value in kwargs.items():
             try:
                 if key in ["buyerFields"]:
-                    klass = globals()[key[0].upper() + key[1:]]
-
+                    klass = Buyer if key == "buyerFields" else globals()[key[0].upper() + key[1:]]
                     if isinstance(value, list):
                         value = []
                         for obj in value:
@@ -267,9 +266,10 @@ class LedgerEntry:
             "supportRequest": self.get_support_request(),
             "description": self.get_description(),
             "invoiceId": self.get_invoice_id(),
-            "buyerFields": self.get_buyer_fields(),
+            "buyerFields": self.get_buyer_fields().to_json(),
             "invoiceAmount": self.get_invoice_amount(),
             "invoiceCurrency": self.get_invoice_currency(),
             "transactionCurrency": self.get_transaction_currency()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

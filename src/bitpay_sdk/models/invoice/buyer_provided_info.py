@@ -89,3 +89,17 @@ class BuyerProvidedInfo:
         :param selected_transaction_currency: selected_transaction_currency
         """
         self.__selected_transaction_currency = selected_transaction_currency
+
+    def to_json(self):
+        """
+        :return: data in json
+        """
+        data = {
+            "name": self.get_name(),
+            "phoneNumber": self.get_phone_number(),
+            "selectedWallet": self.get_selected_wallet(),
+            "emailAddress": self.get_email_address(),
+            "selectedTransactionCurrency": self.get_selected_transaction_currency(),
+        }
+        data = {key: value for key, value in data.items() if value}
+        return data

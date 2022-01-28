@@ -15,6 +15,7 @@ class Buyer:
     __email = ""
     __phone = ""
     __notify = ""
+    __buyer_email = ""
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -36,6 +37,20 @@ class Buyer:
         :param name: name
         """
         self.__name = name
+
+    def get_buyer_email(self):
+        """
+        Get method for the buyer_email
+        :return: buyer_email
+        """
+        return self.__buyer_email
+
+    def set_buyer_email(self, buyer_email):
+        """
+        Set method for the buyer_email
+        :param buyer_email: buyer_email
+        """
+        self.__buyer_email = buyer_email
 
     def get_address1(self):
         """
@@ -178,5 +193,7 @@ class Buyer:
             "email": self.get_email(),
             "phone": self.get_phone(),
             "notify": self.get_notify(),
+            "buyerEmail": self.get_buyer_email(),
         }
+        data = {key: value for key, value in data.items() if value}
         return data

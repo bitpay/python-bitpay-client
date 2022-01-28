@@ -68,4 +68,5 @@ class ItemizedDetails:
             "description": self.get_description(),
             "is_fee": self.get_is_fee()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

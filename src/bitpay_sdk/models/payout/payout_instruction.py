@@ -3,6 +3,7 @@ from .recipient_reference_method import RecipientReferenceMethod
 from .payout_instruction_btc_summary import PayoutInstructionBtcSummary
 from .payout_instruction_transaction import PayoutInstructionTransaction
 from ...exceptions.payout_creation_exception import PayoutCreationException
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutInstruction:
@@ -14,20 +15,40 @@ class PayoutInstruction:
     __wallet_provider = None
     __id = None
 
-    __btc = None
-    __transactions = None
+    __btc = PayoutInstructionBtcSummary()
+    __transactions = []
     __status = None
     __address = None
+    __payout_id = None
 
-    def __int__(self, amount=None, method=None, method_value=None):
+    __method = None
+    __method_value = None
+
+    def __init__(self, amount, method, method_value, **kwargs):
         try:
+            for key, value in kwargs.items():
+                try:
+                    if key in ["btc", "transactions"]:
+                        klass = PayoutInstructionTransaction if key == "transactions" else globals()[key[0].upper() + key[1:]]
+
+                        if isinstance(value, list):
+                            value = []
+                            for obj in value:
+                                value.append(klass(**obj))
+                        else:
+                            value = klass(**value)
+                    getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                except AttributeError as e:
+                    print(e)
+
             self.set_amount(amount)
+
             if method:
-                if RecipientReferenceMethod.EMAIL:
+                if RecipientReferenceMethod.EMAIL == method:
                     self.__email = method_value
-                elif RecipientReferenceMethod.RECIPIENT_ID:
+                elif RecipientReferenceMethod.RECIPIENT_ID == method:
                     self.__recipient_id = method_value
-                elif RecipientReferenceMethod.SHOPPER_ID:
+                elif RecipientReferenceMethod.SHOPPER_ID == method:
                     self.__shopper_id = method_value
             else:
                 raise PayoutCreationException("method code must be a type of RecipientReferenceMethod")
@@ -63,6 +84,20 @@ class PayoutInstruction:
         :param email: email
         """
         self.__email = email
+
+    def get_payout_id(self):
+        """
+        Get method for to payout_id
+        :return: payout_id
+        """
+        return self.__email
+
+    def set_payout_id(self, payout_id):
+        """
+        Set method for to payout_id
+        :param payout_id: payout_id
+        """
+        self.__payout_id = payout_id
 
     def get_recipient_id(self):
         """
@@ -183,7 +218,7 @@ class PayoutInstruction:
         """
         return self.__transactions
 
-    def set_transactions(self, transactions: PayoutInstructionTransaction):
+    def set_transactions(self, transactions: [PayoutInstructionTransaction]):
         """
         Set method for to transactions
         :param transactions: transactions
@@ -194,17 +229,20 @@ class PayoutInstruction:
         """
         :return: data in json
         """
+        transactions = []
+        for data in self.get_transactions():
+            transactions.append(data.to_json())
         data = {
             "amount": self.get_amount(),
-            "email": self.get_amount(),
+            "email": self.get_email(),
             "recipientId": self.get_recipient_id(),
             "shopperId": self.get_shopper_id(),
             "label": self.get_label(),
             "id": self.get_id(),
-            "btc": self.get_btc(),
-            "transactions": self.get_transactions(),
+            "btc": self.get_btc().to_json(),
+            "transactions": transactions,
             "status": self.get_status(),
-            "address": self.get_address(),
-            "walletProvider": self.get_wallet_provider()
+            "payoutId": self.get_payout_id()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

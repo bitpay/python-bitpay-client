@@ -69,4 +69,5 @@ class MinerFeesItem:
             "totalFee": self.get_total_fee(),
             "fiatAmount": self.get_fiat_amount()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

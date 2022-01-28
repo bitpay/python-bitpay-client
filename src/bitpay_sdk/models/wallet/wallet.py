@@ -9,18 +9,26 @@ class Wallet(object):
     __key = None
     __display_name = None
     __avatar = None
-    __paypro = None
+    __pay_pro = None
     __currencies = Currencies()
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
+            print(key, value)
             try:
                 if key in ["currencies"]:
+
                     klass = globals()[key[0].upper() + key[1:]]
-                    value = klass(**value)
+
+                    if isinstance(value, list):
+                        value = []
+                        for obj in value:
+                            value.append(klass(**obj))
+                    else:
+                        value = klass(**value)
                 getattr(self, 'set_%s' % key_utils.change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
-                print(e)
+                print(e,key)
 
     def get_key(self):
         """
@@ -64,14 +72,14 @@ class Wallet(object):
         """
         self.__avatar = avatar
 
-    def get_paypro(self):
+    def get_pay_pro(self):
         """
         Get method for to paypro
         :return: paypro
         """
         return self.__paypro
 
-    def set_paypro(self, paypro):
+    def set_pay_pro(self, paypro):
         """
         Set method for to paypro
         :param paypro: paypro
@@ -100,7 +108,7 @@ class Wallet(object):
             'key': self.get_key(),
             'displayName': self.get_display_name(),
             'avatar': self.get_avatar(),
-            'paypro': self.get_paypro(),
+            'payPro': self.get_pay_pro(),
             'currencies': self.get_currencies()
         }
         return data

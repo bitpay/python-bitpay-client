@@ -186,4 +186,5 @@ class MinerFees:
             "xrp": self.get_xrp(),
             "busd": self.get_busd()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

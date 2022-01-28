@@ -1,4 +1,5 @@
 from .bill_data import BillData
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class Subscription:
@@ -13,8 +14,22 @@ class Subscription:
     __created_date = None
     __token = None
 
-    def __init__(self):
-        self.__bill_data = BillData('', '', '', [])
+    def __init__(self, **kwargs):
+        # self.__bill_data = BillData('', '', '', [])
+        for key, value in kwargs.items():
+            try:
+                if key in ["billData"]:
+                    klass = globals()[key[0].upper() + key[1:]]
+
+                    if isinstance(value, list):
+                        value = []
+                        for obj in value:
+                            value.append(klass(**obj))
+                    else:
+                        value = klass(**value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_id(self):
         """
@@ -51,7 +66,7 @@ class Subscription:
         """
         return self.__bill_data
 
-    def set_bill_data(self, bill_data):
+    def set_bill_data(self, bill_data: BillData):
         """
         Set method for to bill_data
         :param bill_data: bill_data
@@ -127,4 +142,5 @@ class Subscription:
             "createdDate": self.get_created_date(),
             "token": self.get_token(),
         }
+        data = {key: value for key, value in data.items() if value}
         return data

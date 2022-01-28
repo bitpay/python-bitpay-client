@@ -6,6 +6,7 @@ class SupportedTransactionCurrency:
     currency selected for payment is enabled
     """
     __enabled = None
+    __reason = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -28,6 +29,20 @@ class SupportedTransactionCurrency:
         """
         self.__enabled = enabled
 
+    def get_reason(self):
+        """
+        Get method for to reason
+        :return: reason
+        """
+        return self.__reason
+
+    def set_reason(self, reason):
+        """
+        Set method for to reason
+        :param reason: reason
+        """
+        self.__reason = reason
+
     def to_json(self):
         """
         data in json
@@ -35,5 +50,6 @@ class SupportedTransactionCurrency:
         """
         data = {
             "enabled": self.get_enabled(),
+            "reason": self.get_reason()
         }
         return data

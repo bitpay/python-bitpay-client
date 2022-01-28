@@ -1,12 +1,20 @@
+from ...utils.key_utils import change_camel_case_to_snake_case
+
+
 class Ledger:
     """
     Ledgers are records of money movement.
     """
     __currency = None
     __balance = None
+    __parent = None
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_currency(self):
         """
@@ -35,6 +43,20 @@ class Ledger:
         :param balance: balance
         """
         self.__balance = balance
+
+    def get_parent(self):
+        """
+        Get method for to parent
+        :return: parent
+        """
+        return self.__parent
+
+    def set_parent(self, parent):
+        """
+        Set method for to parent
+        :param parent: parent
+        """
+        self.__parent = parent
 
     def to_json(self):
         """

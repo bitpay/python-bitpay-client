@@ -1,3 +1,6 @@
+from src.bitpay_sdk.utils.key_utils import change_camel_case_to_snake_case
+
+
 class Currency:
     """
     Currency: Crypto and fiat
@@ -186,6 +189,7 @@ class Currency:
     ZAR = "ZAR"
     ZMW = "ZMW"
     ZWL = "ZWL"
+
     __code = None
     __symbol = None
     __precision = None
@@ -198,18 +202,23 @@ class Currency:
     __decimals = None
     __payout_fields = None
     __settlement_minimum = None
+    __chain = None
+    __tranche_decimals = None
+    __max_supply = None
 
-    def is_valid(self, value):
+    @classmethod
+    def is_valid(cls, value):
         try:
-            obj = Currency()
-            if hasattr(obj, value):
-                return True
-            return False
+            return hasattr(Currency(), value)
         except Exception as e:
             return False
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_code(self):
         """
@@ -238,6 +247,48 @@ class Currency:
         :param symbol: symbol
         """
         self.__symbol = symbol
+
+    def get_chain(self):
+        """
+        Get method for to chain
+        :return: chain
+        """
+        return self.__chain
+
+    def set_chain(self, chain):
+        """
+        Set method for to chain
+        :param chain: chain
+        """
+        self.__chain = chain
+
+    def get_tranche_decimals(self):
+        """
+        Get method for to tranche_decimals
+        :return: tranche_decimals
+        """
+        return self.__tranche_decimals
+
+    def set_tranche_decimals(self, tranche_decimals):
+        """
+        Set method for to tranche_decimals
+        :param tranche_decimals: tranche_decimals
+        """
+        self.__tranche_decimals = tranche_decimals
+
+    def get_max_supply(self):
+        """
+        Get method for to max_supply
+        :return: max_supply
+        """
+        return self.__max_supply
+
+    def set_max_supply(self, max_supply):
+        """
+        Set method for to max_supply
+        :param max_supply: max_supply
+        """
+        self.__max_supply = max_supply
 
     def get_precision(self):
         """

@@ -131,7 +131,6 @@ class RefundParams:
         :return: data in json
         """
         data = {
-            # TODO: Add more data
             "requesterType": self.get_requester_type(),
             "requesterEmail": self.get_requester_email(),
             "amount": self.get_amount(),
@@ -140,5 +139,5 @@ class RefundParams:
             "purchaserNotifyEmail": self.get_purchaser_notify_email(),
             "refundAddress": self.get_refund_address(),
         }
-
+        data = {key: value for key, value in data.items() if value}
         return data

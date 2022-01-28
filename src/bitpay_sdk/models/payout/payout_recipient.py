@@ -1,17 +1,27 @@
+from ...utils.key_utils import change_camel_case_to_snake_case
+
+
 class PayoutRecipient:
     __email = None
     __label = None
     __notification_url = None
+    __data = None
+    __message = None
 
     __status = None
     __id = None
     __shopper_id = None
     __token = None
 
-    def __init__(self, email, label, notification_url):
-        self.__email = email
-        self.__label = label
-        self.__notification_url = notification_url
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                if key == "notificationURL":
+                    self.set_notification_url(value)
+                else:
+                    getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_email(self):
         """
@@ -26,6 +36,34 @@ class PayoutRecipient:
         :param email: email
         """
         self.__email = email
+
+    def get_data(self):
+        """
+        Get method for data
+        :return: data
+        """
+        return self.__data
+
+    def set_data(self, data):
+        """
+        Set method for to data
+        :param data: data
+        """
+        self.__data = data
+
+    def get_message(self):
+        """
+        Get method for message
+        :return: message
+        """
+        return self.__message
+
+    def set_message(self, message):
+        """
+        Set method for to message
+        :param message: message
+        """
+        self.__message = message
 
     def get_label(self):
         """
@@ -124,4 +162,5 @@ class PayoutRecipient:
             "shopperId": self.get_shopper_id(),
             "token": self.get_token()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

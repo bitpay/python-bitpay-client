@@ -1,4 +1,5 @@
 from ...models.settlement.refund_info import RefundInfo
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class InvoiceData:
@@ -18,8 +19,21 @@ class InvoiceData:
     '''
     __refund_info = None
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                if key in ["refundInfo"]:
+                    klass = globals()[key[0].upper() + key[1:]]
+
+                    if isinstance(value, list):
+                        value = []
+                        for obj in value:
+                            value.append(klass(**obj))
+                    else:
+                        value = klass(**value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_order_id(self):
         """
@@ -161,4 +175,5 @@ class InvoiceData:
             "refundInfo": self.get_refund_info().to_json(),
             "btcPrice": self.get_btc_price()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

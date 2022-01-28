@@ -75,7 +75,6 @@ class RESTcli:
         :return: json response
         """
         full_url = self.__baseurl + uri
-
         if parameters is not None:
             full_url = "%s?%s" % (full_url, urllib.parse.urlencode(parameters))
 
@@ -153,7 +152,7 @@ class RESTcli:
         elif "errors" in response_obj:
             message = ''
             for error in response_obj["errors"]:
-                message += "\n" + error
+                message += "\n" + str(error)
             raise BitPayException("Errors: " + message)
 
         if "success" in response_obj:

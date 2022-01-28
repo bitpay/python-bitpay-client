@@ -179,4 +179,5 @@ class Buyer(object):
             "phone": self.get_phone(),
             "notify": self.get_notify(),
         }
+        data = {key: value for key, value in data.items() if value}
         return data

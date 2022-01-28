@@ -1,6 +1,7 @@
 from .payout_instruction import PayoutInstruction
 from ..currency import Currency
 from ...exceptions.bitpay_exception import BitPayException
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutBatch:
@@ -13,14 +14,14 @@ class PayoutBatch:
     __ledger_currency = ""
 
     __reference = ""
-    __notification_uRL = ""
+    __notification_URL = ""
     __notification_email = ""
     __email = ""
     __recipient_id = ""
     __shopper_id = ""
     __label = ""
     __message = ""
-
+    __redirect_url = None
     __id = None
     __account = None
     __support_phone = None
@@ -33,23 +34,42 @@ class PayoutBatch:
     __request_date = None
     __date_executed = None
     __exchange_rates = None
+    __ignore_emails = None
+    __guid = None
 
-    def __init__(self, currency, effective_date, instructions: PayoutInstruction, ledger_currency):
+    def __init__(self, currency=None, effective_date=None, ledger_currency=None, **kwargs):
         self.__currency = currency
         self.__effective_date = effective_date
-        self.__instructions = instructions
         self.__ledger_currency = ledger_currency
+
+        for key, value in kwargs.items():
+            try:
+                if key in ["instructions"]:
+
+                    klass = PayoutInstruction if key == "instructions" else globals()[key[0].upper() + key[1:]]
+
+                    if isinstance(value, list):
+                        objs = []
+                        for obj in value:
+                            obj["method"]= 100 # Just skip the method check
+                            obj["method_value"] = None
+                            objs.append(klass(**obj))
+                        value = objs
+                    else:
+                        value = klass(**value)
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
         self.compute_and_set_amount()
 
-    # TODO :Compare with other sdks
     def compute_and_set_amount(self):
         amount = 0.0
         if self.__instructions:
             for instruction in self.__instructions:
-                if hasattr(instruction, PayoutInstruction):
-                    amount += instruction.get_amount()
-                else:
-                    pass
+                instruction_amount = instruction.get_amount()
+                if instruction_amount:
+                    amount += instruction_amount
+        self.__amount = amount
 
     def get_instructions(self) -> [PayoutInstruction]:
         """
@@ -79,6 +99,34 @@ class PayoutBatch:
         :param token: token
         """
         self.__token = token
+
+    def get_guid(self):
+        """
+        Get method for to guid
+        :return: guid
+        """
+        return self.__guid
+
+    def set_guid(self, guid):
+        """
+        Set method for to guid
+        :param guid: guid
+        """
+        self.__guid = guid
+
+    def get_ignore_emails(self):
+        """
+        Get method for to ignore_emails
+        :return: ignore_emails
+        """
+        return self.__ignore_emails
+
+    def set_ignore_emails(self, ignore_emails):
+        """
+        Set method for to ignore_emails
+        :param ignore_emails: ignore_emails
+        """
+        self.__ignore_emails = ignore_emails
 
     def get_amount(self):
         """
@@ -152,19 +200,19 @@ class PayoutBatch:
         """
         self.__notification_email = notification_email
 
-    def get_notification_uRL(self):
+    def get_notification_u_r_l(self):
         """
-        Get method for to notification_uRL
-        :return: notification_uRL
+        Get method for to notification_URL
+        :return: notification_URL
         """
-        return self.__notification_uRL
+        return self.__notification_URL
 
-    def set_notification_uRL(self, notification_uRL):
+    def set_notification_u_r_l(self, notification_URL):
         """
-        Set method for to notification_uRL
-        :param notification_uRL: notification_uRL
+        Set method for to notification_URL
+        :param notification_URL: notification_URL
         """
-        self.__notification_uRL = notification_uRL
+        self.__notification_URL = notification_URL
 
     def get_redirect_url(self):
         """
@@ -438,6 +486,9 @@ class PayoutBatch:
         """
         :return: data in json
         """
+        instructions = []
+        for instruction in self.get_instructions():
+            instructions.append(instruction.to_json())
         data = {
             "token": self.get_token(),
             "amount": self.get_amount(),
@@ -445,11 +496,12 @@ class PayoutBatch:
             "effectiveDate": self.get_effective_date(),
             "ledgerCurrency": self.get_ledger_currency(),
             "reference": self.get_reference(),
-            "notificationURL": self.get_notification_uRL(),
+            "notificationURL": self.get_notification_u_r_l(),
             "notificationEmail": self.get_notification_email(),
             "email": self.get_email(),
             "recipientId": self.get_recipient_id(),
             "shopperId": self.get_shopper_id(),
+            "instructions": instructions,
             "label": self.get_label(),
             "message": self.get_message(),
             "id": self.get_id(),
@@ -466,4 +518,5 @@ class PayoutBatch:
             "redirectUrl": self.get_redirect_url(),
             "btc": self.get_btc()
         }
+        data = {key: value for key, value in data.items() if value}
         return data

@@ -1,10 +1,18 @@
+from src.bitpay_sdk.utils.key_utils import change_camel_case_to_snake_case
+
+
 class PayoutTransaction:
     __txid = None
     __amount = None
     __date = None
+    __confirmations = None
 
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+            except AttributeError as e:
+                print(e)
 
     def get_txid(self):
         """
@@ -34,6 +42,20 @@ class PayoutTransaction:
         """
         self.__amount = amount
 
+    def get_confirmations(self):
+        """
+        Get method for confirmations
+        :return: confirmations
+        """
+        return self.__confirmations
+
+    def set_confirmations(self, confirmations):
+        """
+        Set method for to confirmations
+        :param confirmations: confirmations
+        """
+        self.__confirmations = confirmations
+
     def get_date(self):
         """
         Get method for date
@@ -55,6 +77,7 @@ class PayoutTransaction:
         data = {
             "txid": self.get_txid(),
             "amount": self.get_amount(),
-            "date": self.get_date()
+            "date": self.get_date(),
+            "confirmations": self.get_confirmations()
         }
         return data
