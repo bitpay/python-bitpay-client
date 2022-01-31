@@ -7,8 +7,8 @@ import requests
 root_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(root_dir))
 
-from src.bitpay_sdk.utils.key_utils import *
-from src.bitpay_sdk.exceptions.bitpay_exception import BitPayException
+from src.bitpay.utils.key_utils import *
+from src.bitpay.exceptions.bitpay_exception import BitPayException
 
 # Will be set to Test otherwise
 private_key_name = 'private_key.pem'  # Add here the name for your Private key

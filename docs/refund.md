@@ -31,7 +31,7 @@ Facades **`MERCHANT`**
 An example code of the create a new refund request
 
 ```python
-create_refund = bitpay.create_refund(invoice.get_id(), 1.0, None, True, False, False)
+create_refund = bitpay.create_refund(invoice_id, 1.0, None, True, False, False)
 ```
 
 **Response Body Fields**
@@ -102,7 +102,7 @@ Facades **`MERCHANT`**
 
 
 ```python
-retieve_refund = bitpay.get_refund(create_refund.get_id())
+retieve_refund = bitpay.get_refund(refund_id)
 ```
 
 **Response Body Fields**
@@ -164,7 +164,7 @@ Facades **`MERCHANT`**
 To get all refund requesta for an invoice, pass the Invoice Id with URL parameter
 
 ```python
-retrieved_refunds = bitpay.get_refunds(invoice.get_id())
+retrieved_refunds = bitpay.get_refunds(invoice_id)
 ```
 
 Response body fields same as `POST /refunds`
@@ -232,7 +232,7 @@ Facades **`MERCHANT`**
 | status | set to ‘created’ in order to confirm the refund request and initiate the flow to send it to shopper | `string` | - |
 
 ```python
-update_refund  = bitpay.update_refund(invoice.get_id(), RefundStatus.Created);
+update_refund  = bitpay.update_refund(refund_id, RefundStatus.Created);
 ```
 
 
@@ -263,7 +263,7 @@ cancel_refund = bitpay.cancel_refund(create_refund.get_id())
 Facades **`MERCHANT`**
 
 ```python
-result = bitpay.request_refund_notification(create_refund.get_id())
+result = bitpay.request_refund_notification(refund_id)
 ```
 
 ### HTTP Response

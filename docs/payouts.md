@@ -191,7 +191,7 @@ Facades **`PAYOUT`**
 An example code to fetch single payout by `payoutId`
 
 ```python
-retrieved_payout = bitpay.get_payout(submit_payout.get_id())
+retrieved_payout = bitpay.get_payout(payout_id)
 ```
 
 ### HTTP Response
@@ -371,7 +371,7 @@ Facades **`PAYOUT`**
 An example code to cancel payout
 
 ```python
-cancelled_payout = bitpay.cancel_payout(create_payout.get_id())
+cancelled_payout = bitpay.cancel_payout(payout_id)
 ```
 
 **Response Body Fields**
@@ -426,7 +426,7 @@ Facades **`PAYOUT`**
 An example code to request payout recipient notification
 
 ```python
-result = bitpay.request_payout_notification(create_payout.get_id())
+result = bitpay.request_payout_notification(payout_id)
 ```
 
 **Response Body Fields**

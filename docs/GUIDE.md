@@ -37,31 +37,58 @@ For more information about testing, please see https://bitpay.com/docs/testing
 
 ## Installation
 
-You can find and download this package from pip  
-Make sure you have the latest version to avoid implementation and security issues.
+1. Download the package and extract it into a local directory or clone the repo.
+2. cd into the root directory where setup.py is located 
+3. Enter: python setup.py install
+
+
 
 ### Handling your client private key
 
-Each client paired with the BitPay server requires a ECDSA key.  This key provides the security mechanism for all client interaction with the BitPay server. The public key is used to derive the specific client identity that is displayed on your BitPay dashboard.  The public key is also used for securely signing all API requests from the client.  See the [BitPay API](https://bitpay.com/api) for more information.
+Each client paired with the BitPay server requires a ECDSA key. This key provides the security mechanism for all client interaction with the BitPay server. The public key is used to derive the specific client identity that is displayed on your BitPay dashboard. The public key is also used for securely signing all API requests from the client. See the [BitPay API](https://bitpay.com/api/) for more information.
 
-The private key should be stored in the client environment such that it cannot be compromised.  If your private key is compromised you should revoke the compromised client identity from the BitPay server and re-pair your client, see the [API tokens](https://bitpay.com/api-tokens) for more information.
+The private key should be stored in the client environment such that it cannot be compromised. If your private key is compromised you should revoke the compromised client identity from the BitPay server and re-pair your client, see the [API tokens](https://bitpay.com/api-tokens) for more information.
 
-The [BitPay.Net Setup utility](https://github.com/bitpay/csharp-bitpay-client/releases/download/v3.1.1912/BitPay.Net_Setup_utility_3.1.1912.zip) helps to generate the private key, as well as a environment file formatted in JSON which contains all configuration requirements, that should be stored in the client local file system. It is not recommended to transmit the private key over any public or unsecure networks.
+To generate the configuration file required to load the SDK:
 
-Follow the guide [BitPay.Net Setup utility guide](https://github.com/bitpay/csharp-bitpay-client/blob/master/BitPaySetup/README.md) that assist you to create the environment file which you will be able to modify it, either manually or by using the BitPay.Net Setup utility, later on by asking you to provide the path to your existing JSON file.
+The [BitPay Config Generator](setup/bitpay_setup.py) helps to generate the private key, as well as a environment file formatted in JSON or YML which contains all configuration requirements, that should be stored in the client local file system. It is not recommended to transmit the private key over any public or unsecure networks.
+
+The comments in this script will assist you to create the environment file which you will be able to modify it later.
+
+Once the Config Generator has run and generated the Json/Yml correctly, read the console output and follow the instructions in order to pair your new tokens.
+
+```json
+
+{
+  "BitPayConfiguration": {
+    "Environment": "",
+    "EnvConfig": {
+      "Test": {
+        "PrivateKeyPath": "",
+        "PrivateKey": "",
+        "ApiTokens": {
+          "merchant": "",
+          "payout": ""
+        },
+        "proxy": "" 
+      }
+    }
+  }
+}
+```
 
 ### Initializing your BitPay client
 
 Once you have the environment file (JSON previously generated) you can initialize the client in two ways:
 
 ```python
-from bitpay_sdk.client import Client
+from bitpay.client import Client
 
 bitpay = Client(config_file_path)
 ```
 
 ```python
-from bitpay_sdk.client import Client
+from bitpay.client import Client
 
 bitpay = Client(None, environment, private_key_path, tokens)
 ```
@@ -70,8 +97,8 @@ bitpay = Client(None, environment, private_key_path, tokens)
 
 Your client must be paired with the BitPay server. The pairing initializes authentication and authorization for your client to communicate with BitPay for your specific merchant account.
 
-Pairing is accomplished by having the BitPay.Net Setup utility request a pairing code from the BitPay server.
-Meanwhile a new pairing code is generated, the BitPay.Net Setup utility will ask you to activate it in your BitPay account. It will also store the paired token in the environment file.
+Pairing is accomplished by running the bitpay [python Setup]((setup/bitpay_setup.py)) utility request a pairing code from the BitPay server.
+Meanwhile a new pairing code is generated, the python Setup utility will ask you to activate it in your BitPay account. It will also store the paired token in the environment file.
 
 The pairing code is then entered into the BitPay merchant dashboard for the desired merchant.  Your interactive authentication at https://bitpay.com/login provides the authentication needed to create finalize the client-server pairing request.
 

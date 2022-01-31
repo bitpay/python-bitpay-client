@@ -4,25 +4,25 @@ BitPay Unit Tests
 import os
 import unittest
 from datetime import date, timedelta
-from src.bitpay_sdk.client import Client
-from src.bitpay_sdk.models.bill.bill import Bill
-from src.bitpay_sdk.models.bill.item import Item
-from src.bitpay_sdk.models.currency import Currency
-from src.bitpay_sdk.models.invoice.buyer import Buyer
-from src.bitpay_sdk.models.payout.payout import Payout
-from src.bitpay_sdk.models.invoice.invoice import Invoice
-from src.bitpay_sdk.models.bill.bill_status import BillStatus
-from src.bitpay_sdk.models.subscription.bill_data import BillData
-from src.bitpay_sdk.models.payout.payout_batch import PayoutBatch
-from src.bitpay_sdk.models.payout.payout_status import PayoutStatus
-from src.bitpay_sdk.models.subscription.subscription import Subscription
-from src.bitpay_sdk.models.payout.payout_recipient import PayoutRecipient
-from src.bitpay_sdk.models.payout.recipient_status import RecipientStatus
-from src.bitpay_sdk.models.payout.payout_recipients import PayoutRecipients
-from src.bitpay_sdk.models.subscription.item import Item as SubscriptionItem
-from src.bitpay_sdk.models.payout.payout_instruction import PayoutInstruction
-from src.bitpay_sdk.models.subscription.subscription_status import SubscriptionStatus
-from src.bitpay_sdk.models.payout.recipient_reference_method import RecipientReferenceMethod
+from src.bitpay.client import Client
+from src.bitpay.models.bill.bill import Bill
+from src.bitpay.models.bill.item import Item
+from src.bitpay.models.currency import Currency
+from src.bitpay.models.invoice.buyer import Buyer
+from src.bitpay.models.payout.payout import Payout
+from src.bitpay.models.invoice.invoice import Invoice
+from src.bitpay.models.bill.bill_status import BillStatus
+from src.bitpay.models.subscription.bill_data import BillData
+from src.bitpay.models.payout.payout_batch import PayoutBatch
+from src.bitpay.models.payout.payout_status import PayoutStatus
+from src.bitpay.models.subscription.subscription import Subscription
+from src.bitpay.models.payout.payout_recipient import PayoutRecipient
+from src.bitpay.models.payout.recipient_status import RecipientStatus
+from src.bitpay.models.payout.payout_recipients import PayoutRecipients
+from src.bitpay.models.subscription.item import Item as SubscriptionItem
+from src.bitpay.models.payout.payout_instruction import PayoutInstruction
+from src.bitpay.models.subscription.subscription_status import SubscriptionStatus
+from src.bitpay.models.payout.recipient_reference_method import RecipientReferenceMethod
 
 
 class BitPayTest(unittest.TestCase):

@@ -47,18 +47,18 @@ An example code of the create invoice
 // Setting mandatory parameters in invoice i.e price and currency.
 Invoice invoice = new Invoice(100.0, "USD");
 
-// Setting invoice optional parameters
-invoice.setOrderId("98e572ea-910e-415d-b6de-65f5090680f6");
-invoice.setFullNotifications(true);
-invoice.setExtendedNotifications(true);
-invoice.setTransactionSpeed("medium");
-invoice.setNotificationURL("https://hookbin.com/lJnJg9WW7MtG9GZlPVdj");
-invoice.setRedirectURL("https://hookbin.com/lJnJg9WW7MtG9GZlPVdj");
-invoice.setPosData("98e572ea35hj356xft8y8cgh56h5090680f6");
-invoice.setItemDesc("Ab tempora sed ut.");
-invoice.setNotificationEmail("");
+# Setting invoice optional parameters
+invoice.setOrderId("98e572ea-910e-415d-b6de-65f5090680f6")
+invoice.setFullNotifications(True)
+invoice.setExtendedNotifications(True)
+invoice.setTransactionSpeed("medium")
+invoice.setNotificationURL("https://hookbin.com/lJnJg9WW7MtG9GZlPVdj")
+invoice.setRedirectURL("https://hookbin.com/lJnJg9WW7MtG9GZlPVdj")
+invoice.setPosData("98e572ea35hj356xft8y8cgh56h5090680f6")
+invoice.setItemDesc("Ab tempora sed ut.")
+invoice.setNotificationEmail("")
 
-// Creating Invoice
+# Creating Invoice
 invoice = Invoice(2.16, "eur")
 invoice.set_order_id("98e572ea-910e-415d-b6de-65f5090680f6")
 invoice.set_full_notifications(True)
@@ -684,7 +684,7 @@ Facade **`POS` `MERCHANT`**
 To get the generated invoice details, pass the Invoice Id with URL parameter
 
 ```python
-retrieve_invoice = bitpay.get_invoice(basic_invoice.get_id())
+retrieve_invoice = bitpay.get_invoice(invoice_id)
 ```
 
 ## Retrieve invoices filtered by query
@@ -717,7 +717,7 @@ Facade **`MERCHANT`**
 To get the generated invoices filtered by query parameters 
 
 ```python
-get_invoices = bitpay.get_invoices('YYYY-MM-DD', 'YYYY-MM-DD', InvoiceStatus.Complete, null, 10); //Always use the included InvoiceStatus model to avoid typos
+get_invoices = bitpay.get_invoices('YYYY-MM-DD', 'YYYY-MM-DD', InvoiceStatus.Complete, None, 10); //Always use the included InvoiceStatus model to avoid typos
 ```
 
 ## Update an invoice
@@ -756,6 +756,7 @@ Facades  **`POS` `MERCHANT`**
 | X-Signature | header is the ECDSA signature of the full request URL concatenated with the request body, signed with your private key. This header is required when using tokens with higher privileges (merchant facade). When using standard pos facade token directly from the BitPay dashboard (with "Require Authentication" disabled), this header is not needed. | C |
 
 ```python
+retrieved_invoice = bitpay.get_invoice(invoice_id)
 updated_invoice = bitpay.update_invoice(retrieved_invoice.get_id(),
                                                      "sandbox@bitpay.com")
 ```
@@ -788,7 +789,7 @@ Facades  **`POS` `MERCHANT`**
 | X-Signature | header is the ECDSA signature of the full request URL concatenated with the request body, signed with your private key. This header is required when using tokens with higher privileges (merchant facade). When using standard pos facade token directly from the BitPay dashboard (with "Require Authentication" disabled), this header is not needed. | **Mandatory** |
 
 ```python
-cancel_invoice = bitpay.cancel_invoice(updated_invoice.get_id())
+cancel_invoice = bitpay.cancel_invoice(invoice_id)
 ```
 ### HTTP Response
 
@@ -799,7 +800,7 @@ cancel_invoice = bitpay.cancel_invoice(updated_invoice.get_id())
 ## Request an invoice notification
 
 ```python
-invoice_status = bitpay.request_invoice_notifications(basic_invoice.get_id())
+invoice_status = bitpay.request_invoice_notifications(invoice_id)
 ```
 
 ### Error Scenarios & Format:

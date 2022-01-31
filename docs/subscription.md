@@ -168,7 +168,7 @@ Headers
 Example code to get the subscription details, pass the Subscriptions Id with URL parameter
 
 ```python
-retrieve_subscription = bitpay.get_subscription((basic_subscription.get_id()))
+retrieve_subscription = bitpay.get_subscription(subscription_id)
 ```
 
 HTTP Response

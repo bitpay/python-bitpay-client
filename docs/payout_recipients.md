@@ -152,6 +152,27 @@ Facades **`PAYOUT`**
 An example code to fetch single payout recipient by `recipientId`
 
 ```python
+recipients_list = []
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient1")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient2")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient3")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+recipients_obj = PayoutRecipients(recipients_list)
 recipients = bitpay.submit_payout_recipients(recipients_obj)
 first_recipient = recipients[0]
 retrieved_recipient = bitpay.get_payout_recipient(first_recipient.get_id())
@@ -280,6 +301,27 @@ Facades **`PAYOUT`**
 An example to update the existing payout recipient details
 
 ```python
+recipients_list = []
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient1")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient2")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient3")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+recipients_obj = PayoutRecipients(recipients_list)
 recipients = bitpay.submit_payout_recipients(recipients_obj)
 first_recipient = recipients[0]
 retrieved_recipient = bitpay.get_payout_recipient(first_recipient.get_id())
@@ -346,7 +388,7 @@ Facades **`PAYOUT`**
 An example code to delete payout recipient
 
 ```python
-delete_recipient = bitpay.delete_payout_recipient(retrieved_recipient.get_id())
+delete_recipient = bitpay.delete_payout_recipient(recipient_id)
 ```
 
 **HTTP Response**
@@ -390,6 +432,27 @@ Facades **`PAYOUT`**
 An example code to request payout recipient notification
 
 ```python
+recipients_list = []
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient1")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient2")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+payout_recipient = PayoutRecipient()
+payout_recipient.set_email("sandbox@bitpay.com")
+payout_recipient.set_label("recipient3")
+payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
+recipients_list.append(payout_recipient)
+
+recipients_obj = PayoutRecipients(recipients_list)
 recipients = bitpay.submit_payout_recipients(recipients_obj)
 first_recipient = recipients[0]
 retrieved_recipient = bitpay.get_payout_recipient(first_recipient.get_id())

@@ -130,7 +130,7 @@ Facade **`MERCHANT`**
 | X-Signature | header is the ECDSA signature of the full request URL concatenated with the request body, signed with your private key. This header is required when using tokens with higher privileges (merchant facade). When using standard pos facade token directly from the BitPay dashboard (with "Require Authentication" disabled), this header is not needed. | **Mandatory** |
 
 ```python
-get_bill = bitpay.get_bill(create_bill.get_id())
+get_bill = bitpay.get_bill(bill_id)
 ```
 
 ### HTTP Response
@@ -445,6 +445,24 @@ Facade **`MERCHANT`**
 |  token | The resource token for the billId you want to deliver via email. You need to retrieve this token from the bill object itself (see section Retrieve a bill). | `string` | **Mandatory** |
 
 ```python
+items = []
+
+item = Item()
+item.set_price(30.0)
+item.set_quantity(9)
+item.set_description("product-a")
+items.append(item)
+
+item = Item()
+item.set_price(14.0)
+item.set_quantity(16)
+item.set_description("product-b")
+items.append(item)
+
+
+bill = Bill("1001", Currency.USD, "sandbox@bitpay.com")
+bill.set_items(items)
+create_bill = bitpay.create_bill(bill)
 deliver_bill = bitpay.deliver_bill(create_bill.get_id(), create_bill.get_token())
 ```
 

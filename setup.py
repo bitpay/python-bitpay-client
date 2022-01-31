@@ -13,10 +13,10 @@ setuptools.setup(
     url="https://github.com/bitpay/python-bitpay-client",
     download_url="",
     keywords=["bitcoin", "payments", "crypto", "cash", "ethereum", "online payments"],
-    python_requires=">=3.0",
+    python_requires=">=3.7",
     install_requires=["requests", "ecdsa"],
     classifiers=[
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.7, 3.8, 3.9, 3.10',
         "Development Status :: 5 - Production/Stable",
         'Intended Audience :: Developers',
         'Natural Language :: English',

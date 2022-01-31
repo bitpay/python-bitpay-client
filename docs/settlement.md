@@ -122,6 +122,10 @@ Facade **`MERCHANT`**
 | X-Signature | header is the ECDSA signature of the full request URL concatenated with the request body, signed with your private key. | **Mandatory** |
 
 ```python
+today = date.today().strftime("%Y%m%d")
+date_start = (date.today() - timedelta(days=30)).strftime("%Y%m%d")
+# make sure we get a ledger with a not null Entries property
+get_settlements = bitpay.get_settlements(Currency.USD, date_start, today, None, None, None)
 first_settlement = get_settlements[0]
 settlement = bitpay.get_settlement(first_settlement.get_id())
 ```
@@ -190,6 +194,10 @@ Facade **`MERCHANT`**
 | X-Signature | header is the ECDSA signature of the full request URL concatenated with the request body, signed with your private key. | **Mandatory** |
 
 ```python
+today = date.today().strftime("%Y%m%d")
+date_start = (date.today() - timedelta(days=30)).strftime("%Y%m%d")
+# make sure we get a ledger with a not null Entries property
+get_settlements = bitpay.get_settlements(Currency.USD, date_start, today, None, None, None)
 settlement = bitpay.get_settlement_reconciliation_report(get_settlements[0])
 ```
 
