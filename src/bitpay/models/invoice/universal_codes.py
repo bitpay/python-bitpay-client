@@ -8,13 +8,16 @@ class UniversalCodes:
     """
     object containing wallet-specific URLs for payment protocol
     """
+
     __payment_string = None
     __verification_link = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % key_utils.change_camel_case_to_snake_case(key))(value)
+                getattr(
+                    self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
+                )(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -52,7 +55,7 @@ class UniversalCodes:
         """
         data = {
             "paymentString": self.get_payment_string(),
-            "verificationLink": self.get_verification_link()
+            "verificationLink": self.get_verification_link(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

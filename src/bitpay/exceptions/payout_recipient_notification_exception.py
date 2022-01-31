@@ -8,6 +8,7 @@ class PayoutRecipientNotificationException(PayoutRecipientException):
     """
     PayoutRecipientNotificationException
     """
+
     __bitpay_message = "Failed to send payout recipient notification"
     __bitpay_code = "BITPAY-PAYOUT-RECIPIENT-NOTIFICATION"
     __api_code = ""

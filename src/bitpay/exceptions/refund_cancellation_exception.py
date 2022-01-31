@@ -8,6 +8,7 @@ class RefundCancellationException(RefundException):
     """
     RefundCancellationException
     """
+
     __bitpay_message = "Failed to cancel refund object"
     __bitpay_code = "BITPAY-REFUND-CANCEL"
     __api_code = ""

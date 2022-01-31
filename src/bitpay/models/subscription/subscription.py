@@ -27,7 +27,7 @@ class Subscription:
                             value.append(klass(**obj))
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
 

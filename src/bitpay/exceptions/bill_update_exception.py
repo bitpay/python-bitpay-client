@@ -8,6 +8,7 @@ class BillUpdateException(BillException):
     """
     BillUpdateException
     """
+
     __bitpay_message = "Failed to update bill"
     __bitpay_code = "BITPAY-BILL-UPDATE"
     __api_code = ""

@@ -20,6 +20,7 @@ class Invoice:
     calculated by BitPay, at a locked exchange rate with an expiration
     time of 15 minutes.
     """
+
     __currency = ""
 
     __guid = ""
@@ -92,13 +93,21 @@ class Invoice:
 
     def __init__(self, price=None, currency=None, **kwargs):
 
-        self.__price = kwargs.get('price', "") if not price else price
-        self.__currency = kwargs.get('currency', "") if not currency else currency
+        self.__price = kwargs.get("price", "") if not price else price
+        self.__currency = kwargs.get("currency", "") if not currency else currency
 
         for key, value in kwargs.items():
             try:
-                if key in ["buyer", "buyerProvidedInfo", "shopper", "supportedTransactionCurrencies",
-                           "minerFees", "refundInfo", "universalCodes", "itemizedDetails"]:
+                if key in [
+                    "buyer",
+                    "buyerProvidedInfo",
+                    "shopper",
+                    "supportedTransactionCurrencies",
+                    "minerFees",
+                    "refundInfo",
+                    "universalCodes",
+                    "itemizedDetails",
+                ]:
                     klass = globals()[key[0].upper() + key[1:]]
 
                     if isinstance(value, list):
@@ -107,7 +116,7 @@ class Invoice:
                             value.append(klass(**obj))
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -636,7 +645,9 @@ class Invoice:
         """
         return self.__supported_transaction_currencies
 
-    def set_supported_transaction_currencies(self, supported_transaction_currencies: SupportedTransactionCurrencies):
+    def set_supported_transaction_currencies(
+        self, supported_transaction_currencies: SupportedTransactionCurrencies
+    ):
         """
         Set method for the supported_transaction_currencies
         :param supported_transaction_currencies: supported_transaction_currencies
@@ -916,12 +927,16 @@ class Invoice:
         """
         return self.__forced_buyer_selected_transaction_currency
 
-    def set_forced_buyer_selected_transaction_currency(self, forced_buyer_selected_transaction_currency):
+    def set_forced_buyer_selected_transaction_currency(
+        self, forced_buyer_selected_transaction_currency
+    ):
         """
         Set method for the forced_buyer_selected_transaction_currency
         :param forced_buyer_selected_transaction_currency: forced_buyer_selected_transaction_currency
         """
-        self.__forced_buyer_selected_transaction_currency = forced_buyer_selected_transaction_currency
+        self.__forced_buyer_selected_transaction_currency = (
+            forced_buyer_selected_transaction_currency
+        )
 
     def get_is_cancelled(self):
         """
@@ -1073,7 +1088,7 @@ class Invoice:
             "amountPaid": self.get_amount_paid(),
             "exchangeRates": self.get_exchange_rates(),
             "currentTime": self.get_current_time(),
-            "declinedAmount": self.get_declined_amount()
+            "declinedAmount": self.get_declined_amount(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

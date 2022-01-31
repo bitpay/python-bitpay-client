@@ -9,6 +9,7 @@ class LedgerEntry:
     """
     Ledger entry
     """
+
     __type = None
     __amount = None
     __code = None
@@ -32,14 +33,18 @@ class LedgerEntry:
         for key, value in kwargs.items():
             try:
                 if key in ["buyerFields"]:
-                    klass = Buyer if key == "buyerFields" else globals()[key[0].upper() + key[1:]]
+                    klass = (
+                        Buyer
+                        if key == "buyerFields"
+                        else globals()[key[0].upper() + key[1:]]
+                    )
                     if isinstance(value, list):
                         value = []
                         for obj in value:
                             value.append(klass(**obj))
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -272,7 +277,7 @@ class LedgerEntry:
             "buyerFields": self.get_buyer_fields().to_json(),
             "invoiceAmount": self.get_invoice_amount(),
             "invoiceCurrency": self.get_invoice_currency(),
-            "transactionCurrency": self.get_transaction_currency()
+            "transactionCurrency": self.get_transaction_currency(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

@@ -8,6 +8,7 @@ class PayoutRecipientUpdateException(PayoutRecipientException):
     """
     PayoutRecipientUpdateException
     """
+
     __bitpay_message = "Failed to update payout recipient"
     __bitpay_code = "BITPAY-PAYOUT-RECIPIENT-UPDATE"
     __api_code = ""

@@ -8,6 +8,7 @@ class Buyer:
     """
     Allows merchant to pass buyer related information in the invoice object
     """
+
     __name = ""
     __address1 = ""
     __address2 = ""
@@ -22,7 +23,7 @@ class Buyer:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 

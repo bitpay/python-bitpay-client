@@ -9,6 +9,7 @@ class RateException(BitPayException):
     """
     RateException
     """
+
     __bitpay_message = "An unexpected error occurred while trying to manage the rate"
     __bitpay_code = "BITPAY-RATES-GENERIC"
     __api_code = ""

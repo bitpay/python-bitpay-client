@@ -8,6 +8,7 @@ class PayoutRecipientCreationException(PayoutRecipientException):
     """
     PayoutRecipientCreationException
     """
+
     __bitpay_message = "Failed to create payout recipient"
     __bitpay_code = "BITPAY-PAYOUT-RECIPIENT-SUBMIT"
     __api_code = ""
@@ -23,4 +24,3 @@ class PayoutRecipientCreationException(PayoutRecipientException):
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
         super().__init__(message, code)
-

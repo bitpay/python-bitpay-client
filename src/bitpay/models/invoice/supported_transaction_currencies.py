@@ -8,6 +8,7 @@ class SupportedTransactionCurrencies:
     """
     currency selected for payment
     """
+
     __btc = SupportedTransactionCurrency()
     __bch = SupportedTransactionCurrency()
     __eth = SupportedTransactionCurrency()
@@ -22,10 +23,20 @@ class SupportedTransactionCurrencies:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "BUSD",
-                           "PAX", "XRP", "DOGE", "LTC"]:
+                if key in [
+                    "BTC",
+                    "BCH",
+                    "ETH",
+                    "USDC",
+                    "GUSD",
+                    "BUSD",
+                    "PAX",
+                    "XRP",
+                    "DOGE",
+                    "LTC",
+                ]:
                     value = SupportedTransactionCurrency(**value)
-                getattr(self, 'set_%s' % key.lower())(value)
+                getattr(self, "set_%s" % key.lower())(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -183,7 +194,7 @@ class SupportedTransactionCurrencies:
             "pax": self.get_pax(),
             "xrp": self.get_xrp(),
             "doge": self.get_doge(),
-            "ltc": self.get_ltc()
+            "ltc": self.get_ltc(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

@@ -8,6 +8,7 @@ class PayoutRecipientQueryException(InvoiceException):
     """
     PayoutRecipientQueryException
     """
+
     __bitpay_message = "Failed to retrieve payout recipient"
     __bitpay_code = "BITPAY-PAYOUT-RECIPIENT-GET"
     __api_code = ""

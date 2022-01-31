@@ -6,6 +6,7 @@ class Wallet(object):
     """
     supported wallets and supported currency details
     """
+
     __key = None
     __display_name = None
     __avatar = None
@@ -26,9 +27,11 @@ class Wallet(object):
                             value.append(klass(**obj))
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % key_utils.change_camel_case_to_snake_case(key))(value)
+                getattr(
+                    self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
+                )(value)
             except AttributeError as e:
-                print(e,key)
+                print(e, key)
 
     def get_key(self):
         """
@@ -105,10 +108,10 @@ class Wallet(object):
         :return: data in json
         """
         data = {
-            'key': self.get_key(),
-            'displayName': self.get_display_name(),
-            'avatar': self.get_avatar(),
-            'payPro': self.get_pay_pro(),
-            'currencies': self.get_currencies()
+            "key": self.get_key(),
+            "displayName": self.get_display_name(),
+            "avatar": self.get_avatar(),
+            "payPro": self.get_pay_pro(),
+            "currencies": self.get_currencies(),
         }
         return data

@@ -8,6 +8,7 @@ class RefundQueryException(RefundException):
     """
     RefundQueryException
     """
+
     __bitpay_message = "Failed to retrieve refund"
     __bitpay_code = "BITPAY-REFUND-GET"
     __api_code = ""
@@ -23,4 +24,3 @@ class RefundQueryException(RefundException):
         message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
         self.__api_code = api_code
         super().__init__(message, code)
-

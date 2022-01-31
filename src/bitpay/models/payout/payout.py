@@ -66,7 +66,7 @@ class Payout:
                         value = objs
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -497,7 +497,7 @@ class Payout:
             "supportPhone": self.get_support_phone(),
             "account": self.get_account(),
             "redirectUrl": self.get_redirect_url(),
-            "btc": self.get_btc()
+            "btc": self.get_btc(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

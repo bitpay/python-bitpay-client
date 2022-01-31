@@ -9,7 +9,10 @@ class SettlementException(BitPayException):
     """
     SettlementException
     """
-    __bitpay_message = "An unexpected error occurred while trying to manage the settlement"
+
+    __bitpay_message = (
+        "An unexpected error occurred while trying to manage the settlement"
+    )
     __bitpay_code = "BITPAY-SETTLEMENTS-GENERIC"
     __api_code = ""
 

@@ -8,6 +8,7 @@ class SubscriptionUpdateException(SubscriptionException):
     """
     SubscriptionUpdateException
     """
+
     __bitpay_message = "Failed to update subscription"
     __bitpay_code = "BITPAY-SUBSCRIPTION-UPDATE"
     __api_code = ""

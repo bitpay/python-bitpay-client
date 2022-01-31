@@ -8,6 +8,7 @@ class PayoutBatchQueryException(PayoutException):
     """
     PayoutBatchQueryException
     """
+
     __bitpay_message = "Failed to retrieve payout batch"
     __bitpay_code = "BITPAY-PAYOUT-BATCH-GET"
     __api_code = ""

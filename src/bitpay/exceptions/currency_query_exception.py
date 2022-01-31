@@ -8,6 +8,7 @@ class CurrencyQueryException(InvoiceException):
     """
     CurrencyQueryException
     """
+
     __bitpay_message = "Failed to retrieve currencies"
     __bitpay_code = "BITPAY-CURRENCY-GET"
     __api_code = ""

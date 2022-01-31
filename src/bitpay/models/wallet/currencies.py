@@ -6,6 +6,7 @@ class Currencies(object):
     """
     details of what currencies support payments for this wallet
     """
+
     __code = None
     __p2p = None
     __dapp_browser = None
@@ -21,7 +22,9 @@ class Currencies(object):
                 if key in ["qr"]:
                     klass = globals()[key[0].upper() + key[1:]]
                     value = klass(**value)
-                getattr(self, 'set_%s' % key_utils.change_camel_case_to_snake_case(key))(value)
+                getattr(
+                    self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
+                )(value)
             except AttributeError as e:
                 print(e)
 
@@ -128,12 +131,12 @@ class Currencies(object):
         :return: data in json
         """
         data = {
-            'code': self.get_code(),
-            'p2p': self.get_p2p(),
-            'dappBrowser': self.get_dapp_browser(),
-            'paypro': self.get_pay_pro(),
-            'qr': self.get_qr(),
-            'withdrawalFee': self.get_withdrawal_fee(),
-            'walletConnect': self.get_wallet_connect()
+            "code": self.get_code(),
+            "p2p": self.get_p2p(),
+            "dappBrowser": self.get_dapp_browser(),
+            "paypro": self.get_pay_pro(),
+            "qr": self.get_qr(),
+            "withdrawalFee": self.get_withdrawal_fee(),
+            "walletConnect": self.get_wallet_connect(),
         }
         return data

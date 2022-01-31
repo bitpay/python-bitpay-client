@@ -7,6 +7,7 @@ class BitPayException(Exception):
     """
     BitPayException
     """
+
     __bitpay_message = "Unexpected Bitpay exception."
     __bitpay_code = "BITPAY-GENERIC"
     __api_code = ""
@@ -25,6 +26,6 @@ class BitPayException(Exception):
 
     def get_api_code(self):
         """
-            :return: Error code provided by the BitPay REST API
+        :return: Error code provided by the BitPay REST API
         """
         return self.__api_code

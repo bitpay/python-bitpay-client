@@ -9,6 +9,7 @@ class RefundException(BitPayException):
     """
     RefundException
     """
+
     __bitpay_message = "An unexpected error occurred while trying to manage the refund"
     __bitpay_code = "BITPAY-REFUND-GENERIC"
     __api_code = ""

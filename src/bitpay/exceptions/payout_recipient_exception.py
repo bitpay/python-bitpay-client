@@ -9,7 +9,10 @@ class PayoutRecipientException(BitPayException):
     """
     PayoutRecipientException
     """
-    __bitpay_message = "An unexpected error occurred while trying to manage the payout recipient"
+
+    __bitpay_message = (
+        "An unexpected error occurred while trying to manage the payout recipient"
+    )
     __bitpay_code = "BITPAY-PAYOUT-RECIPIENT-GENERIC"
     __api_code = ""
 

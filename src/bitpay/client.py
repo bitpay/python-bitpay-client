@@ -58,21 +58,32 @@ from .exceptions.payoutbatch_creation_exception import PayoutBatchCreationExcept
 from .exceptions.subscription_creation_exception import SubscriptionCreationException
 from .exceptions.payout_recipient_query_exception import PayoutRecipientQueryException
 from .exceptions.payout_recipient_update_exception import PayoutRecipientUpdateException
-from .exceptions.payoutbatch_cancellation_exception import PayoutBatchCancellationException
-from .exceptions.payoutbatch_notification_exception import PayoutBatchNotificationException
-from .exceptions.payout_recipient_creation_exception import PayoutRecipientCreationException
-from .exceptions.payout_recipient_cancellation_exception import PayoutRecipientCancellationException
-from .exceptions.payout_recipient_notification_exception import PayoutRecipientNotificationException
+from .exceptions.payoutbatch_cancellation_exception import (
+    PayoutBatchCancellationException,
+)
+from .exceptions.payoutbatch_notification_exception import (
+    PayoutBatchNotificationException,
+)
+from .exceptions.payout_recipient_creation_exception import (
+    PayoutRecipientCreationException,
+)
+from .exceptions.payout_recipient_cancellation_exception import (
+    PayoutRecipientCancellationException,
+)
+from .exceptions.payout_recipient_notification_exception import (
+    PayoutRecipientNotificationException,
+)
 
 
 class Client:
     """
-     * Class Client
-     * @package Bitpay
-     * @author  Antonio Buedo
-     * @version 1.0.2201
-     * See bitpay.com/api for more information.
+    * Class Client
+    * @package Bitpay
+    * @author  Antonio Buedo
+    * @version 1.0.2201
+    * See bitpay.com/api for more information.
     """
+
     __configuration = None
     __env = None
     __ec_key = None
@@ -80,7 +91,9 @@ class Client:
     __currencies_info = []
     __restcli = None
 
-    def __init__(self, config_file_path, environment=None, private_key=None, tokens=None):
+    def __init__(
+        self, config_file_path, environment=None, private_key=None, tokens=None
+    ):
         try:
             if config_file_path:
                 self.build_config_from_file(config_file_path)
@@ -100,13 +113,17 @@ class Client:
 
             if os.path.exists(config_file_path):
                 try:
-                    read_file = open(config_file_path, 'r')
+                    read_file = open(config_file_path, "r")
                     json_data = json.loads(read_file.read())
-                    self.__env = json_data['BitPayConfiguration']['Environment']
-                    env_config = json_data["BitPayConfiguration"]["EnvConfig"][self.__env]
+                    self.__env = json_data["BitPayConfiguration"]["Environment"]
+                    env_config = json_data["BitPayConfiguration"]["EnvConfig"][
+                        self.__env
+                    ]
                     read_file.close()
                 except Exception as exe:
-                    raise BitPayException("Error when reading configuration file", str(exe))
+                    raise BitPayException(
+                        "Error when reading configuration file", str(exe)
+                    )
 
                 self.__configuration.set_environment(self.__env)
                 self.__configuration.set_envconfig({self.__env: env_config})
@@ -125,7 +142,7 @@ class Client:
             self.__configuration = Config()
 
             if os.path.exists(private_key_path):
-                read_file = open(private_key_path, 'r')
+                read_file = open(private_key_path, "r")
                 plain_private_key = read_file.read()
                 self.__ec_key = plain_private_key
                 read_file.close()
@@ -135,7 +152,7 @@ class Client:
             env_config = {
                 "PrivateKeyPath": private_key_path,
                 "PrivateKey": plain_private_key,
-                "ApiTokens": tokens
+                "ApiTokens": tokens,
             }
             self.__configuration.set_environment(self.__env)
             self.__configuration.set_envconfig({self.__env: env_config})
@@ -145,19 +162,26 @@ class Client:
     def init_keys(self):
         if not self.__ec_key:
             try:
-                private_key_path = self.__configuration.get_envconfig()[self.__env]["PrivateKeyPath"]
+                private_key_path = self.__configuration.get_envconfig()[self.__env][
+                    "PrivateKeyPath"
+                ]
                 if os.path.exists(private_key_path):
                     with open(private_key_path) as f:
                         self.__ec_key = f.read()
                 else:
-                    plain_private_key = self.__configuration.get_envconfig()[self.__env]["PrivateKey"]
+                    plain_private_key = self.__configuration.get_envconfig()[
+                        self.__env
+                    ]["PrivateKey"]
                     if plain_private_key:
                         self.__ec_key = plain_private_key
 
             except Exception as exe:
-                raise BitPayException("When trying to load private key. Make sure the "
-                                      "configuration details are correct and the private key"
-                                      " and tokens are valid: ", str(exe))
+                raise BitPayException(
+                    "When trying to load private key. Make sure the "
+                    "configuration details are correct and the private key"
+                    " and tokens are valid: ",
+                    str(exe),
+                )
 
     def init(self):
         try:
@@ -169,8 +193,10 @@ class Client:
             self.load_access_tokens()
             self.__currencies_info = self.load_currencies()
         except Exception as exe:
-            raise BitPayException("failed to deserialize BitPay server response"
-                                  " (Token array): ", str(exe))
+            raise BitPayException(
+                "failed to deserialize BitPay server response" " (Token array): ",
+                str(exe),
+            )
 
     def load_currencies(self):
         try:
@@ -181,7 +207,9 @@ class Client:
     def load_access_tokens(self):
         try:
             self.clear_access_token_cache()
-            self.__token_cache = self.__configuration.get_envconfig()[self.__env]["ApiTokens"]
+            self.__token_cache = self.__configuration.get_envconfig()[self.__env][
+                "ApiTokens"
+            ]
         except Exception as exe:
             raise BitPayException("When trying to load the tokens: ", str(exe))
 
@@ -192,8 +220,7 @@ class Client:
         try:
             return self.__token_cache[key]
         except Exception as exe:
-            raise BitPayException("There is no token for the specified key: "
-                                  , str(exe))
+            raise BitPayException("There is no token for the specified key: ", str(exe))
 
     # //////////////////////////////////////////////////////////////////////////////
     # //////////////////////////////////////////////////////////////////////////////
@@ -203,8 +230,9 @@ class Client:
     # //////////////////////////////////////////////////////////////////////////////
     # //////////////////////////////////////////////////////////////////////////////
 
-    def create_invoice(self, invoice: Invoice, facade: str = Facade.Merchant,
-                       sign_request: bool = True) -> Invoice:
+    def create_invoice(
+        self, invoice: Invoice, facade: str = Facade.Merchant, sign_request: bool = True
+    ) -> Invoice:
         """
         Create a BitPay invoice
 
@@ -221,21 +249,28 @@ class Client:
             invoice_json = invoice.to_json()
             response_json = self.__restcli.post("invoices", invoice_json, sign_request)
         except BitPayException as exe:
-            raise InvoiceCreationException("failed to serialize Invoice object : "
-                                           "%s" % str(exe), exe.get_api_code())
+            raise InvoiceCreationException(
+                "failed to serialize Invoice object : " "%s" % str(exe),
+                exe.get_api_code(),
+            )
         except Exception as exe:
-            raise InvoiceCreationException("failed to serialize Invoice object : %s" % str(exe))
+            raise InvoiceCreationException(
+                "failed to serialize Invoice object : %s" % str(exe)
+            )
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceCreationException("failed to deserialize BitPay server response "
-                                           "(Invoice) : %s" % str(exe))
+            raise InvoiceCreationException(
+                "failed to deserialize BitPay server response "
+                "(Invoice) : %s" % str(exe)
+            )
 
         return invoice
 
-    def get_invoice(self, invoice_id: str, facade: str = Facade.Merchant,
-                    sign_request: bool = True) -> Invoice:
+    def get_invoice(
+        self, invoice_id: str, facade: str = Facade.Merchant, sign_request: bool = True
+    ) -> Invoice:
         """
         Retrieve a BitPay invoice by invoice id using the specified facade.
         The client must have been previously authorized for the specified
@@ -251,25 +286,38 @@ class Client:
         """
         try:
             params = {"token": self.get_access_token(facade)}
-            response_json = self.__restcli.get("invoices/%s" % invoice_id, params, sign_request)
+            response_json = self.__restcli.get(
+                "invoices/%s" % invoice_id, params, sign_request
+            )
         except BitPayException as exe:
-            raise InvoiceQueryException("failed to serialize Invoice object : "
-                                        "%s" % str(exe), exe.get_api_code())
+            raise InvoiceQueryException(
+                "failed to serialize Invoice object : " "%s" % str(exe),
+                exe.get_api_code(),
+            )
         except Exception as exe:
-            raise InvoiceQueryException("failed to serialize Invoice object :"
-                                        " %s" % str(exe))
+            raise InvoiceQueryException(
+                "failed to serialize Invoice object :" " %s" % str(exe)
+            )
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceQueryException("failed to deserialize BitPay server response"
-                                        " (Invoice) : %s" % str(exe))
+            raise InvoiceQueryException(
+                "failed to deserialize BitPay server response"
+                " (Invoice) : %s" % str(exe)
+            )
 
         return invoice
 
-    def get_invoices(self, date_start: str, date_end: str, status: str = None,
-                     order_id: str = None, limit: int = None,
-                     offset: int = None) -> [Invoice]:
+    def get_invoices(
+        self,
+        date_start: str,
+        date_end: str,
+        status: str = None,
+        order_id: str = None,
+        limit: int = None,
+        offset: int = None,
+    ) -> [Invoice]:
         """
         Retrieve a collection of BitPay invoices.
 
@@ -286,8 +334,11 @@ class Client:
         :raises InvoiceQueryException
         """
         try:
-            params = {"token": self.get_access_token(Facade.Merchant),
-                      "dateStart": date_start, "date_end": date_end}
+            params = {
+                "token": self.get_access_token(Facade.Merchant),
+                "dateStart": date_start,
+                "date_end": date_end,
+            }
             if status:
                 params["status"] = status
             if order_id:
@@ -299,18 +350,23 @@ class Client:
 
             response_json = self.__restcli.get("invoices/", parameters=params)
         except BitPayException as exe:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s"
-                                        % str(exe), exe.get_api_code())
+            raise InvoiceQueryException(
+                "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
-            raise InvoiceQueryException("failed to serialize Invoice object : %s" % str(exe))
+            raise InvoiceQueryException(
+                "failed to serialize Invoice object : %s" % str(exe)
+            )
 
         try:
             invoices = []
             for invoice_data in response_json:
                 invoices.append(Invoice(**invoice_data))
         except Exception as exe:
-            raise InvoiceQueryException("failed to deserialize BitPay server "
-                                        "response (Invoice) : %s" % str(exe))
+            raise InvoiceQueryException(
+                "failed to deserialize BitPay server "
+                "response (Invoice) : %s" % str(exe)
+            )
 
         return invoices
 
@@ -326,20 +382,28 @@ class Client:
         :raises InvoiceUpdateException
         """
         try:
-            params = {'token': self.get_access_token(Facade.Merchant),
-                      'buyer_email': buyer_email}
+            params = {
+                "token": self.get_access_token(Facade.Merchant),
+                "buyer_email": buyer_email,
+            }
             response_json = self.__restcli.update("invoices/%s" % invoice_id, params)
         except BitPayException as exe:
-            raise InvoiceUpdateException("failed to serialize Invoice object :"
-                                         " %s" % str(exe), exe.get_api_code())
+            raise InvoiceUpdateException(
+                "failed to serialize Invoice object :" " %s" % str(exe),
+                exe.get_api_code(),
+            )
         except Exception as exe:
-            raise InvoiceUpdateException("failed to serialize Invoice object : %s" % str(exe))
+            raise InvoiceUpdateException(
+                "failed to serialize Invoice object : %s" % str(exe)
+            )
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceUpdateException("failed to deserialize BitPay server response"
-                                         " (Invoice) : %s" % str(exe))
+            raise InvoiceUpdateException(
+                "failed to deserialize BitPay server response"
+                " (Invoice) : %s" % str(exe)
+            )
 
         return invoice
 
@@ -354,19 +418,24 @@ class Client:
         :raises InvoiceCancellationException
         """
         try:
-            params = {'token': self.get_access_token(Facade.Merchant)}
+            params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.delete("invoices/%s" % invoice_id, params)
         except BitPayException as exe:
-            raise InvoiceCancellationException("failed to serialize Invoice object : %s" % str(exe),
-                                               exe.get_api_code())
+            raise InvoiceCancellationException(
+                "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
-            raise InvoiceCancellationException("failed to serialize Invoice object : %s" % str(exe))
+            raise InvoiceCancellationException(
+                "failed to serialize Invoice object : %s" % str(exe)
+            )
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceCancellationException("failed to deserialize BitPay server"
-                                               " response (Invoice) : %s" % str(exe))
+            raise InvoiceCancellationException(
+                "failed to deserialize BitPay server"
+                " response (Invoice) : %s" % str(exe)
+            )
         return invoice
 
     def request_invoice_notifications(self, invoice_id: str) -> bool:
@@ -382,20 +451,32 @@ class Client:
         try:
             invoice = self.get_invoice(invoice_id)
         except Exception as exe:
-            raise InvoiceNotificationException(f"Invoice with ID: " + {invoice_id} + " Not Found : ",
-                                               str(exe))
+            raise InvoiceNotificationException(
+                f"Invoice with ID: " + {invoice_id} + " Not Found : ", str(exe)
+            )
         params = {"token": invoice.get_token()}
 
         try:
-            response_json = self.__restcli.post("invoices/%s" % invoice_id + "/notifications", params)
+            response_json = self.__restcli.post(
+                "invoices/%s" % invoice_id + "/notifications", params
+            )
         except Exception as exe:
-            raise InvoiceNotificationException("failed to deserialize BitPay server"
-                                               " response (Invoice) : %s" % str(exe))
+            raise InvoiceNotificationException(
+                "failed to deserialize BitPay server"
+                " response (Invoice) : %s" % str(exe)
+            )
 
         return response_json.lower() == "success"
 
-    def create_refund(self, invoice_id: str, amount: float, currency: str, preview: bool = False,
-                      immediate: bool = False, buyer_pays_refund_fee: bool = False) -> Refund:
+    def create_refund(
+        self,
+        invoice_id: str,
+        amount: float,
+        currency: str,
+        preview: bool = False,
+        immediate: bool = False,
+        buyer_pays_refund_fee: bool = False,
+    ) -> Refund:
         """
         Create a refund for a BitPay invoice.
 
@@ -415,23 +496,33 @@ class Client:
         :raises RefundCreationException
         """
         try:
-            params = {"token": self.get_access_token(Facade.Merchant),
-                      "invoiceId": invoice_id, "amount": amount,
-                      "currency": currency, "preview": preview, "immediate": immediate,
-                      "buyerPaysRefundFee": buyer_pays_refund_fee}
+            params = {
+                "token": self.get_access_token(Facade.Merchant),
+                "invoiceId": invoice_id,
+                "amount": amount,
+                "currency": currency,
+                "preview": preview,
+                "immediate": immediate,
+                "buyerPaysRefundFee": buyer_pays_refund_fee,
+            }
 
             response_json = self.__restcli.post("refunds", params, True)
         except BitPayException as exe:
-            raise RefundCreationException("failed to serialize refund object :  %s" % str(exe),
-                                          exe.get_api_code())
+            raise RefundCreationException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
-            raise RefundCreationException("failed to serialize refund object : %s" % str(exe))
+            raise RefundCreationException(
+                "failed to serialize refund object : %s" % str(exe)
+            )
 
         try:
             refund = Refund(**response_json)
         except Exception as exe:
-            raise RefundCreationException("failed to deserialize BitPay server response"
-                                          " (Refund) : %s" % str(exe))
+            raise RefundCreationException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
 
         return refund
 
@@ -449,15 +540,18 @@ class Client:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.get("refunds/%s" % refund_id, params)
         except BitPayException as exe:
-            raise RefundQueryException("failed to serialize refund object :  %s" % str(exe),
-                                       exe.get_api_code())
+            raise RefundQueryException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
             raise RefundQueryException("failed to serialize refund object : %s" % exe)
         try:
             refund = Refund(**response_json)
         except Exception as exe:
-            raise RefundQueryException("failed to deserialize BitPay server response"
-                                       " (Refund) : %s" % str(exe))
+            raise RefundQueryException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
 
         return refund
 
@@ -472,21 +566,29 @@ class Client:
         :raises RefundQueryException
         """
         try:
-            params = {"token": self.get_access_token(Facade.Merchant), "invoiceId": invoice_id}
+            params = {
+                "token": self.get_access_token(Facade.Merchant),
+                "invoiceId": invoice_id,
+            }
             response_json = self.__restcli.get("refunds", params)
         except BitPayException as exe:
-            raise RefundQueryException("failed to serialize refund object :  %s" % str(exe),
-                                       exe.get_api_code())
+            raise RefundQueryException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
-            raise RefundQueryException("failed to serialize refund object : %s" % str(exe))
+            raise RefundQueryException(
+                "failed to serialize refund object : %s" % str(exe)
+            )
 
         try:
             refunds = []
             for refund_data in response_json:
                 refunds.append(Refund(**refund_data))
         except Exception as exe:
-            raise RefundQueryException("failed to deserialize BitPay server response"
-                                       " (Refund) : %s" % str(exe))
+            raise RefundQueryException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
 
         return refunds
 
@@ -506,16 +608,21 @@ class Client:
 
             response_json = self.__restcli.update("refunds/%s" % refund_id, params)
         except BitPayException as exe:
-            raise RefundUpdateException("failed to serialize refund object :  %s" % str(exe),
-                                        exe.get_api_code())
+            raise RefundUpdateException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
-            raise RefundUpdateException("failed to serialize refund object : %s" % str(exe))
+            raise RefundUpdateException(
+                "failed to serialize refund object : %s" % str(exe)
+            )
 
         try:
             refund = Refund(**response_json)
         except Exception as exe:
-            raise RefundUpdateException("failed to deserialize BitPay server response"
-                                        " (Refund) : %s" % str(exe))
+            raise RefundUpdateException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
 
         return refund
 
@@ -533,16 +640,21 @@ class Client:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.delete("refunds/%s" % refund_id, params)
         except BitPayException as exe:
-            raise RefundCancellationException("failed to serialize refund object :  %s" % str(exe),
-                                              exe.get_api_code())
+            raise RefundCancellationException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
-            raise RefundCancellationException("failed to serialize refund object : %s" % str(exe))
+            raise RefundCancellationException(
+                "failed to serialize refund object : %s" % str(exe)
+            )
 
         try:
             refund = Refund(**response_json)
         except Exception as exe:
-            raise RefundCancellationException("failed to deserialize BitPay server response"
-                                              " (Refund) : %s" % str(exe))
+            raise RefundCancellationException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
 
         return refund
 
@@ -558,18 +670,25 @@ class Client:
         """
         try:
             params = {"token": self.get_access_token(Facade.Merchant)}
-            response_json = self.__restcli.post("refunds/%s" % refund_id + "/notifications", params, True)
+            response_json = self.__restcli.post(
+                "refunds/%s" % refund_id + "/notifications", params, True
+            )
         except BitPayException as exe:
-            raise RefundNotificationException("failed to serialize refund object :  %s" % str(exe),
-                                              exe.get_api_code())
+            raise RefundNotificationException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
-            raise RefundNotificationException("failed to serialize refund object : %s" % str(exe))
+            raise RefundNotificationException(
+                "failed to serialize refund object : %s" % str(exe)
+            )
 
         try:
             result = response_json["status"].lower() == "success"
         except Exception as exe:
-            raise RefundNotificationException("failed to deserialize BitPay server response"
-                                              " (Refund) : %s" % str(exe))
+            raise RefundNotificationException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
 
         return result
 
@@ -585,22 +704,28 @@ class Client:
         try:
             response_json = self.__restcli.get("supportedWallets/", None, False)
         except BitPayException as exe:
-            raise WalletQueryException("failed to serialize wallet object :  %s" % str(exe),
-                                       exe.get_api_code())
+            raise WalletQueryException(
+                "failed to serialize wallet object :  %s" % str(exe), exe.get_api_code()
+            )
         except Exception as exe:
-            raise WalletQueryException("failed to serialize wallet object : %s" % str(exe))
+            raise WalletQueryException(
+                "failed to serialize wallet object : %s" % str(exe)
+            )
 
         try:
             wallets = []
             for wallet in response_json:
                 wallets.append(Wallet(**wallet))
         except Exception as exe:
-            raise WalletQueryException("failed to deserialize BitPay server response (Wallet) : %s" % str(exe))
+            raise WalletQueryException(
+                "failed to deserialize BitPay server response (Wallet) : %s" % str(exe)
+            )
 
         return wallets
 
-    def create_bill(self, bill: Bill, facade: str = Facade.Merchant,
-                    sign_request: bool = True) -> Bill:
+    def create_bill(
+        self, bill: Bill, facade: str = Facade.Merchant, sign_request: bool = True
+    ) -> Bill:
         """
         Create a BitPay Bill.
 
@@ -616,13 +741,16 @@ class Client:
             bill.set_token(self.get_access_token(facade))
             response_json = self.__restcli.post("bills", bill.to_json(), sign_request)
         except BitPayException as exe:
-            raise BillCreationException("failed to serialize bill object :  %s" % str(exe),
-                                        exe.get_api_code())
+            raise BillCreationException(
+                "failed to serialize bill object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             bill = Bill(**response_json)
         except Exception as exe:
-            raise BillCreationException("failed to deserialize BitPay server response (Bill) : %s" % str(exe))
+            raise BillCreationException(
+                "failed to deserialize BitPay server response (Bill) : %s" % str(exe)
+            )
 
         return bill
 
@@ -642,16 +770,18 @@ class Client:
                 params["status"] = status
             response_json = self.__restcli.get("bills", params, True)
         except BitPayException as exe:
-            raise BillQueryException("failed to serialize bill object :  %s" % str(exe),
-                                     exe.get_api_code())
+            raise BillQueryException(
+                "failed to serialize bill object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             bills = []
             for bill_data in response_json:
                 bills.append(Bill(**bill_data))
         except Exception as exe:
-            raise BillQueryException("failed to deserialize BitPay server response"
-                                     " (Bill) : %s" % str(exe))
+            raise BillQueryException(
+                "failed to deserialize BitPay server response" " (Bill) : %s" % str(exe)
+            )
 
         return bills
 
@@ -669,14 +799,16 @@ class Client:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.get("bills/%s" % bill_id, params)
         except BitPayException as exe:
-            raise BillQueryException("failed to serialize bill object :  %s" % str(exe),
-                                     exe.get_api_code())
+            raise BillQueryException(
+                "failed to serialize bill object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             bill = Bill(**response_json)
         except Exception as exe:
-            raise BillQueryException("failed to deserialize BitPay server response"
-                                     " (Bill) : %s" % str(exe))
+            raise BillQueryException(
+                "failed to deserialize BitPay server response" " (Bill) : %s" % str(exe)
+            )
         return bill
 
     def update_bill(self, bill: Bill, bill_id: str) -> Bill:
@@ -693,14 +825,16 @@ class Client:
         try:
             response_json = self.__restcli.update("bills/%s" % bill_id, bill.to_json())
         except BitPayException as exe:
-            raise BillUpdateException("failed to serialize bill object :  %s" % str(exe),
-                                      exe.get_api_code())
+            raise BillUpdateException(
+                "failed to serialize bill object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             bill = Bill(**response_json)
         except Exception as exe:
-            raise BillUpdateException("failed to deserialize BitPay server response"
-                                      " (Bill) : %s" % str(exe))
+            raise BillUpdateException(
+                "failed to deserialize BitPay server response" " (Bill) : %s" % str(exe)
+            )
         return bill
 
     def deliver_bill(self, bill_id: str, bill_token: str) -> bool:
@@ -715,22 +849,26 @@ class Client:
         :raises BillDeliveryException
         """
         try:
-            params = {
-                "token": bill_token
-            }
-            response_json = self.__restcli.post("bills/%s" % bill_id + "/deliveries", params)
+            params = {"token": bill_token}
+            response_json = self.__restcli.post(
+                "bills/%s" % bill_id + "/deliveries", params
+            )
         except BitPayException as exe:
-            raise BillDeliveryException("failed to serialize bill object :  %s" % str(exe),
-                                        exe.get_api_code())
+            raise BillDeliveryException(
+                "failed to serialize bill object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             result = response_json
         except Exception as exe:
-            raise BillDeliveryException("failed to deserialize BitPay server response"
-                                        " (Bill) : %s" % str(exe))
+            raise BillDeliveryException(
+                "failed to deserialize BitPay server response" " (Bill) : %s" % str(exe)
+            )
         return result
 
-    def get_ledger(self, currency: str, start_date: str, end_date: str) -> [LedgerEntry]:
+    def get_ledger(
+        self, currency: str, start_date: str, end_date: str
+    ) -> [LedgerEntry]:
         """
         Retrieve a list of ledgers by date range using the merchant facade.
 
@@ -754,16 +892,19 @@ class Client:
 
             response_json = self.__restcli.get("ledgers/%s" % currency, params)
         except BitPayException as exe:
-            raise LedgerQueryException("failed to serialize Ledger object :  %s" % str(exe),
-                                       exe.get_api_code())
+            raise LedgerQueryException(
+                "failed to serialize Ledger object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             ledgers = []
             for ledger in response_json:
                 ledgers.append(LedgerEntry(**ledger))
         except Exception as exe:
-            raise LedgerQueryException("failed to deserialize BitPay server response "
-                                       "(Ledger) : %s" % str(exe))
+            raise LedgerQueryException(
+                "failed to deserialize BitPay server response "
+                "(Ledger) : %s" % str(exe)
+            )
         return ledgers
 
     def get_ledgers(self) -> [Ledger]:
@@ -780,19 +921,24 @@ class Client:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.get("ledgers", params)
         except BitPayException as exe:
-            raise LedgerQueryException("failed to serialize Ledger object :  %s" % str(exe),
-                                       exe.get_api_code())
+            raise LedgerQueryException(
+                "failed to serialize Ledger object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             ledgers = []
             for ledger in response_json:
                 ledgers.append(Ledger(**ledger))
         except Exception as exe:
-            raise LedgerQueryException("failed to deserialize BitPay server response"
-                                       " (Ledger) : %s" % str(exe))
+            raise LedgerQueryException(
+                "failed to deserialize BitPay server response"
+                " (Ledger) : %s" % str(exe)
+            )
         return ledgers
 
-    def submit_payout_recipients(self, recipients: PayoutRecipients) -> [PayoutRecipient]:
+    def submit_payout_recipients(
+        self, recipients: PayoutRecipients
+    ) -> [PayoutRecipient]:
         """
         Submit BitPay Payout Recipients.
 
@@ -805,18 +951,24 @@ class Client:
         try:
             recipients.set_token(self.get_access_token(Facade.Payout))
 
-            response_json = self.__restcli.post("recipients", recipients.to_json(), True)
+            response_json = self.__restcli.post(
+                "recipients", recipients.to_json(), True
+            )
         except BitPayException as exe:
-            raise PayoutRecipientCreationException("failed to serialize PayoutRecipients object :  %s" % str(exe),
-                                                   exe.get_api_code())
+            raise PayoutRecipientCreationException(
+                "failed to serialize PayoutRecipients object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             recipients = []
             for recipient in response_json:
                 recipients.append(PayoutRecipient(**recipient))
         except Exception as exe:
-            raise PayoutRecipientCreationException("failed to deserialize BitPay server response "
-                                                   " (PayoutRecipients) : %s" % str(exe))
+            raise PayoutRecipientCreationException(
+                "failed to deserialize BitPay server response "
+                " (PayoutRecipients) : %s" % str(exe)
+            )
         return recipients
 
     def get_payout_recipient(self, recipient_id: str) -> PayoutRecipient:
@@ -834,18 +986,23 @@ class Client:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.get("recipients/%s" % recipient_id, params)
         except BitPayException as exe:
-            raise PayoutRecipientQueryException("failed to serialize PayoutRecipients object :  %s" % str(exe),
-                                                exe.get_api_code())
+            raise PayoutRecipientQueryException(
+                "failed to serialize PayoutRecipients object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             payout_recipient = PayoutRecipient(**response_json)
         except Exception as exe:
-            raise PayoutRecipientQueryException("failed to deserialize BitPay server response "
-                                                " (PayoutRecipients) : %s" % str(exe))
+            raise PayoutRecipientQueryException(
+                "failed to deserialize BitPay server response "
+                " (PayoutRecipients) : %s" % str(exe)
+            )
         return payout_recipient
 
-    def get_payout_recipients(self, status: str = None, limit: int = 100,
-                              offset: int = 0) -> [PayoutRecipient]:
+    def get_payout_recipients(
+        self, status: str = None, limit: int = 100, offset: int = 0
+    ) -> [PayoutRecipient]:
         """
         Retrieve a collection of BitPay Payout Recipients.
 
@@ -858,26 +1015,35 @@ class Client:
         :raises PayoutRecipientQueryException
         """
         try:
-            params = {"token": self.get_access_token(Facade.Payout),
-                      "limit": str(limit), "offset": str(offset)}
+            params = {
+                "token": self.get_access_token(Facade.Payout),
+                "limit": str(limit),
+                "offset": str(offset),
+            }
             if status:
                 params["status"] = status
 
             response_json = self.__restcli.get("recipients", params)
         except BitPayException as exe:
-            raise PayoutRecipientQueryException("failed to serialize PayoutRecipients object :  %s" % str(exe),
-                                                exe.get_api_code())
+            raise PayoutRecipientQueryException(
+                "failed to serialize PayoutRecipients object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             payout_recipients = []
             for payout_recipient in response_json:
                 payout_recipients.append(PayoutRecipient(**payout_recipient))
         except Exception as exe:
-            raise PayoutRecipientQueryException("failed to deserialize BitPay server response "
-                                                " (PayoutRecipients) : %s" % str(exe))
+            raise PayoutRecipientQueryException(
+                "failed to deserialize BitPay server response "
+                " (PayoutRecipients) : %s" % str(exe)
+            )
         return payout_recipients
 
-    def update_payout_recipient(self, recipient_id: str, recipient: PayoutRecipient) -> PayoutRecipient:
+    def update_payout_recipient(
+        self, recipient_id: str, recipient: PayoutRecipient
+    ) -> PayoutRecipient:
         """
         Update a Payout Recipient.
 
@@ -890,16 +1056,22 @@ class Client:
         """
         try:
             recipient.set_token(self.get_access_token(Facade.Payout))
-            response_json = self.__restcli.update("recipients/%s" % recipient_id, recipient.to_json())
+            response_json = self.__restcli.update(
+                "recipients/%s" % recipient_id, recipient.to_json()
+            )
         except BitPayException as exe:
-            raise PayoutRecipientUpdateException("failed to serialize PayoutRecipients object :  %s" % str(exe),
-                                                 exe.get_api_code())
+            raise PayoutRecipientUpdateException(
+                "failed to serialize PayoutRecipients object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             payout_recipient = PayoutRecipient(**response_json)
         except Exception as exe:
-            raise PayoutRecipientUpdateException("failed to deserialize BitPay server response "
-                                                 " (PayoutRecipients) : %s" % str(exe))
+            raise PayoutRecipientUpdateException(
+                "failed to deserialize BitPay server response "
+                " (PayoutRecipients) : %s" % str(exe)
+            )
         return payout_recipient
 
     def delete_payout_recipient(self, recipient_id: str) -> bool:
@@ -912,13 +1084,19 @@ class Client:
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
         except BitPayException as exe:
-            raise PayoutRecipientCancellationException("failed to serialize PayoutRecipients object :  %s" % str(exe),
-                                                       exe.get_api_code())
+            raise PayoutRecipientCancellationException(
+                "failed to serialize PayoutRecipients object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
         try:
-            response_json = self.__restcli.delete("recipients/%s" % recipient_id, params)
+            response_json = self.__restcli.delete(
+                "recipients/%s" % recipient_id, params
+            )
         except Exception as exe:
-            raise PayoutRecipientCancellationException("failed to deserialize BitPay server response "
-                                                       " (PayoutRecipients) : %s" % str(exe))
+            raise PayoutRecipientCancellationException(
+                "failed to deserialize BitPay server response "
+                " (PayoutRecipients) : %s" % str(exe)
+            )
         return response_json["status"].lower() == "success"
 
     def request_payout_recipient_notification(self, recipient_id: str) -> bool:
@@ -934,14 +1112,20 @@ class Client:
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
         except BitPayException as exe:
-            raise PayoutRecipientNotificationException("failed to serialize PayoutRecipients object :  %s" % str(exe),
-                                                       exe.get_api_code())
+            raise PayoutRecipientNotificationException(
+                "failed to serialize PayoutRecipients object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
-            response_json = self.__restcli.post("recipients/%s" % recipient_id + "/notifications", params)
+            response_json = self.__restcli.post(
+                "recipients/%s" % recipient_id + "/notifications", params
+            )
         except Exception as exe:
-            raise PayoutRecipientNotificationException("failed to deserialize BitPay server response "
-                                                       " (PayoutRecipients) : %s" % str(exe))
+            raise PayoutRecipientNotificationException(
+                "failed to deserialize BitPay server response "
+                " (PayoutRecipients) : %s" % str(exe)
+            )
         return response_json["status"].lower() == "success"
 
     def submit_payout(self, payout: Payout) -> Payout:
@@ -958,14 +1142,17 @@ class Client:
             payout.set_token(self.get_access_token(Facade.Payout))
             response_json = self.__restcli.post("payouts", payout.to_json(), True)
         except BitPayException as exe:
-            raise PayoutCreationException("failed to serialize Payout object :  %s" % str(exe),
-                                          exe.get_api_code())
+            raise PayoutCreationException(
+                "failed to serialize Payout object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             payout = Payout(**response_json)
         except Exception as exe:
-            raise PayoutCreationException("failed to deserialize BitPay server response "
-                                          " (Payout) : %s" % str(exe))
+            raise PayoutCreationException(
+                "failed to deserialize BitPay server response "
+                " (Payout) : %s" % str(exe)
+            )
         return payout
 
     def get_payout(self, payout_id: str) -> Payout:
@@ -983,19 +1170,28 @@ class Client:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.get("payouts/%s" % payout_id, params)
         except BitPayException as exe:
-            raise PayoutQueryException("failed to serialize Payout object :  %s" % str(exe),
-                                       exe.get_api_code())
+            raise PayoutQueryException(
+                "failed to serialize Payout object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             payout = Payout(**response_json)
         except Exception as exe:
-            raise PayoutQueryException("failed to deserialize BitPay server response "
-                                       " (Payout) : %s" % str(exe))
+            raise PayoutQueryException(
+                "failed to deserialize BitPay server response "
+                " (Payout) : %s" % str(exe)
+            )
         return payout
 
-    def get_payouts(self, start_date: str = None, end_date: str = None,
-                    status: str = None, reference: str = None, limit: int = None,
-                    offset: int = None) -> [Payout]:
+    def get_payouts(
+        self,
+        start_date: str = None,
+        end_date: str = None,
+        status: str = None,
+        reference: str = None,
+        limit: int = None,
+        offset: int = None,
+    ) -> [Payout]:
         """
         Retrieve a collection of BitPay payouts.
 
@@ -1027,16 +1223,19 @@ class Client:
 
             response_json = self.__restcli.get("payouts", params)
         except BitPayException as exe:
-            raise PayoutQueryException("failed to serialize Payout object :  %s" % str(exe),
-                                       exe.get_api_code())
+            raise PayoutQueryException(
+                "failed to serialize Payout object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             payouts = []
             for payout in response_json:
                 payouts.append(Payout(**payout))
         except Exception as exe:
-            raise PayoutQueryException("failed to deserialize BitPay server response "
-                                       " (Payout) : %s" % str(exe))
+            raise PayoutQueryException(
+                "failed to deserialize BitPay server response "
+                " (Payout) : %s" % str(exe)
+            )
         return payouts
 
     def cancel_payout(self, payout_id: str) -> bool:
@@ -1053,14 +1252,17 @@ class Client:
             params = {"token": self.get_access_token(Facade.Payout)}
             response_json = self.__restcli.delete("payouts/%s" % payout_id, params)
         except BitPayException as exe:
-            raise PayoutCancellationException("failed to serialize Payout object :  %s" % str(exe),
-                                              exe.get_api_code())
+            raise PayoutCancellationException(
+                "failed to serialize Payout object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             payout = Payout(**response_json)
         except Exception as exe:
-            raise PayoutCancellationException("failed to deserialize BitPay server response "
-                                              " (Payout) : %s" % str(exe))
+            raise PayoutCancellationException(
+                "failed to deserialize BitPay server response "
+                " (Payout) : %s" % str(exe)
+            )
         return payout
 
     def request_payout_notification(self, payout_id: str) -> bool:
@@ -1075,16 +1277,21 @@ class Client:
         """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
-            response_json = self.__restcli.post("payouts/%s" % payout_id + "/notifications", params)
+            response_json = self.__restcli.post(
+                "payouts/%s" % payout_id + "/notifications", params
+            )
         except BitPayException as exe:
-            raise PayoutNotificationException("failed to serialize Payout object :  %s" % str(exe),
-                                              exe.get_api_code())
+            raise PayoutNotificationException(
+                "failed to serialize Payout object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             payout = Payout(**response_json)
         except Exception as exe:
-            raise PayoutNotificationException("failed to deserialize BitPay server response "
-                                              " (Payout) : %s" % str(exe))
+            raise PayoutNotificationException(
+                "failed to deserialize BitPay server response "
+                " (Payout) : %s" % str(exe)
+            )
         return payout
 
     def submit_payout_batch(self, batch: PayoutBatch) -> PayoutBatch:
@@ -1102,14 +1309,18 @@ class Client:
 
             response_json = self.__restcli.post("payoutBatches", batch.to_json(), True)
         except BitPayException as exe:
-            raise PayoutBatchCreationException("failed to serialize PayoutBatch object :  %s" % str(exe),
-                                               exe.get_api_code())
+            raise PayoutBatchCreationException(
+                "failed to serialize PayoutBatch object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             payout_batch = PayoutBatch(**response_json)
         except Exception as exe:
-            raise PayoutBatchCreationException("failed to deserialize BitPay server response "
-                                               " (PayoutBatch) : %s" % str(exe))
+            raise PayoutBatchCreationException(
+                "failed to deserialize BitPay server response "
+                " (PayoutBatch) : %s" % str(exe)
+            )
         return payout_batch
 
     def get_payout_batch(self, payout_batch_id: str) -> PayoutBatch:
@@ -1125,20 +1336,31 @@ class Client:
         """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
-            response_json = self.__restcli.get("payoutBatches/%s" % payout_batch_id, params)
+            response_json = self.__restcli.get(
+                "payoutBatches/%s" % payout_batch_id, params
+            )
         except BitPayException as exe:
-            raise PayoutBatchQueryException("failed to serialize Payout object :  %s" % str(exe),
-                                            exe.get_api_code())
+            raise PayoutBatchQueryException(
+                "failed to serialize Payout object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             payout_batch = PayoutBatch(**response_json)
         except Exception as exe:
-            raise PayoutBatchQueryException("failed to deserialize BitPay server response "
-                                            " (Payout) : %s" % str(exe))
+            raise PayoutBatchQueryException(
+                "failed to deserialize BitPay server response "
+                " (Payout) : %s" % str(exe)
+            )
         return payout_batch
 
-    def get_payout_batches(self, start_date: str = None, end_date: str = None, status: str = None,
-                           limit: int = None, offset: int = None) -> [PayoutBatch]:
+    def get_payout_batches(
+        self,
+        start_date: str = None,
+        end_date: str = None,
+        status: str = None,
+        limit: int = None,
+        offset: int = None,
+    ) -> [PayoutBatch]:
         """
         Retrieve a collection of BitPay payout batches.
 
@@ -1167,16 +1389,20 @@ class Client:
 
             response_json = self.__restcli.get("payoutBatches", params)
         except BitPayException as exe:
-            raise PayoutBatchQueryException("failed to serialize PayoutBatch object :  %s" % str(exe),
-                                            exe.get_api_code())
+            raise PayoutBatchQueryException(
+                "failed to serialize PayoutBatch object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             payout_batches = []
             for payout_batch in response_json:
                 payout_batches.append(PayoutBatch(**payout_batch))
         except Exception as exe:
-            raise PayoutBatchQueryException("failed to deserialize BitPay server response "
-                                            " (PayoutBatch) : %s" % str(exe))
+            raise PayoutBatchQueryException(
+                "failed to deserialize BitPay server response "
+                " (PayoutBatch) : %s" % str(exe)
+            )
         return payout_batches
 
     def cancel_payout_batch(self, payout_batch_id: str) -> bool:
@@ -1191,16 +1417,22 @@ class Client:
         """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
-            response_json = self.__restcli.delete("payoutBatches/%s" % payout_batch_id, params)
+            response_json = self.__restcli.delete(
+                "payoutBatches/%s" % payout_batch_id, params
+            )
         except BitPayException as exe:
-            raise PayoutBatchCancellationException("failed to serialize PayoutBatch object :  %s" % str(exe),
-                                                   exe.get_api_code())
+            raise PayoutBatchCancellationException(
+                "failed to serialize PayoutBatch object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             payout_batch = PayoutBatch(**response_json)
         except Exception as exe:
-            raise PayoutBatchCancellationException("failed to deserialize BitPay server response "
-                                                   " (PayoutBatch) : %s" % str(exe))
+            raise PayoutBatchCancellationException(
+                "failed to deserialize BitPay server response "
+                " (PayoutBatch) : %s" % str(exe)
+            )
         return payout_batch
 
     def request_payout_batch_notification(self, payout_batch_id: str) -> bool:
@@ -1215,20 +1447,33 @@ class Client:
         """
         try:
             params = {"token": self.get_access_token(Facade.Payout)}
-            response_json = self.__restcli.post("payoutBatches/%s" % payout_batch_id + "/notifications", params)
+            response_json = self.__restcli.post(
+                "payoutBatches/%s" % payout_batch_id + "/notifications", params
+            )
         except BitPayException as exe:
-            raise PayoutBatchNotificationException("failed to serialize PayoutBatch object :  %s" % str(exe),
-                                                   exe.get_api_code())
+            raise PayoutBatchNotificationException(
+                "failed to serialize PayoutBatch object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             payout_batch = PayoutBatch(**response_json)
         except Exception as exe:
-            raise PayoutBatchNotificationException("failed to deserialize BitPay server response "
-                                                   " (PayoutBatch) : %s" % str(exe))
+            raise PayoutBatchNotificationException(
+                "failed to deserialize BitPay server response "
+                " (PayoutBatch) : %s" % str(exe)
+            )
         return payout_batch
 
-    def get_settlements(self, currency: str, date_start: str, date_end: str, status: str,
-                        limit: int = 100, offset: int = 0) -> [Settlement]:
+    def get_settlements(
+        self,
+        currency: str,
+        date_start: str,
+        date_end: str,
+        status: str,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> [Settlement]:
         """
         Retrieves settlement reports for the calling merchant filtered by query. The `limit`
         and `offset` parameters specify pages for large query sets.
@@ -1245,22 +1490,31 @@ class Client:
         :raises SettlementQueryException
         """
         try:
-            params = {"token": self.get_access_token(Facade.Merchant),
-                      "dateStart": date_start, "dateEnd": date_end,
-                      "currency": currency, "status": status, "limit": limit,
-                      "offset": offset}
+            params = {
+                "token": self.get_access_token(Facade.Merchant),
+                "dateStart": date_start,
+                "dateEnd": date_end,
+                "currency": currency,
+                "status": status,
+                "limit": limit,
+                "offset": offset,
+            }
             response_json = self.__restcli.get("settlements", params)
         except BitPayException as exe:
-            raise SettlementQueryException("failed to serialize Settlement object :  %s" % str(exe),
-                                           exe.get_api_code())
+            raise SettlementQueryException(
+                "failed to serialize Settlement object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             settlements = []
             for settlement in response_json:
                 settlements.append(Settlement(**settlement))
         except Exception as exe:
-            raise SettlementQueryException("failed to deserialize BitPay server response "
-                                           " (Settlement) : %s" % str(exe))
+            raise SettlementQueryException(
+                "failed to deserialize BitPay server response "
+                " (Settlement) : %s" % str(exe)
+            )
         return settlements
 
     def get_settlement(self, settlement_id: str) -> Settlement:
@@ -1277,17 +1531,23 @@ class Client:
             params = {"token": self.get_access_token(Facade.Merchant)}
             response_json = self.__restcli.get("settlements/%s" % settlement_id, params)
         except BitPayException as exe:
-            raise SettlementQueryException("failed to serialize Settlement object :  %s" % str(exe),
-                                           exe.get_api_code())
+            raise SettlementQueryException(
+                "failed to serialize Settlement object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             settlement = Settlement(**response_json)
         except Exception as exe:
-            raise SettlementQueryException("failed to deserialize BitPay server response "
-                                           " (Settlement) : %s" % str(exe))
+            raise SettlementQueryException(
+                "failed to deserialize BitPay server response "
+                " (Settlement) : %s" % str(exe)
+            )
         return settlement
 
-    def get_settlement_reconciliation_report(self, settlement: Settlement) -> Settlement:
+    def get_settlement_reconciliation_report(
+        self, settlement: Settlement
+    ) -> Settlement:
         """
         Gets a detailed reconciliation report of the activity within the settlement period
 
@@ -1299,17 +1559,22 @@ class Client:
         """
         try:
             params = {"token": settlement.get_token()}
-            response_json = self.__restcli.get("settlements/%s" % settlement.get_id() + "/reconciliationReport",
-                                               params)
+            response_json = self.__restcli.get(
+                "settlements/%s" % settlement.get_id() + "/reconciliationReport", params
+            )
         except BitPayException as exe:
-            raise SettlementQueryException("failed to serialize Settlement object :  %s" % str(exe),
-                                           exe.get_api_code())
+            raise SettlementQueryException(
+                "failed to serialize Settlement object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             settlement = Settlement(**response_json)
         except Exception as exe:
-            raise SettlementQueryException("failed to deserialize BitPay server response "
-                                           " (Settlement) : %s" % str(exe))
+            raise SettlementQueryException(
+                "failed to deserialize BitPay server response "
+                " (Settlement) : %s" % str(exe)
+            )
         return settlement
 
     def create_subscription(self, subscription: Subscription) -> Subscription:
@@ -1325,16 +1590,22 @@ class Client:
         try:
             subscription.set_token(self.get_access_token(Facade.Merchant))
 
-            response_json = self.__restcli.post("subscriptions", subscription.to_json(), True)
+            response_json = self.__restcli.post(
+                "subscriptions", subscription.to_json(), True
+            )
         except BitPayException as exe:
-            raise SubscriptionCreationException("failed to serialize Subscription object :  %s" % str(exe),
-                                                exe.get_api_code())
+            raise SubscriptionCreationException(
+                "failed to serialize Subscription object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             subscription = Subscription(**response_json)
         except Exception as exe:
-            raise SubscriptionCreationException("failed to deserialize BitPay server response "
-                                                " (Subscription) : %s" % str(exe))
+            raise SubscriptionCreationException(
+                "failed to deserialize BitPay server response "
+                " (Subscription) : %s" % str(exe)
+            )
         return subscription
 
     def get_subscription(self, subscription_id: str) -> Subscription:
@@ -1349,16 +1620,22 @@ class Client:
         """
         try:
             params = {"token": self.get_access_token(Facade.Merchant)}
-            response_json = self.__restcli.get("subscriptions/%s" % subscription_id, params)
+            response_json = self.__restcli.get(
+                "subscriptions/%s" % subscription_id, params
+            )
         except BitPayException as exe:
-            raise SubscriptionQueryException("failed to serialize Subscription object :  %s" % str(exe),
-                                             exe.get_api_code())
+            raise SubscriptionQueryException(
+                "failed to serialize Subscription object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             subscription = Subscription(**response_json)
         except Exception as exe:
-            raise SubscriptionQueryException("failed to deserialize BitPay server response "
-                                             " (Subscription) : %s" % str(exe))
+            raise SubscriptionQueryException(
+                "failed to deserialize BitPay server response "
+                " (Subscription) : %s" % str(exe)
+            )
         return subscription
 
     def get_subscriptions(self, status: str = None) -> [Subscription]:
@@ -1377,19 +1654,25 @@ class Client:
                 params["status"] = status
             response_json = self.__restcli.get("subscriptions", params)
         except BitPayException as exe:
-            raise SubscriptionQueryException("failed to serialize Subscription object :  %s" % str(exe),
-                                             exe.get_api_code())
+            raise SubscriptionQueryException(
+                "failed to serialize Subscription object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             subscriptions = []
             for subscription in response_json:
                 subscriptions.append(Subscription(**subscription))
         except Exception as exe:
-            raise SubscriptionQueryException("failed to deserialize BitPay server response "
-                                             " (Subscription) : %s" % str(exe))
+            raise SubscriptionQueryException(
+                "failed to deserialize BitPay server response "
+                " (Subscription) : %s" % str(exe)
+            )
         return subscriptions
 
-    def update_subscription(self, subscription: Subscription, subscription_id) -> Subscription:
+    def update_subscription(
+        self, subscription: Subscription, subscription_id
+    ) -> Subscription:
         """
         Update a BitPay Subscription.
 
@@ -1401,19 +1684,27 @@ class Client:
         :raises SubscriptionUpdateException
         """
         try:
-            subscription_token = self.get_subscription(subscription.get_id()).get_token()
+            subscription_token = self.get_subscription(
+                subscription.get_id()
+            ).get_token()
             subscription.set_token(subscription_token)
 
-            response_json = self.__restcli.update("subscriptions/%s" % subscription_id, subscription.to_json())
+            response_json = self.__restcli.update(
+                "subscriptions/%s" % subscription_id, subscription.to_json()
+            )
         except BitPayException as exe:
-            raise SubscriptionUpdateException("failed to serialize Subscription object :  %s" % str(exe),
-                                              exe.get_api_code())
+            raise SubscriptionUpdateException(
+                "failed to serialize Subscription object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             subscription = Subscription(**response_json)
         except Exception as exe:
-            raise SubscriptionUpdateException("failed to deserialize BitPay server response "
-                                              " (Subscription) : %s" % str(exe))
+            raise SubscriptionUpdateException(
+                "failed to deserialize BitPay server response "
+                " (Subscription) : %s" % str(exe)
+            )
         return subscription
 
     def get_currencies(self) -> [Currency]:
@@ -1428,16 +1719,20 @@ class Client:
         try:
             response_json = self.__restcli.get("currencies", None, False)
         except BitPayException as exe:
-            raise CurrencyQueryException("failed to serialize Currency object :  %s" % str(exe),
-                                         exe.get_api_code())
+            raise CurrencyQueryException(
+                "failed to serialize Currency object :  %s" % str(exe),
+                exe.get_api_code(),
+            )
 
         try:
             currencies = []
             for currency in response_json:
                 currencies.append(Currency(**currency))
         except Exception as exe:
-            raise CurrencyQueryException("failed to deserialize BitPay server response "
-                                         " (Currency) : %s" % str(exe))
+            raise CurrencyQueryException(
+                "failed to deserialize BitPay server response "
+                " (Currency) : %s" % str(exe)
+            )
         return currencies
 
     def get_rates(self) -> [Rates]:
@@ -1452,8 +1747,9 @@ class Client:
         try:
             response_json = self.__restcli.get("rates", None, False)
         except BitPayException as exe:
-            raise RateQueryException("failed to serialize Rates object :  %s" % str(exe),
-                                     exe.get_api_code())
+            raise RateQueryException(
+                "failed to serialize Rates object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             rates = []
@@ -1461,8 +1757,10 @@ class Client:
                 rates.append(Rate(**rate))
             rates = Rates(rates, self)
         except Exception as exe:
-            raise RateQueryException("failed to deserialize BitPay server response "
-                                     " (Rates) : %s" % str(exe))
+            raise RateQueryException(
+                "failed to deserialize BitPay server response "
+                " (Rates) : %s" % str(exe)
+            )
         return rates
 
     def get_currency_rates(self, base_currency: str) -> [Rates]:
@@ -1479,8 +1777,9 @@ class Client:
         try:
             response_json = self.__restcli.get("rates/%s" % base_currency, None, False)
         except BitPayException as exe:
-            raise RateQueryException("failed to serialize Rates object :  %s" % str(exe),
-                                     exe.get_api_code())
+            raise RateQueryException(
+                "failed to serialize Rates object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             rates = []
@@ -1488,8 +1787,10 @@ class Client:
                 rates.append(Rate(**rate))
             rates = Rates(rates, self)
         except Exception as exe:
-            raise RateQueryException("failed to deserialize BitPay server response "
-                                     " (Rates) : %s" % str(exe))
+            raise RateQueryException(
+                "failed to deserialize BitPay server response "
+                " (Rates) : %s" % str(exe)
+            )
         return rates
 
     def get_currency_pair_rate(self, base_currency: str, currency: str) -> Rate:
@@ -1505,15 +1806,19 @@ class Client:
         :raises RateQueryException
         """
         try:
-            response_json = self.__restcli.get("rates/%s" % base_currency + "/%s" % currency,
-                                               None, False)
+            response_json = self.__restcli.get(
+                "rates/%s" % base_currency + "/%s" % currency, None, False
+            )
         except BitPayException as exe:
-            raise RateQueryException("failed to serialize Rates object :  %s" % str(exe),
-                                     exe.get_api_code())
+            raise RateQueryException(
+                "failed to serialize Rates object :  %s" % str(exe), exe.get_api_code()
+            )
 
         try:
             rate = Rate(**response_json)
         except Exception as exe:
-            raise RateQueryException("failed to deserialize BitPay server response "
-                                     " (Rate) : %s" % str(exe))
+            raise RateQueryException(
+                "failed to deserialize BitPay server response "
+                " (Rate) : %s" % str(exe)
+            )
         return rate

@@ -32,7 +32,11 @@ class PayoutInstruction:
             for key, value in kwargs.items():
                 try:
                     if key in ["btc", "transactions"]:
-                        klass = PayoutInstructionTransaction if key == "transactions" else globals()[key[0].upper() + key[1:]]
+                        klass = (
+                            PayoutInstructionTransaction
+                            if key == "transactions"
+                            else globals()[key[0].upper() + key[1:]]
+                        )
 
                         if isinstance(value, list):
                             value = []
@@ -40,7 +44,9 @@ class PayoutInstruction:
                                 value.append(klass(**obj))
                         else:
                             value = klass(**value)
-                    getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                    getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(
+                        value
+                    )
                 except AttributeError as e:
                     print(e)
 
@@ -54,8 +60,9 @@ class PayoutInstruction:
                 elif RecipientReferenceMethod.SHOPPER_ID == method:
                     self.__shopper_id = method_value
             else:
-                raise PayoutCreationException("method code must be a type "
-                                              "of RecipientReferenceMethod")
+                raise PayoutCreationException(
+                    "method code must be a type " "of RecipientReferenceMethod"
+                )
         except Exception as exe:
             raise BitPayException(exe)
 
@@ -246,7 +253,7 @@ class PayoutInstruction:
             "btc": self.get_btc().to_json(),
             "transactions": transactions,
             "status": self.get_status(),
-            "payoutId": self.get_payout_id()
+            "payoutId": self.get_payout_id(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

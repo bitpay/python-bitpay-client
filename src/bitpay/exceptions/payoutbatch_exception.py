@@ -9,7 +9,10 @@ class PayoutBatchException(BitPayException):
     """
     PayoutBatchException
     """
-    __bitpay_message = "An unexpected error occurred while trying to manage the payout batch"
+
+    __bitpay_message = (
+        "An unexpected error occurred while trying to manage the payout batch"
+    )
     __bitpay_code = "BITPAY-PAYOUT-BATCH-GENERIC"
     __api_code = ""
 

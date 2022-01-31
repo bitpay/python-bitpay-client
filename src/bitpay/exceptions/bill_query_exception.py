@@ -8,6 +8,7 @@ class BillQueryException(BillException):
     """
     BillQueryException
     """
+
     __bitpay_message = "Failed to retrieve bill"
     __bitpay_code = "BITPAY-BILL-GET"
     __api_code = ""

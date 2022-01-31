@@ -7,6 +7,7 @@ class BillStatus:
     """
     Bill Status
     """
+
     Draft = "draft"
     Sent = "sent"
     New = "new"

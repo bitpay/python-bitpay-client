@@ -5,6 +5,7 @@ class RefundInfo:
     """
     Information about refund
     """
+
     __support_request = None
     __currency = None
     __amounts = None
@@ -12,7 +13,7 @@ class RefundInfo:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
 
@@ -65,6 +66,6 @@ class RefundInfo:
         data = {
             "supportRequest": self.get_support_request(),
             "amounts": self.get_amounts(),
-            "currency": self.get_currency()
+            "currency": self.get_currency(),
         }
         return data

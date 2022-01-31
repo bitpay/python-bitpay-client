@@ -31,7 +31,9 @@ class BillData:
         for key, value in kwargs.items():
             try:
                 if key in ["items"]:
-                    klass = Item if key == "items" else globals()[key[0].upper() + key[1:]]
+                    klass = (
+                        Item if key == "items" else globals()[key[0].upper() + key[1:]]
+                    )
 
                     if isinstance(value, list):
                         objs = []
@@ -40,7 +42,7 @@ class BillData:
                         value = objs
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
 
@@ -308,7 +310,7 @@ class BillData:
             "dueDate": self.get_due_date(),
             "passProcessingFee": self.get_pass_processing_fee(),
             "items": items,
-            "merchant": self.get_merchant()
+            "merchant": self.get_merchant(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

@@ -9,7 +9,10 @@ class SubscriptionException(BitPayException):
     """
     SubscriptionException
     """
-    __bitpay_message = "An unexpected error occurred while trying to manage the subscription"
+
+    __bitpay_message = (
+        "An unexpected error occurred while trying to manage the subscription"
+    )
     __bitpay_code = "BITPAY-SUBSCRIPTION-GENERIC"
     __api_code = ""
 

@@ -8,6 +8,7 @@ class BillCreationException(BillException):
     """
     BillCreationException
     """
+
     __bitpay_message = "Failed to create bill"
     __bitpay_code = "BITPAY-BILL-CREATE"
     __api_code = ""

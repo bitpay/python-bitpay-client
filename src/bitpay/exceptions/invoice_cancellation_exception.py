@@ -8,6 +8,7 @@ class InvoiceCancellationException(InvoiceException):
     """
     InvoiceCancellationException
     """
+
     __bitpay_message = "Failed to cancel invoice object"
     __bitpay_code = "BITPAY-INVOICE-CANCEL"
     __api_code = ""

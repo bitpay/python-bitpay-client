@@ -9,6 +9,7 @@ class InvoiceException(BitPayException):
     """
     InvoiceException
     """
+
     __bitpay_message = "An unexpected error occurred while trying to manage the invoice"
     __bitpay_code = "BITPAY-INVOICE-GENERIC"
     __api_code = ""

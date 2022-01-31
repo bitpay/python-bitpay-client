@@ -9,6 +9,7 @@ class WalletException(BitPayException):
     """
     WalletException
     """
+
     __bitpay_message = "An unexpected error occurred while trying to manage the wallet"
     __bitpay_code = "BITPAY-WALLET-GENERIC"
     __api_code = ""

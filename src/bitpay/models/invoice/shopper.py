@@ -8,12 +8,13 @@ class Shopper:
     """
     shopper
     """
+
     __user = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -35,7 +36,5 @@ class Shopper:
         """
         :return: data in json
         """
-        data = {
-            "user": self.get_user()
-        }
+        data = {"user": self.get_user()}
         return data

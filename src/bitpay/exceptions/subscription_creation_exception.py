@@ -8,6 +8,7 @@ class SubscriptionCreationException(SubscriptionException):
     """
     SubscriptionCreationException
     """
+
     __bitpay_message = "Failed to retrieve subscriptions"
     __bitpay_code = "BITPAY-SUBSCRIPTION-CREATE"
     __api_code = ""

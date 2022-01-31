@@ -13,6 +13,7 @@ class Bill:
     Bill line items have fixed prices, typically denominated
     in fiat currency.
     """
+
     __currency = None
     __token = ""
     __email = None
@@ -46,7 +47,9 @@ class Bill:
         for key, value in kwargs.items():
             try:
                 if key in ["items"]:
-                    klass = Item if key == "items" else globals()[key[0].upper() + key[1:]]
+                    klass = (
+                        Item if key == "items" else globals()[key[0].upper() + key[1:]]
+                    )
 
                     if isinstance(value, list):
                         objs = []
@@ -55,7 +58,7 @@ class Bill:
                         value = objs
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -413,7 +416,7 @@ class Bill:
             "delivered": self.get_delivered(),
             "emailBill": self.get_email_bill(),
             "id": self.get_id(),
-            "merchant": self.get_merchant()
+            "merchant": self.get_merchant(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

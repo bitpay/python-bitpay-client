@@ -9,6 +9,7 @@ class BillException(BitPayException):
     """
     BillException
     """
+
     __bitpay_message = "An unexpected error occurred while trying to manage the bill"
     __bitpay_code = "BITPAY-BILL-GENERIC"
     __api_code = ""

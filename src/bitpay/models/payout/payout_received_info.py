@@ -10,7 +10,7 @@ class PayoutReceivedInfo:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
 
@@ -63,6 +63,6 @@ class PayoutReceivedInfo:
         data = {
             "name": self.get_name(),
             "email": self.get_email(),
-            "address": self.get_address()
+            "address": self.get_address(),
         }
         return data

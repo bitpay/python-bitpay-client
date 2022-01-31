@@ -8,6 +8,7 @@ class InvoiceNotificationException(InvoiceException):
     """
     InvoiceNotificationException
     """
+
     __bitpay_message = "Failed to send invoice notification"
     __bitpay_code = "BITPAY-INVOICE-NOTIFICATION"
     __api_code = ""

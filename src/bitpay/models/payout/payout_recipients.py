@@ -61,7 +61,7 @@ class PayoutRecipients:
         data = {
             "guid": self.get_guid(),
             "token": self.get_token(),
-            "recipients": recipients
+            "recipients": recipients,
         }
         data = {key: value for key, value in data.items() if value}
         return data

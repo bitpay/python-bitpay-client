@@ -8,6 +8,7 @@ class RefundNotificationException(RefundException):
     """
     RefundNotificationException
     """
+
     __bitpay_message = "Failed to send refund notification"
     __bitpay_code = "BITPAY-REFUND-NOTIFICATION"
     __api_code = ""

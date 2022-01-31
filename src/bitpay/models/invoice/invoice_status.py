@@ -7,6 +7,7 @@ class InvoiceStatus:
     """
     Invoice Status
     """
+
     New = "new"
     Paid = "paid"
     Confirmed = "confirmed"

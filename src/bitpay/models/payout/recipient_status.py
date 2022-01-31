@@ -1,7 +1,8 @@
 class RecipientStatus:
     """
-        Recipient Status
+    Recipient Status
     """
+
     INVITED = "invited"
     UNVERIFIED = "unverified"
     VERIFIED = "verified"

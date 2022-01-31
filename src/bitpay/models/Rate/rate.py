@@ -8,6 +8,7 @@ class Rate:
     """
     Rate
     """
+
     __name = None
     __code = None
     __rate = None
@@ -15,7 +16,7 @@ class Rate:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -68,6 +69,6 @@ class Rate:
         data = {
             "name": self.get_name(),
             "code": self.get_code(),
-            "rate": self.get_rate()
+            "rate": self.get_rate(),
         }
         return data

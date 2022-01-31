@@ -8,6 +8,7 @@ class InvoiceQueryException(InvoiceException):
     """
     InvoiceQueryException
     """
+
     __bitpay_message = "Failed to retrieve invoice"
     __bitpay_code = "BITPAY-INVOICE-GET"
     __api_code = ""

@@ -10,7 +10,7 @@ class PayoutInstructionTransaction:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
 
@@ -78,6 +78,6 @@ class PayoutInstructionTransaction:
             "txid": self.get_txid(),
             "amount": self.get_amount(),
             "date": self.get_date(),
-            "confirmations": self.get_confirmations()
+            "confirmations": self.get_confirmations(),
         }
         return data

@@ -8,6 +8,7 @@ class RateQueryException(RateException):
     """
     RateQueryException
     """
+
     __bitpay_message = "Failed to retrieve rates"
     __bitpay_code = "BITPAY-RATES-GET"
     __api_code = ""

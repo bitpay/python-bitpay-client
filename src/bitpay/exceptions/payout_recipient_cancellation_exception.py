@@ -8,6 +8,7 @@ class PayoutRecipientCancellationException(PayoutRecipientException):
     """
     PayoutRecipientCancellationException
     """
+
     __bitpay_message = "Failed to cancel payout recipient"
     __bitpay_code = "BITPAY-PAYOUT-RECIPIENT-CANCEL"
     __api_code = ""

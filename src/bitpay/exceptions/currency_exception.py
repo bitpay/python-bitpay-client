@@ -9,7 +9,10 @@ class CurrencyException(BitPayException):
     """
     CurrencyException
     """
-    __bitpay_message = "An unexpected error occurred while trying to manage the currency"
+
+    __bitpay_message = (
+        "An unexpected error occurred while trying to manage the currency"
+    )
     __bitpay_code = "BITPAY-CURRENCY-GENERIC"
     __api_code = ""
 

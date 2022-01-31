@@ -28,12 +28,14 @@ def get_compressed_public_key_from_pem(pem):
 def sign(message, pem):
     message = message.encode()
     sk = SigningKey.from_pem(pem)
-    signed = sk.sign(message, hashfunc=hashlib.sha256, sigencode=ecdsaUtil.sigencode_der)
+    signed = sk.sign(
+        message, hashfunc=hashlib.sha256, sigencode=ecdsaUtil.sigencode_der
+    )
     return binascii.hexlify(signed).decode()
 
 
 def base58encode(hexastring):
-    chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+    chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     int_val = int(hexastring, 16)
     encoded = encode58("", int_val, chars)
     return encoded
@@ -54,10 +56,10 @@ def get_checksum_from_version(version):
 
 def get_version_from_compressed_key(key):
     sh2 = sha_digest(key)
-    rphash = hashlib.new('ripemd160')
+    rphash = hashlib.new("ripemd160")
     rphash.update(binascii.unhexlify(sh2))
     rp1 = rphash.hexdigest()
-    return '0F02' + rp1
+    return "0F02" + rp1
 
 
 def sha_digest(hexastring):
@@ -72,13 +74,14 @@ def compress_key(bts):
 
 def find_prefix(intval):
     if intval % 2 == 0:
-        prefix = '02'
+        prefix = "02"
     else:
-        prefix = '03'
+        prefix = "03"
     return prefix
 
 
 def change_camel_case_to_snake_case(string):
-    snake_case = ''.join(['_' + i.lower() if i.isupper()
-                          else i for i in string]).lstrip('_')
+    snake_case = "".join(
+        ["_" + i.lower() if i.isupper() else i for i in string]
+    ).lstrip("_")
     return snake_case

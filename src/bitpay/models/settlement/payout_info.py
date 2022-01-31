@@ -33,7 +33,9 @@ class PayoutInfo:
                 if key == "merchantEIN":
                     self.set_merchant_ein(value)
                 else:
-                    getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                    getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(
+                        value
+                    )
             except AttributeError as e:
                 print(e)
 
@@ -397,7 +399,7 @@ class PayoutInfo:
             "accountHolderAddress2": self.get_account_holder_address2(),
             "accountHolderPostalCode": self.get_account_holder_postal_code(),
             "accountHolderCity": self.get_account_holder_city(),
-            "accountHolderCountry": self.get_account_holder_country()
+            "accountHolderCountry": self.get_account_holder_country(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

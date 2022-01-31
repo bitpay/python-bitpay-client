@@ -6,6 +6,7 @@ class InvoiceData:
     """
     invoice data
     """
+
     __order_id = None
     __date = None
     __price = None
@@ -14,9 +15,9 @@ class InvoiceData:
     __over_paid_amount = None
     __payout_percentage = None
     __btc_price = None
-    '''
+    """
     RefundInfo
-    '''
+    """
     __refund_info = None
 
     def __init__(self, **kwargs):
@@ -31,7 +32,7 @@ class InvoiceData:
                             value.append(klass(**obj))
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
 
@@ -173,7 +174,7 @@ class InvoiceData:
             "transactionCurrency": self.get_transaction_currency(),
             "payoutPercentage": self.get_payout_percentage(),
             "refundInfo": self.get_refund_info().to_json(),
-            "btcPrice": self.get_btc_price()
+            "btcPrice": self.get_btc_price(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

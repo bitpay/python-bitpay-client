@@ -29,7 +29,11 @@ class Settlement:
             try:
 
                 if key in ["withHoldings", "ledgerEntries", "payoutInfo"]:
-                    klass = SettlementLedgerEntry if key == "ledgerEntries" else globals()[key[0].upper() + key[1:]]
+                    klass = (
+                        SettlementLedgerEntry
+                        if key == "ledgerEntries"
+                        else globals()[key[0].upper() + key[1:]]
+                    )
 
                     if isinstance(value, list):
                         value = []
@@ -37,7 +41,7 @@ class Settlement:
                             value.append(klass(**obj))
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
 
@@ -321,7 +325,7 @@ class Settlement:
             "withHoldingsSum": self.get_withholdings_sum(),
             "totalAmount": self.get_total_amount(),
             "ledgerEntries": ledger_entries,
-            "token": self.get_token()
+            "token": self.get_token(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

@@ -11,6 +11,7 @@ class MinerFeesItem:
       an amount in satoshis. This is referenced as "Network Cost" on an invoice,
     see this support article for more information
     """
+
     __satoshis_per_byte = None
     __total_fee = None
     __fiat_amount = None
@@ -18,7 +19,7 @@ class MinerFeesItem:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -71,7 +72,7 @@ class MinerFeesItem:
         data = {
             "satoshisPerByte": self.get_satoshis_per_byte(),
             "totalFee": self.get_total_fee(),
-            "fiatAmount": self.get_fiat_amount()
+            "fiatAmount": self.get_fiat_amount(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

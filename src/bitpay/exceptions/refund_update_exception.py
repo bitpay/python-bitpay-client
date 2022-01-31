@@ -8,6 +8,7 @@ class RefundUpdateException(RefundException):
     """
     RefundUpdateException
     """
+
     __bitpay_message = "Failed to update refund"
     __bitpay_code = "BITPAY-REFUND-UPDATE"
     __api_code = ""

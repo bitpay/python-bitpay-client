@@ -2,6 +2,7 @@ class CurrencyQr:
     """
     Currency Qr
     """
+
     __type = None
     __collapsed = None
 
@@ -40,8 +41,5 @@ class CurrencyQr:
         """
         :return: data in json
         """
-        data = {
-            "type": self.get_type(),
-            "collapsed": self.get_collapsed()
-        }
+        data = {"type": self.get_type(), "collapsed": self.get_collapsed()}
         return data

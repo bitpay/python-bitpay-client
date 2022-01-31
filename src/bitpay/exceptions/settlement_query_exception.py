@@ -8,6 +8,7 @@ class SettlementQueryException(SettlementException):
     """
     SettlementQueryException
     """
+
     __bitpay_message = "Failed to retrieve settlements"
     __bitpay_code = "BITPAY-SETTLEMENTS-GET"
     __api_code = ""

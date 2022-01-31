@@ -8,6 +8,7 @@ class InvoiceUpdateException(InvoiceException):
     """
     InvoiceUpdateException
     """
+
     __bitpay_message = "Failed to update invoice"
     __bitpay_code = "BITPAY-INVOICE-UPDATE"
     __api_code = ""

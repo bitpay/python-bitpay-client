@@ -9,6 +9,7 @@ class LedgerException(BitPayException):
     """
     LedgerException
     """
+
     __bitpay_message = "An unexpected error occurred while trying to manage the ledger"
     __bitpay_code = "BITPAY-LEDGER-GENERIC"
     __api_code = ""

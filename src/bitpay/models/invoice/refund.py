@@ -9,6 +9,7 @@ class Refund:
     """
     Refund an invoice
     """
+
     __guid = None
     __refund_email = None
     __amount = None
@@ -27,8 +28,14 @@ class Refund:
     __last_refund_notification = None
     __invoice = None
 
-    def __init__(self, refund_email: str = "", amount: float = 0.0,
-                 currency: str = "", token: str = "", **kwargs):
+    def __init__(
+        self,
+        refund_email: str = "",
+        amount: float = 0.0,
+        currency: str = "",
+        token: str = "",
+        **kwargs
+    ):
         self.__refund_email = refund_email
         self.__amount = amount
         self.__currency = currency
@@ -40,7 +47,9 @@ class Refund:
                 if key in ["refundParams"]:
                     klass = globals()[key[0].upper() + key[1:]]
                     value = klass(**value)
-                getattr(self, 'set_%s' % key_utils.change_camel_case_to_snake_case(key))(value)
+                getattr(
+                    self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
+                )(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -288,7 +297,7 @@ class Refund:
             "invoice": self.get_invoice(),
             "immediate": self.get_immediate(),
             "preview": self.get_preview(),
-            "invoiceId": self.get_invoice_id()
+            "invoiceId": self.get_invoice_id(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

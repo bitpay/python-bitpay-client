@@ -40,7 +40,9 @@ class PayoutBatch:
     __ignore_emails = None
     __guid = None
 
-    def __init__(self, currency=None, effective_date=None, ledger_currency=None, **kwargs):
+    def __init__(
+        self, currency=None, effective_date=None, ledger_currency=None, **kwargs
+    ):
         self.__currency = currency
         self.__effective_date = effective_date
         self.__ledger_currency = ledger_currency
@@ -49,19 +51,22 @@ class PayoutBatch:
             try:
                 if key in ["instructions"]:
 
-                    klass = PayoutInstruction if key == "instructions" \
+                    klass = (
+                        PayoutInstruction
+                        if key == "instructions"
                         else globals()[key[0].upper() + key[1:]]
+                    )
 
                     if isinstance(value, list):
                         objs = []
                         for obj in value:
-                            obj["method"]= 100 # Just skip the method check
+                            obj["method"] = 100  # Just skip the method check
                             obj["method_value"] = None
                             objs.append(klass(**obj))
                         value = objs
                     else:
                         value = klass(**value)
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
         self.compute_and_set_amount()
@@ -520,7 +525,7 @@ class PayoutBatch:
             "supportPhone": self.get_support_phone(),
             "account": self.get_account(),
             "redirectUrl": self.get_redirect_url(),
-            "btc": self.get_btc()
+            "btc": self.get_btc(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

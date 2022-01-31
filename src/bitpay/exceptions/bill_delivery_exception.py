@@ -8,6 +8,7 @@ class BillDeliveryException(BillException):
     """
     BillDeliveryException
     """
+
     __bitpay_message = "Failed to deliver bill"
     __bitpay_code = "BITPAY-BILL-DELIVERY"
     __api_code = ""

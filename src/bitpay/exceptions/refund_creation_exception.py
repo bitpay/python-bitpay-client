@@ -8,6 +8,7 @@ class RefundCreationException(RefundException):
     """
     RefundCreationException
     """
+
     __bitpay_message = "Failed to create refund"
     __bitpay_code = "BITPAY-REFUND-CREATE"
     __api_code = ""

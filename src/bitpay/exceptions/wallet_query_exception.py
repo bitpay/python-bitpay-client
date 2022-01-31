@@ -8,6 +8,7 @@ class WalletQueryException(WalletException):
     """
     WalletQueryException
     """
+
     __bitpay_message = "Failed to retrieve supported wallets"
     __bitpay_code = "BITPAY-WALLET-GET"
     __api_code = ""

@@ -29,7 +29,7 @@ class MinerFees:
             try:
                 if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX", "BUSD", "XRP"]:
                     value = MinerFeesItem(**value)
-                getattr(self, 'set_%s' % key.lower())(value)
+                getattr(self, "set_%s" % key.lower())(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -187,7 +187,7 @@ class MinerFees:
             "doge": self.get_doge(),
             "ltc": self.get_ltc(),
             "xrp": self.get_xrp(),
-            "busd": self.get_busd()
+            "busd": self.get_busd(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

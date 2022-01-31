@@ -9,7 +9,7 @@ class Item:
     def __init__(self, price=0.0, quantity=0, description="", **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as e:
                 print(e)
         self.__price = price
@@ -65,6 +65,6 @@ class Item:
         data = {
             "price": self.get_price(),
             "description": self.get_description(),
-            "quantity": self.get_quantity()
+            "quantity": self.get_quantity(),
         }
         return data

@@ -8,6 +8,7 @@ class PayoutCancellationException(PayoutException):
     """
     PayoutCancellationException
     """
+
     __bitpay_message = "Failed to cancel payout object"
     __bitpay_code = "BITPAY-PAYOUT-CANCEL"
     __api_code = ""

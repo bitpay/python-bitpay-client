@@ -8,6 +8,7 @@ class PayoutCreationException(PayoutException):
     """
     PayoutCreationException
     """
+
     __bitpay_message = "Failed to create payout"
     __bitpay_code = "BITPAY-PAYOUT-CREATE"
     __api_code = ""

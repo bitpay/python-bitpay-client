@@ -8,13 +8,14 @@ class SupportedTransactionCurrency:
     """
     currency selected for payment is enabled
     """
+
     __enabled = None
     __reason = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(exe)
 
@@ -51,8 +52,5 @@ class SupportedTransactionCurrency:
         data in json
         :return:
         """
-        data = {
-            "enabled": self.get_enabled(),
-            "reason": self.get_reason()
-        }
+        data = {"enabled": self.get_enabled(), "reason": self.get_reason()}
         return data

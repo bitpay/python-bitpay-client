@@ -8,6 +8,7 @@ class InvoiceCreationException(InvoiceException):
     """
     InvoiceCreationException
     """
+
     __bitpay_message = "Failed to create invoice"
     __bitpay_code = "BITPAY-INVOICE-CREATE"
     __api_code = ""

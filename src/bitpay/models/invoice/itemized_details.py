@@ -16,7 +16,9 @@ class ItemizedDetails:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % key_utils.change_camel_case_to_snake_case(key))(value)
+                getattr(
+                    self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
+                )(value)
             except AttributeError as exe:
                 print(e)
 
@@ -69,7 +71,7 @@ class ItemizedDetails:
         data = {
             "amount": self.get_amount(),
             "description": self.get_description(),
-            "is_fee": self.get_is_fee()
+            "is_fee": self.get_is_fee(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

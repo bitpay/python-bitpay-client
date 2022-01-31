@@ -19,7 +19,9 @@ class PayoutRecipient:
                 if key == "notificationURL":
                     self.set_notification_url(value)
                 else:
-                    getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                    getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(
+                        value
+                    )
             except AttributeError as e:
                 print(e)
 
@@ -160,7 +162,7 @@ class PayoutRecipient:
             "status": self.get_status(),
             "id": self.get_id(),
             "shopperId": self.get_shopper_id(),
-            "token": self.get_token()
+            "token": self.get_token(),
         }
         data = {key: value for key, value in data.items() if value}
         return data

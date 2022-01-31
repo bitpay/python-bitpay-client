@@ -8,6 +8,7 @@ class Ledger:
     """
     Ledgers are records of money movement.
     """
+
     __currency = None
     __balance = None
     __parent = None
@@ -15,7 +16,7 @@ class Ledger:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                getattr(self, 'set_%s' % change_camel_case_to_snake_case(key))(value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError as exe:
                 print(e)
 

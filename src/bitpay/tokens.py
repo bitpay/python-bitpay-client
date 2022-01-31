@@ -44,7 +44,9 @@ class Tokens:
         if token:
             return token
 
-        raise Exception("given facade does not exist or no token defined for the given facade")
+        raise Exception(
+            "given facade does not exist or no token defined for the given facade"
+        )
 
     def get_merchant_token(self):
         """

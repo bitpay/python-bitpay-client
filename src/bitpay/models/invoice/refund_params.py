@@ -7,6 +7,7 @@ class RefundParams:
     """
     Refund Params
     """
+
     __requester_type = ""
     __requester_email = ""
     __amount = 0.0

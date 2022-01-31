@@ -8,6 +8,7 @@ class LedgerQueryException(LedgerException):
     """
     LedgerQueryException
     """
+
     __bitpay_message = "Failed to retrieve ledger"
     __bitpay_code = "BITPAY-LEDGER-GET"
     __api_code = ""
