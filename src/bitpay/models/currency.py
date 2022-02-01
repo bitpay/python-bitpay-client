@@ -214,15 +214,15 @@ class Currency:
     def is_valid(cls, value):
         try:
             return hasattr(Currency(), value)
-        except Exception as exe:
+        except Exception:
             return False
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_code(self):
         """

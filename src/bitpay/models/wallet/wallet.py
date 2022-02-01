@@ -15,23 +15,23 @@ class Wallet(object):
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
-            print(key, value)
             try:
                 if key in ["currencies"]:
 
                     klass = globals()[key[0].upper() + key[1:]]
 
                     if isinstance(value, list):
-                        value = []
+                        objs = []
                         for obj in value:
-                            value.append(klass(**obj))
+                            objs.append(klass(**obj))
+                        value = objs
                     else:
                         value = klass(**value)
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
                 )(value)
-            except AttributeError as e:
-                print(e, key)
+            except AttributeError:
+                pass
 
     def get_key(self):
         """

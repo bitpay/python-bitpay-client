@@ -76,7 +76,7 @@ class BitPayTest(unittest.TestCase):
         basic_invoice = self.bitpay.create_invoice(Invoice(2.16, "eth"))
         self.assertIsNotNone(basic_invoice.get_id())
 
-    def test_should_get_invoice_URL(self):
+    def test_should_get_invoice_url(self):
         basic_invoice = self.bitpay.create_invoice(Invoice(5.0, "usd"))
         self.assertIsNotNone(basic_invoice.get_url())
 
@@ -113,10 +113,13 @@ class BitPayTest(unittest.TestCase):
     def test_should_create_update_and_delete_invoice(self):
         basic_invoice = self.bitpay.create_invoice(Invoice(2, "btc"))
         retrieved_invoice = self.bitpay.get_invoice(basic_invoice.get_id())
-        updated_invoice = self.bitpay.update_invoice(retrieved_invoice.get_id(),
-                                                     "sandbox@bitpay.com")
+        updated_invoice = self.bitpay.update_invoice(
+            retrieved_invoice.get_id(), "sandbox@bitpay.com"
+        )
         cancelled_invoice = self.bitpay.cancel_invoice(updated_invoice.get_id())
-        retrieved_cancelled_invoice = self.bitpay.get_invoice(cancelled_invoice.get_id())
+        retrieved_cancelled_invoice = self.bitpay.get_invoice(
+            cancelled_invoice.get_id()
+        )
 
         self.assertIsNotNone(basic_invoice)
         self.assertIsNotNone(retrieved_invoice)
@@ -130,17 +133,22 @@ class BitPayTest(unittest.TestCase):
         self.assertTrue(result)
 
     def test_should_create_get_cancel_refund_request_new(self):
-        today = date.today().strftime("%Y%m%d")
-        date_start = (date.today() - timedelta(days=30)).strftime("%Y%m%d")
-        invoices = self.bitpay.get_invoices(date_start, today, "complete", None, None, None)
+        today = date.today().strftime("%Y-%m-%d")
+        date_start = (date.today() - timedelta(days=30)).strftime("%Y-%m-%d")
+        invoices = self.bitpay.get_invoices(
+            date_start, today, "complete", None, None, None
+        )
         first_invoice = invoices[0]
-        create_refund = self.bitpay.create_refund(first_invoice.get_id(),
-                                                  1.0, "usd", True, False, False)
+        create_refund = self.bitpay.create_refund(
+            first_invoice.get_id(), 1.0, "BTC", True, False, False
+        )
         retrieved_refunds = self.bitpay.get_refunds(first_invoice.get_id())
         last_refund = retrieved_refunds[-1]
         update_refund = self.bitpay.update_refund(last_refund.get_id(), "created")
         retrieved_refund = self.bitpay.get_refund(last_refund.get_id())
-        notification_status = self.bitpay.request_refund_notification(last_refund.get_id())
+        notification_status = self.bitpay.request_refund_notification(
+            last_refund.get_id()
+        )
         cancel_refund = self.bitpay.cancel_refund(last_refund.get_id())
         supported_wallets = self.bitpay.get_supported_wallets()
 
@@ -317,7 +325,6 @@ class BitPayTest(unittest.TestCase):
 
         self.assertGreater(len(bills), 0)
 
-    # TODO: check last 2 Asserts
     def test_should_deliver_bill(self):
         items = []
 
@@ -348,8 +355,7 @@ class BitPayTest(unittest.TestCase):
         bill = Bill("1005", Currency.EUR, "sandbox@bitpay.com")
         bill.set_items(items)
         basic_bill = self.bitpay.create_bill(bill)
-        result = self.bitpay.deliver_bill(basic_bill.get_id(),
-                                          basic_bill.get_token())
+        result = self.bitpay.deliver_bill(basic_bill.get_id(), basic_bill.get_token())
         retrieve_bill = self.bitpay.get_bill(basic_bill.get_id())
 
         self.assertEqual(basic_bill.get_id(), retrieve_bill.get_id())
@@ -400,7 +406,8 @@ class BitPayTest(unittest.TestCase):
         payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
         recipients_list.append(payout_recipient)
 
-        recipients_obj = PayoutRecipients(recipients_list)
+        recipients_obj = PayoutRecipients()
+        recipients_obj.set_recipients(recipients_list)
         recipients = self.bitpay.submit_payout_recipients(recipients_obj)
 
         self.assertIsNotNone(recipients)
@@ -415,7 +422,8 @@ class BitPayTest(unittest.TestCase):
         payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
         recipients_list.append(payout_recipient)
 
-        recipients_obj = PayoutRecipients(recipients_list)
+        recipients_obj = PayoutRecipients()
+        recipients_obj.set_recipients(recipients_list)
         recipients = self.bitpay.submit_payout_recipients(recipients_obj)
         first_recipient = recipients[0]
         retrieve_recipient = self.bitpay.get_payout_recipient(first_recipient.get_id())
@@ -425,7 +433,7 @@ class BitPayTest(unittest.TestCase):
         self.assertEqual(first_recipient.get_id(), retrieve_recipient.get_id())
 
     def test_should_get_payout_recipients(self):
-        recipients = self.bitpay.get_payout_recipients('active', 2)
+        recipients = self.bitpay.get_payout_recipients("active", 2)
 
         self.assertIsNotNone(recipients)
         self.assertEqual(len(recipients), 2)
@@ -439,14 +447,18 @@ class BitPayTest(unittest.TestCase):
         payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
         recipients_list.append(payout_recipient)
 
-        recipients_obj = PayoutRecipients(recipients_list)
+        recipients_obj = PayoutRecipients()
+        recipients_obj.set_recipients(recipients_list)
         recipients = self.bitpay.submit_payout_recipients(recipients_obj)
         first_recipient = recipients[0]
         retrieve_recipient = self.bitpay.get_payout_recipient(first_recipient.get_id())
         retrieve_recipient.set_label("updatedLabel")
-        update_recipient = self.bitpay.update_payout_recipient(retrieve_recipient.get_id(),
-                                                               retrieve_recipient)
-        delete_recipient = self.bitpay.delete_payout_recipient(retrieve_recipient.get_id())
+        update_recipient = self.bitpay.update_payout_recipient(
+            retrieve_recipient.get_id(), retrieve_recipient
+        )
+        delete_recipient = self.bitpay.delete_payout_recipient(
+            retrieve_recipient.get_id()
+        )
 
         self.assertIsNotNone(first_recipient)
         self.assertIsNotNone(retrieve_recipient.get_id())
@@ -464,10 +476,13 @@ class BitPayTest(unittest.TestCase):
         payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
         recipients_list.append(payout_recipient)
 
-        recipients_obj = PayoutRecipients(recipients_list)
+        recipients_obj = PayoutRecipients()
+        recipients_obj.set_recipients(recipients_list)
         recipients = self.bitpay.submit_payout_recipients(recipients_obj)
         first_recipient = recipients[0]
-        result = self.bitpay.request_payout_recipient_notification(first_recipient.get_id())
+        result = self.bitpay.request_payout_recipient_notification(
+            first_recipient.get_id()
+        )
 
         self.assertTrue(result)
 
@@ -518,11 +533,13 @@ class BitPayTest(unittest.TestCase):
 
         payout = Payout(5.0, currency, ledger_currency)
         payout.set_recipient_id(recipients[0].get_id())
-        payout.set_notification_email('sandbox@bitpay.com')
-        payout.set_notification_url('https://hookb.in/QJOPBdMgRkukpp2WO60o')
+        payout.set_notification_email("sandbox@bitpay.com")
+        payout.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
 
         create_payout = self.bitpay.submit_payout(payout)
-        payout_notification = self.bitpay.request_payout_notification(create_payout.get_id())
+        payout_notification = self.bitpay.request_payout_notification(
+            create_payout.get_id()
+        )
         cancel_payout = self.bitpay.cancel_payout(create_payout.get_id())
 
         self.assertIsNotNone(create_payout.get_id())
@@ -534,8 +551,14 @@ class BitPayTest(unittest.TestCase):
         currency = Currency.USD
         ledger_currency = Currency.ETH
         effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
-        instructions = [PayoutInstruction(5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()),
-                        PayoutInstruction(6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email())]
+        instructions = [
+            PayoutInstruction(
+                5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
+            ),
+            PayoutInstruction(
+                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email()
+            ),
+        ]
         batch = PayoutBatch(currency, effective_date, ledger_currency)
         batch.set_instructions(instructions)
         submit_batch = self.bitpay.submit_payout_batch(batch)
@@ -551,8 +574,14 @@ class BitPayTest(unittest.TestCase):
         ledger_currency = Currency.ETH
         effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
 
-        instructions = [PayoutInstruction(5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()),
-                        PayoutInstruction(6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email())]
+        instructions = [
+            PayoutInstruction(
+                5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
+            ),
+            PayoutInstruction(
+                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email()
+            ),
+        ]
         batch = PayoutBatch(currency, effective_date, ledger_currency)
         batch.set_instructions(instructions)
         batch.set_notification_u_r_l("https://hookbin.com/yDEDeWJKyasG9yjj9X9P")
@@ -573,14 +602,22 @@ class BitPayTest(unittest.TestCase):
         ledger_currency = Currency.ETH
         effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
 
-        instructions = [PayoutInstruction(5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()),
-                        PayoutInstruction(6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email())]
+        instructions = [
+            PayoutInstruction(
+                5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
+            ),
+            PayoutInstruction(
+                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email()
+            ),
+        ]
         batch = PayoutBatch(currency, effective_date, ledger_currency)
         batch.set_instructions(instructions)
         batch.set_notification_email("sandbox@bitpay.com")
         batch.set_notification_u_r_l("https://hookbin.com/yDEDeWJKyasG9yjj9X9P")
         submit_batch = self.bitpay.submit_payout_batch(batch)
-        payout_batch_notification = self.bitpay.request_payout_batch_notification(submit_batch.get_id())
+        payout_batch_notification = self.bitpay.request_payout_batch_notification(
+            submit_batch.get_id()
+        )
         cancel_batch = self.bitpay.cancel_payout_batch(submit_batch.get_id())
 
         self.assertIsNotNone(submit_batch.get_id())
@@ -593,15 +630,18 @@ class BitPayTest(unittest.TestCase):
         self.assertGreater(len(payout_batches), 0)
 
     def test_should_get_payout_batches_by_status(self):
-        payout_batches = self.bitpay.get_payout_batches(None, None, PayoutStatus.Cancelled)
+        payout_batches = self.bitpay.get_payout_batches(
+            None, None, PayoutStatus.Cancelled
+        )
         self.assertGreater(len(payout_batches), 0)
 
     def test_get_settlements(self):
         today = date.today().strftime("%Y-%m-%d")
         one_year_ago = (date.today() - timedelta(days=365)).strftime("%Y-%m-%d")
 
-        settlements = self.bitpay.get_settlements(Currency.USD, one_year_ago, today,
-                                                  "processing", None, None)
+        settlements = self.bitpay.get_settlements(
+            Currency.USD, one_year_ago, today, "processing", None, None
+        )
         first_settlement = settlements[0]
         settlement = self.bitpay.get_settlement(first_settlement.get_id())
 
@@ -614,8 +654,9 @@ class BitPayTest(unittest.TestCase):
         today = date.today().strftime("%Y-%m-%d")
         one_year_ago = (date.today() - timedelta(days=365)).strftime("%Y-%m-%d")
 
-        settlements = self.bitpay.get_settlements(Currency.USD, one_year_ago, today,
-                                                  "processing", None, None)
+        settlements = self.bitpay.get_settlements(
+            Currency.USD, one_year_ago, today, "processing", None, None
+        )
         first_settlement = settlements[0]
         settlement = self.bitpay.get_settlement_reconciliation_report(first_settlement)
 
@@ -651,22 +692,22 @@ class BitPayTest(unittest.TestCase):
         item.set_description("product-d")
         items.append(item)
 
-        one_month_Ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
+        one_month_ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
 
-        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_Ago)
+        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_ago)
         bill_data.set_items(items)
-        bill_data.set_cc('sandbox+cc@bitpay.com')
+        bill_data.set_cc("sandbox+cc@bitpay.com")
         bill_data.set_pass_processing_fee(True)
         bill_data.set_email_bill(True)
-        bill_data.set_name('aaaa')
-        bill_data.set_email('sandbox+sub2@bitpay.com')
+        bill_data.set_name("aaaa")
+        bill_data.set_email("sandbox+sub2@bitpay.com")
 
         subscription = Subscription()
         subscription.set_bill_data(bill_data)
         subscription.set_schedule("weekly")
-        subscription.set_id('123')
-        subscription.set_status('draft')
-        subscription.set_next_delivery('2022-02-19')
+        subscription.set_id("123")
+        subscription.set_status("draft")
+        subscription.set_next_delivery("2022-02-19")
         basic_subscription = self.bitpay.create_subscription(subscription)
 
         self.assertIsNotNone(basic_subscription.get_id())
@@ -699,30 +740,34 @@ class BitPayTest(unittest.TestCase):
         item.set_description("product-d")
         items.append(item)
 
-        one_month_Ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
+        one_month_ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
 
-        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_Ago)
+        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_ago)
         bill_data.set_items(items)
-        bill_data.set_cc('sandbox+cc@bitpay.com')
+        bill_data.set_cc("sandbox+cc@bitpay.com")
         bill_data.set_pass_processing_fee(True)
         bill_data.set_email_bill(True)
-        bill_data.set_name('aaaa')
-        bill_data.set_email('sandbox+sub2@bitpay.com')
+        bill_data.set_name("aaaa")
+        bill_data.set_email("sandbox+sub2@bitpay.com")
 
         subscription = Subscription()
         subscription.set_bill_data(bill_data)
         subscription.set_schedule("weekly")
-        subscription.set_id('123')
-        subscription.set_status('draft')
-        subscription.set_next_delivery('2022-02-19')
+        subscription.set_id("123")
+        subscription.set_status("draft")
+        subscription.set_next_delivery("2022-02-19")
         basic_subscription = self.bitpay.create_subscription(subscription)
 
         basic_subscription = self.bitpay.create_subscription(basic_subscription)
-        retrieve_subscription = self.bitpay.get_subscription((basic_subscription.get_id()))
+        retrieve_subscription = self.bitpay.get_subscription(
+            (basic_subscription.get_id())
+        )
 
         self.assertEqual(basic_subscription.get_id(), retrieve_subscription.get_id())
-        self.assertEqual(len(basic_subscription.get_bill_data().get_items()),
-                         len(retrieve_subscription.get_bill_data().get_items()))
+        self.assertEqual(
+            len(basic_subscription.get_bill_data().get_items()),
+            len(retrieve_subscription.get_bill_data().get_items()),
+        )
 
     def test_should_update_subscription(self):
         items = []
@@ -751,29 +796,33 @@ class BitPayTest(unittest.TestCase):
         item.set_description("product-d")
         items.append(item)
 
-        one_month_Ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
+        one_month_ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
 
-        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_Ago)
+        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_ago)
         bill_data.set_items(items)
-        bill_data.set_cc('sandbox+cc@bitpay.com')
+        bill_data.set_cc("sandbox+cc@bitpay.com")
         bill_data.set_pass_processing_fee(True)
         bill_data.set_email_bill(True)
-        bill_data.set_name('aaaa')
-        bill_data.set_email('sandbox+sub2@bitpay.com')
+        bill_data.set_name("aaaa")
+        bill_data.set_email("sandbox+sub2@bitpay.com")
 
         subscription = Subscription()
         subscription.set_bill_data(bill_data)
         subscription.set_schedule("weekly")
-        subscription.set_id('123')
-        subscription.set_status('draft')
-        subscription.set_next_delivery('2022-02-19')
+        subscription.set_id("123")
+        subscription.set_status("draft")
+        subscription.set_next_delivery("2022-02-19")
 
         basic_subscription = self.bitpay.create_subscription(subscription)
-        retrieve_subscription = self.bitpay.get_subscription((basic_subscription.get_id()))
+        retrieve_subscription = self.bitpay.get_subscription(
+            (basic_subscription.get_id())
+        )
 
         self.assertEqual(basic_subscription.get_id(), retrieve_subscription.get_id())
-        self.assertEqual(len(basic_subscription.get_bill_data().get_items()),
-                         len(retrieve_subscription.get_bill_data().get_items()))
+        self.assertEqual(
+            len(basic_subscription.get_bill_data().get_items()),
+            len(retrieve_subscription.get_bill_data().get_items()),
+        )
         self.assertEqual(len(retrieve_subscription.get_bill_data().get_items()), 4)
 
         items = retrieve_subscription.get_bill_data().get_items()
@@ -785,8 +834,9 @@ class BitPayTest(unittest.TestCase):
         items.append(item)
 
         retrieve_subscription.get_bill_data().set_items(items)
-        update_subscription = self.bitpay.update_subscription(retrieve_subscription,
-                                                              retrieve_subscription.get_id())
+        update_subscription = self.bitpay.update_subscription(
+            retrieve_subscription, retrieve_subscription.get_id()
+        )
         items = update_subscription.get_bill_data().get_items()
 
         self.assertEqual(len(update_subscription.get_bill_data().get_items()), 5)

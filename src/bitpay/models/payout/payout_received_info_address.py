@@ -1,7 +1,14 @@
-from src.bitpay.utils.key_utils import change_camel_case_to_snake_case
+"""
+PayoutReceivedInfoAddress
+"""
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutReceivedInfoAddress:
+    """
+    PayoutReceivedInfoAddress
+    """
+
     __address1 = None
     __address2 = None
     __locality = None
@@ -13,8 +20,8 @@ class PayoutReceivedInfoAddress:
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_address1(self):
         """

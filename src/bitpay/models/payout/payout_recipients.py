@@ -1,13 +1,40 @@
+"""
+PayoutRecipients
+"""
 from .payout_recipient import PayoutRecipient
+from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutRecipients:
+    """
+    PayoutRecipients
+    """
+
     __guid = ""
     __recipients = []
     __token = ""
 
-    def __init__(self, recipients=[]):
-        self.__recipients = recipients
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            try:
+                if key in [
+                    "recipients",
+                ]:
+                    klass = (
+                        PayoutRecipient
+                        if key == "recipients"
+                        else globals()[key[0].upper() + key[1:]]
+                    )
+                    if isinstance(value, list):
+                        objs = []
+                        for obj in value:
+                            objs.append(klass(**obj))
+                        value = objs
+                    else:
+                        value = klass(**value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
+            except AttributeError:
+                pass
 
     def get_guid(self):
         """

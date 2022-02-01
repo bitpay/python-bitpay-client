@@ -1,20 +1,28 @@
+"""
+Item
+"""
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class Item:
+    """
+    Item
+    """
+
     __description = None
     __price = None
     __quantity = None
 
     def __init__(self, price=0.0, quantity=0, description="", **kwargs):
+        self.set_price(price)
+        self.set_quantity(quantity)
+        self.set_description(description)
+
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
-        self.__price = price
-        self.__quantity = quantity
-        self.__description = description
+            except AttributeError:
+                pass
 
     def get_description(self):
         """

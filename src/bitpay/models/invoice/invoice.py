@@ -92,9 +92,8 @@ class Invoice:
     __rate_refresh_time = None
 
     def __init__(self, price=None, currency=None, **kwargs):
-
-        self.__price = kwargs.get("price", "") if not price else price
-        self.__currency = kwargs.get("currency", "") if not currency else currency
+        self.set_price(price)
+        self.set_currency(currency)
 
         for key, value in kwargs.items():
             try:
@@ -111,14 +110,15 @@ class Invoice:
                     klass = globals()[key[0].upper() + key[1:]]
 
                     if isinstance(value, list):
-                        value = []
+                        objs = []
                         for obj in value:
-                            value.append(klass(**obj))
+                            objs.append(klass(**obj))
+                        value = objs
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
 
     def get_guid(self):
         """

@@ -1,3 +1,6 @@
+"""
+RefundInfo: Object containing information about the refund executed for the invoice
+"""
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
@@ -14,8 +17,8 @@ class RefundInfo:
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_support_request(self):
         """

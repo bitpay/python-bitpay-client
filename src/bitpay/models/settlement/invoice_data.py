@@ -1,3 +1,6 @@
+"""
+InvoiceData: Object containing relevant information from the paid invoice
+"""
 from ...models.settlement.refund_info import RefundInfo
 from ...utils.key_utils import change_camel_case_to_snake_case
 
@@ -14,6 +17,7 @@ class InvoiceData:
     __transaction_currency = None
     __over_paid_amount = None
     __payout_percentage = None
+    __buyer_email_address = None
     __btc_price = None
     """
     RefundInfo
@@ -27,14 +31,15 @@ class InvoiceData:
                     klass = globals()[key[0].upper() + key[1:]]
 
                     if isinstance(value, list):
-                        value = []
+                        objs = []
                         for obj in value:
-                            value.append(klass(**obj))
+                            objs.append(klass(**obj))
+                        value = objs
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_order_id(self):
         """
@@ -49,6 +54,20 @@ class InvoiceData:
         :param order_id: order_id
         """
         self.__order_id = order_id
+
+    def get_buyer_email_address(self):
+        """
+        Get method for to buyer_email_address
+        :return: buyer_email_address
+        """
+        return self.__buyer_email_address
+
+    def set_buyer_email_address(self, buyer_email_address):
+        """
+        Set method for to buyer_email_address
+        :param buyer_email_address: buyer_email_address
+        """
+        self.__buyer_email_address = buyer_email_address
 
     def get_date(self):
         """
@@ -172,6 +191,7 @@ class InvoiceData:
             "price": self.get_price(),
             "currency": self.get_currency(),
             "transactionCurrency": self.get_transaction_currency(),
+            "buyerEmailAddress": self.get_buyer_email_address(),
             "payoutPercentage": self.get_payout_percentage(),
             "refundInfo": self.get_refund_info().to_json(),
             "btcPrice": self.get_btc_price(),

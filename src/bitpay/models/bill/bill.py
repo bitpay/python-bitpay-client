@@ -25,8 +25,7 @@ class Bill:
     __city = None
     __state = None
     __zip = None
-    # TODO: Country should not have default value
-    __country = "US"
+    __country = None
     __cc = None
     __delivered = None
     __phone = None
@@ -40,9 +39,9 @@ class Bill:
     __merchant = None
 
     def __init__(self, number=None, currency=None, email=None, **kwargs):
-        self.__number = number
-        self.__currency = currency
-        self.__email = email
+        self.set_number(number)
+        self.set_currency(currency)
+        self.set_email(email)
 
         for key, value in kwargs.items():
             try:
@@ -59,8 +58,8 @@ class Bill:
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
 
     def get_currency(self):
         """

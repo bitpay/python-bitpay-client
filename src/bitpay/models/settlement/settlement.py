@@ -1,3 +1,8 @@
+"""
+Settlement: Settlements are transfers of payment profits from BitPay to bank
+accounts and cryptocurrency wallets owned by merchants, partners, etc. This
+endpoint exposes reports detailing these settlements.
+"""
 from .payout_info import PayoutInfo
 from .with_holdings import WithHoldings
 from .settlement_ledger_entry import SettlementLedgerEntry
@@ -5,6 +10,10 @@ from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class Settlement:
+    """
+    Settlement
+    """
+
     __id = None
     __account_id = None
     __currency = None
@@ -36,14 +45,15 @@ class Settlement:
                     )
 
                     if isinstance(value, list):
-                        value = []
+                        objs = []
                         for obj in value:
-                            value.append(klass(**obj))
+                            objs.append(klass(**obj))
+                        value = objs
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_id(self):
         """
@@ -246,7 +256,7 @@ class Settlement:
         Get method for to withholdings_sum
         :return: withholdings_sum
         """
-        return self.__with_holdings_sum
+        return self.__withholdings_sum
 
     def set_withholdings_sum(self, withholdings_sum):
         """

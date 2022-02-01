@@ -1,3 +1,6 @@
+"""
+Currencies
+"""
 from ...utils import key_utils
 from ...models.wallet.currency_qr import CurrencyQr
 
@@ -25,8 +28,8 @@ class Currencies(object):
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
                 )(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_code(self):
         """

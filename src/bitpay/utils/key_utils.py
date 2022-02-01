@@ -5,8 +5,8 @@ from ecdsa import SigningKey, SECP256k1
 
 
 def generate_pem():
-    sk = SigningKey.generate(curve=SECP256k1)
-    pem = sk.to_pem()
+    s_k = SigningKey.generate(curve=SECP256k1)
+    pem = s_k.to_pem()
     pem = pem.decode("utf-8")
     return pem
 
@@ -27,8 +27,8 @@ def get_compressed_public_key_from_pem(pem):
 
 def sign(message, pem):
     message = message.encode()
-    sk = SigningKey.from_pem(pem)
-    signed = sk.sign(
+    s_k = SigningKey.from_pem(pem)
+    signed = s_k.sign(
         message, hashfunc=hashlib.sha256, sigencode=ecdsaUtil.sigencode_der
     )
     return binascii.hexlify(signed).decode()

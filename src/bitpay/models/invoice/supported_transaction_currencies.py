@@ -37,8 +37,8 @@ class SupportedTransactionCurrencies:
                 ]:
                     value = SupportedTransactionCurrency(**value)
                 getattr(self, "set_%s" % key.lower())(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
 
     def get_btc(self):
         """

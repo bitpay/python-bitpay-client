@@ -1,18 +1,26 @@
+"""
+PayoutInstructionBtcSummary
+"""
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutInstructionBtcSummary:
+    """
+    PayoutInstructionBtcSummary
+    """
+
     __paid = None
     __unpaid = None
 
     def __init__(self, paid=None, unpaid=None, **kwargs):
-        self.__paid = paid
-        self.__unpaid = unpaid
+        self.set_paid(paid)
+        self.set_unpaid(unpaid)
+
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_paid(self):
         """

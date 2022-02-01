@@ -17,13 +17,35 @@ class Rates:
     __rates = None
 
     def __init__(self, rates, b_p, **kwargs):
-        self.__bp = b_p
-        self.__rates = rates
+        self.set_bp(b_p)
+        self.set_rates(rates)
+
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
+
+    def get_bp(self):
+        """
+        Get method for the bp
+        :return: bp
+        """
+        return self.__bp
+
+    def set_bp(self, b_p):
+        """
+        Set method for the b_p
+        :param b_p: b_p
+        """
+        self.__bp = b_p
+
+    def set_rates(self, rates):
+        """
+        Set method for the rates
+        :param rates: rates
+        """
+        self.__rates = rates
 
     def get_rates(self):
         rates = []

@@ -1,8 +1,17 @@
+"""
+Subscription: Subscriptions are repeat billing agreements with specific buyers.
+BitPay sends bill emails to buyers identified in active subscriptions according
+to the specified schedule.
+"""
 from .bill_data import BillData
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class Subscription:
+    """
+    Subscription
+    """
+
     __id = None
     __status = None
     """
@@ -15,21 +24,21 @@ class Subscription:
     __token = None
 
     def __init__(self, **kwargs):
-        # self.__bill_data = BillData('', '', '', [])
         for key, value in kwargs.items():
             try:
                 if key in ["billData"]:
                     klass = globals()[key[0].upper() + key[1:]]
 
                     if isinstance(value, list):
-                        value = []
+                        objs = []
                         for obj in value:
-                            value.append(klass(**obj))
+                            objs.append(klass(**obj))
+                        value = objs
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_id(self):
         """

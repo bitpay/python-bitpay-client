@@ -1,3 +1,6 @@
+"""
+BIll Data
+"""
 from .item import Item
 from ..currency import Currency
 from ...exceptions.bitpay_exception import BitPayException
@@ -5,6 +8,10 @@ from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class BillData:
+    """
+    Bill Data
+    """
+
     __email_bill = None
     __cc = None
     __number = None
@@ -24,9 +31,10 @@ class BillData:
     __merchant = None
 
     def __init__(self, currency, email, due_date=None, **kwargs):
-        self.__currency = currency
-        self.__email = email
-        self.__due_date = due_date
+        if currency:
+            self.set_currency(currency)
+        self.set_email(email)
+        self.set_due_date(due_date)
 
         for key, value in kwargs.items():
             try:
@@ -43,8 +51,8 @@ class BillData:
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_email_bill(self):
         """
@@ -100,7 +108,7 @@ class BillData:
         Set method for the currency
         :param currency: currency
         """
-        if Currency.is_valid(currency):
+        if not Currency.is_valid(currency):
             raise BitPayException("currency code must be a type of Model.Currency")
         self.__currency = currency
 

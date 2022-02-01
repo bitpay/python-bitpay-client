@@ -24,8 +24,8 @@ class Buyer:
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
 
     def get_name(self):
         """

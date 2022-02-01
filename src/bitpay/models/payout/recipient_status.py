@@ -1,3 +1,8 @@
+"""
+RecipientStatus
+"""
+
+
 class RecipientStatus:
     """
     Recipient Status

@@ -39,14 +39,15 @@ class LedgerEntry:
                         else globals()[key[0].upper() + key[1:]]
                     )
                     if isinstance(value, list):
-                        value = []
+                        objs = []
                         for obj in value:
-                            value.append(klass(**obj))
+                            objs.append(klass(**obj))
+                        value = objs
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
 
     def get_type(self):
         """

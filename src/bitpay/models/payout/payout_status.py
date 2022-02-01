@@ -1,3 +1,8 @@
+"""
+PayoutStatus
+"""
+
+
 class PayoutStatus:
     New = "new"
     Funded = "funded"

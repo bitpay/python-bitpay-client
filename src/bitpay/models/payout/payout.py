@@ -2,13 +2,16 @@
 Payout
 """
 from ..currency import Currency
-from .payout_instruction import PayoutInstruction
 from .payout_transaction import PayoutTransaction
 from ...exceptions.bitpay_exception import BitPayException
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class Payout:
+    """
+    Payout
+    """
+
     __token = ""
 
     __amount = 0.0
@@ -38,24 +41,20 @@ class Payout:
     __btc = None
     __request_date = None
     __date_executed = None
-    __transactions = None
+    __transactions = []
     __account_id = None
 
     def __init__(self, amount=None, currency=None, ledger_currency=None, **kwargs):
-        self.__amount = amount
+        self.set_amount(amount)
         self.set_currency(currency)
         if ledger_currency:
             self.set_ledger_currency(ledger_currency)
-        self.__transactions = PayoutTransaction()
 
         for key, value in kwargs.items():
             try:
-                # TODO: exchangeRates need to be implemented
                 if key in ["transactions"]:
                     if key == "transactions":
                         klass = PayoutTransaction
-                    elif key == "exchangeRates":
-                        klass = PayoutInstruction
                     else:
                         klass = globals()[key[0].upper() + key[1:]]
 
@@ -67,8 +66,8 @@ class Payout:
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
 
     def get_token(self):
         """
@@ -263,7 +262,7 @@ class Payout:
         """
         return self.__exchange_rates
 
-    def set_exchange_rates(self, exchange_rates: PayoutInstruction):
+    def set_exchange_rates(self, exchange_rates):
         """
         Set method for to exchange_rates
         :param exchange_rates: exchange_rates
@@ -470,6 +469,9 @@ class Payout:
         """
         :return: data in json
         """
+        transactions = []
+        for transaction in self.get_transactions():
+            transactions.append(transaction.to_json())
         data = {
             "token": self.get_token(),
             "amount": self.get_amount(),
@@ -488,7 +490,7 @@ class Payout:
             "status": self.get_status(),
             "requestDate": self.get_request_date(),
             "exchangeRates": self.get_exchange_rates(),
-            "transactions": self.get_transactions().to_json(),
+            "transactions": transactions,
             "dateExecuted": self.get_date_executed(),
             "rate": self.get_rate(),
             "depositTotal": self.get_deposit_total(),

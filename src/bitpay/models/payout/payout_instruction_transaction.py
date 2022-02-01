@@ -1,7 +1,14 @@
+"""
+PayoutInstructionTransaction
+"""
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutInstructionTransaction:
+    """
+    PayoutInstructionTransaction
+    """
+
     __txid = None
     __amount = None
     __date = None
@@ -11,8 +18,8 @@ class PayoutInstructionTransaction:
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_txid(self):
         """

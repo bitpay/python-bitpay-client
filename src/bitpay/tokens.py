@@ -8,6 +8,10 @@ from .models.facade import Facade
 
 
 class Tokens:
+    """
+    Tokens
+    """
+
     __merchant = ""
     __payout = ""
 
@@ -22,7 +26,8 @@ class Tokens:
         The payout recipient could be an individual, or a company or a vendor that offered their
         services or payout employees. This resource allows merchants to submit individual
         cryptocurrency payout requests to active bitpay recipients. The typical use case for this
-        resource would be a company who wants to offer cryptocurrency withdrawals to their customers,
+        resource would be a company who wants to offer cryptocurrency withdrawals to their
+        customers,
         like marketplaces or affiliate networks.
         """
         self.__merchant = merchant

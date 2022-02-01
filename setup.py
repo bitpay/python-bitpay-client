@@ -2,6 +2,7 @@
 Setup file
 """
 import setuptools
+
 setuptools.setup(
     name="bitpay",
     package_dir={"": "src"},
@@ -16,16 +17,16 @@ setuptools.setup(
     python_requires=">=3.7",
     install_requires=["requests", "ecdsa"],
     classifiers=[
-        'Programming Language :: Python :: 3.7, 3.8, 3.9, 3.10',
+        "Programming Language :: Python :: 3.7, 3.8, 3.9, 3.10",
         "Development Status :: 5 - Production/Stable",
-        'Intended Audience :: Developers',
-        'Natural Language :: English',
+        "Intended Audience :: Developers",
+        "Natural Language :: English",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "Topic :: Office/Business :: Financial"
+        "Topic :: Office/Business :: Financial",
     ],
     long_description="""\
         Python Library for integrating with BitPay
@@ -40,5 +41,5 @@ setuptools.setup(
         
         This version requires only Python 3.8.
         """,
-    long_description_content_type='text/markdown'
+    long_description_content_type="text/markdown",
 )

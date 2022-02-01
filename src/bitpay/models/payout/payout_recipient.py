@@ -1,7 +1,14 @@
+"""
+PayoutRecipient
+"""
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutRecipient:
+    """
+    PayoutRecipient
+    """
+
     __email = None
     __label = None
     __notification_url = None
@@ -22,8 +29,8 @@ class PayoutRecipient:
                     getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(
                         value
                     )
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_email(self):
         """

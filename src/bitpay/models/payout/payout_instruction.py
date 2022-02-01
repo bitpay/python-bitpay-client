@@ -10,6 +10,10 @@ from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutInstruction:
+    """
+    PayoutInstruction
+    """
+
     __amount = None
     __email = None
     __recipient_id = None
@@ -28,30 +32,29 @@ class PayoutInstruction:
     __method_value = None
 
     def __init__(self, amount, method, method_value, **kwargs):
-        try:
-            for key, value in kwargs.items():
-                try:
-                    if key in ["btc", "transactions"]:
-                        klass = (
-                            PayoutInstructionTransaction
-                            if key == "transactions"
-                            else globals()[key[0].upper() + key[1:]]
-                        )
+        self.set_amount(amount)
 
-                        if isinstance(value, list):
-                            value = []
-                            for obj in value:
-                                value.append(klass(**obj))
-                        else:
-                            value = klass(**value)
-                    getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(
-                        value
+        for key, value in kwargs.items():
+            try:
+                if key in ["btc", "transactions"]:
+                    klass = (
+                        PayoutInstructionTransaction
+                        if key == "transactions"
+                        else globals()[key[0].upper() + key[1:]]
                     )
-                except AttributeError as e:
-                    print(e)
 
-            self.set_amount(amount)
+                    if isinstance(value, list):
+                        objs = []
+                        for obj in value:
+                            objs.append(klass(**obj))
+                        value = objs
+                    else:
+                        value = klass(**value)
+                getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
+            except AttributeError:
+                pass
 
+        try:
             if method:
                 if RecipientReferenceMethod.EMAIL == method:
                     self.__email = method_value

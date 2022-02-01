@@ -1,8 +1,15 @@
+"""
+PayoutReceivedInfo
+"""
 from ...utils.key_utils import change_camel_case_to_snake_case
 from .payout_received_info_address import PayoutReceivedInfoAddress
 
 
 class PayoutReceivedInfo:
+    """
+    PayoutReceivedInfo
+    """
+
     __name = None
     __email = None
     __address = None
@@ -11,8 +18,8 @@ class PayoutReceivedInfo:
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_name(self):
         """

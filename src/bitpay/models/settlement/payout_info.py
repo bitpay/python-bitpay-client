@@ -1,7 +1,15 @@
+"""
+PayoutInfo: Object containing the settlement info provided by the Merchant
+in his BitPay account settings
+"""
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutInfo:
+    """
+    PayoutInfo
+    """
+
     __name = None
     __account = None
     __routing = None
@@ -36,8 +44,8 @@ class PayoutInfo:
                     getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(
                         value
                     )
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_name(self):
         """

@@ -1,3 +1,8 @@
+"""
+SubscriptionStatus
+"""
+
+
 class SubscriptionStatus:
     """
     Subscription Status

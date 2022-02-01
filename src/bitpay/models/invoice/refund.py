@@ -18,7 +18,7 @@ class Refund:
     __id = None
     __request_date = None
     __status = None
-    __params = None
+    __params = RefundParams()
 
     __invoice_id = None
     __preview = None
@@ -36,11 +36,10 @@ class Refund:
         token: str = "",
         **kwargs
     ):
-        self.__refund_email = refund_email
-        self.__amount = amount
-        self.__currency = currency
-        self.__token = token
-        self.__params = RefundParams()
+        self.set_refund_email(refund_email)
+        self.set_amount(amount)
+        self.set_currency(currency)
+        self.set_token(token)
 
         for key, value in kwargs.items():
             try:
@@ -50,8 +49,8 @@ class Refund:
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
                 )(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
 
     def get_guid(self):
         """

@@ -18,8 +18,8 @@ class UniversalCodes:
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
                 )(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
 
     def get_payment_string(self):
         """

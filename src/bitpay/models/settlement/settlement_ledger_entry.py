@@ -1,8 +1,15 @@
+"""
+SettlementLedgerEntry: ledger entries in the settlement,
+"""
 from .invoice_data import InvoiceData
 from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class SettlementLedgerEntry:
+    """
+    SettlementLedgerEntry
+    """
+
     __code = None
     __invoice_id = None
     __amount = None
@@ -12,12 +19,16 @@ class SettlementLedgerEntry:
     __invoice_data = InvoiceData()
 
     def __init__(self, **kwargs):
-        # TODO
         for key, value in kwargs.items():
             try:
+                if key in [
+                    "invoiceData",
+                ]:
+                    klass = globals()[key[0].upper() + key[1:]]
+                    value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                pass
 
     def get_code(self):
         """
@@ -110,7 +121,7 @@ class SettlementLedgerEntry:
         """
         return self.__invoice_data
 
-    def set_amount(self, invoice_data: InvoiceData):
+    def set_invoice_data(self, invoice_data: InvoiceData):
         """
         Set method for the invoice_data
         :param invoice_data: invoice_data

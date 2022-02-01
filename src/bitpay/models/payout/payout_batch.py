@@ -8,6 +8,10 @@ from ...utils.key_utils import change_camel_case_to_snake_case
 
 
 class PayoutBatch:
+    """
+    PayoutBatch
+    """
+
     __token = ""
 
     __amount = 0.0
@@ -43,9 +47,10 @@ class PayoutBatch:
     def __init__(
         self, currency=None, effective_date=None, ledger_currency=None, **kwargs
     ):
-        self.__currency = currency
-        self.__effective_date = effective_date
-        self.__ledger_currency = ledger_currency
+        self.set_currency(currency)
+        self.set_effective_date(effective_date)
+        if ledger_currency:
+            self.set_ledger_currency(ledger_currency)
 
         for key, value in kwargs.items():
             try:
@@ -67,8 +72,8 @@ class PayoutBatch:
                     else:
                         value = klass(**value)
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
-            except AttributeError as exe:
-                print(exe)
+            except AttributeError:
+                pass
         self.compute_and_set_amount()
 
     def compute_and_set_amount(self):
