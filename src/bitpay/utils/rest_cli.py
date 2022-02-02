@@ -11,7 +11,7 @@ from .key_utils import get_compressed_public_key_from_pem, sign
 
 
 class RESTcli:
-    __client = ""
+    __headers = {}
     __baseurl = ""
     __eckey = ""
     __identity = ""
@@ -25,19 +25,16 @@ class RESTcli:
 
     def init(self):
         try:
-            config = {
-                "base_url": self.__baseurl,
-                "defaults": {
-                    "headers": {
-                        "x-accept-version": env.BITPAYAPIVERSION,
-                        "x-bitpay-plugin-info": env.BITPAYPLUGININFO,
-                        "x-bitpay-api-frame": env.BITPAYAPIFRAME,
-                        "x-bitpay-api-frame-version": env.BITPAYAPIFRAMEVERSION,
-                    },
-                },
+            self.__headers = {
+                "x-accept-version": env.BITPAYAPIVERSION,
+                "x-bitpay-plugin-info": env.BITPAYPLUGININFO,
+                "x-bitpay-api-frame": env.BITPAYAPIFRAME,
+                "x-bitpay-api-frame-version": env.BITPAYAPIFRAMEVERSION,
+                "content-type": "application/json",
+                "X-accept-version": "2.0.0"
             }
             if self.__proxy != "":
-                config["proxy"] = self.__proxy
+                self.__headers["proxy"] = self.__proxy
 
         except BitPayException as e:
             print(e)
@@ -53,19 +50,11 @@ class RESTcli:
         full_url = self.__baseurl + uri
         form_data = json.dumps(form_data)
 
-        headers = {
-            "content-type": "application/json",
-            "X-accept-version": "2.0.0",
-            "X-bitpay-plugin-info": env.BITPAYPLUGININFO,
-            "X-bitpay-api-frame": env.BITPAYAPIFRAME,
-            "X-bitpay-api-frame-version": env.BITPAYAPIFRAMEVERSION,
-        }
-
         if signature_required:
-            headers["x-signature"] = sign(full_url + form_data, self.__eckey)
-            headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
+            self.__headers["x-signature"] = sign(full_url + form_data, self.__eckey)
+            self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
 
-        response = requests.post(full_url, data=form_data, headers=headers)
+        response = requests.post(full_url, data=form_data, headers=self.__headers)
         json_response = self.response_to_json_string(response)
         return json_response
 
@@ -81,19 +70,11 @@ class RESTcli:
         if parameters is not None:
             full_url = "%s?%s" % (full_url, urllib.parse.urlencode(parameters))
 
-        headers = {
-            "content-type": "application/json",
-            "X-accept-version": "2.0.0",
-            "X-bitpay-plugin-info": env.BITPAYPLUGININFO,
-            "X-bitpay-api-frame": env.BITPAYAPIFRAME,
-            "X-bitpay-api-frame-version": env.BITPAYAPIFRAMEVERSION,
-        }
-
         if signature_required:
-            headers["x-signature"] = sign(full_url, self.__eckey)
-            headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
+            self.__headers["x-signature"] = sign(full_url, self.__eckey)
+            self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
 
-        response = requests.get(full_url, headers=headers)
+        response = requests.get(full_url, headers=self.__headers)
         json_response = self.response_to_json_string(response)
         return json_response
 
@@ -109,20 +90,10 @@ class RESTcli:
         if parameters is not None:
             full_url = "%s?%s" % (full_url, urllib.parse.urlencode(parameters))
 
-        xidentity = get_compressed_public_key_from_pem(self.__eckey)
-        xsignature = sign(full_url, self.__eckey)
+        self.__headers["x-signature"] = sign(full_url, self.__eckey)
+        self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
 
-        headers = {
-            "content-type": "application/json",
-            "X-Identity": xidentity,
-            "X-Signature": xsignature,
-            "X-accept-version": "2.0.0",
-            "X-bitpay-plugin-info": env.BITPAYPLUGININFO,
-            "X-bitpay-api-frame": env.BITPAYAPIFRAME,
-            "X-bitpay-api-frame-version": env.BITPAYAPIFRAMEVERSION,
-        }
-
-        response = requests.delete(full_url, headers=headers)
+        response = requests.delete(full_url, headers=self.__headers)
         json_response = self.response_to_json_string(response)
         return json_response
 
@@ -135,26 +106,16 @@ class RESTcli:
         full_url = self.__baseurl + uri
         form_data = json.dumps(form_data)
 
-        xidentity = get_compressed_public_key_from_pem(self.__eckey)
-        xsignature = sign(full_url + form_data, self.__eckey)
+        self.__headers["x-signature"] = sign(full_url + form_data, self.__eckey)
+        self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
 
-        headers = {
-            "content-type": "application/json",
-            "X-Identity": xidentity,
-            "X-Signature": xsignature,
-            "X-accept-version": "2.0.0",
-            "X-bitpay-plugin-info": env.BITPAYPLUGININFO,
-            "X-bitpay-api-frame": env.BITPAYAPIFRAME,
-            "X-bitpay-api-frame-version": env.BITPAYAPIFRAMEVERSION,
-        }
-
-        response = requests.put(full_url, data=form_data, headers=headers)
+        response = requests.put(full_url, data=form_data, headers=self.__headers)
         json_response = self.response_to_json_string(response)
         return json_response
 
     def response_to_json_string(self, response):
-        # if not response:
-        #     raise BitPayException("Error: HTTP response is null")
+        if not response:
+            raise BitPayException("Error: HTTP response is null")
 
         response_obj = response.json()
         if "status" in response_obj:
