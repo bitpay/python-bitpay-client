@@ -419,7 +419,7 @@ class BitPayTest(unittest.TestCase):
         recipients_list = []
 
         payout_recipient = PayoutRecipient()
-        payout_recipient.set_email("nsoni@mailinator.com")
+        payout_recipient.set_email("sandbox@mbitpay.com")
         payout_recipient.set_label("recipient1")
         payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
         recipients_list.append(payout_recipient)
