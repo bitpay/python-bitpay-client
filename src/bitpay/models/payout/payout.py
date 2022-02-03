@@ -46,7 +46,8 @@ class Payout:
 
     def __init__(self, amount=None, currency=None, ledger_currency=None, **kwargs):
         self.set_amount(amount)
-        self.set_currency(currency)
+        if currency:
+            self.set_currency(currency)
         if ledger_currency:
             self.set_ledger_currency(ledger_currency)
 

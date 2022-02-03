@@ -49,7 +49,6 @@ class RESTcli:
         """
         full_url = self.__baseurl + uri
         form_data = json.dumps(form_data)
-
         if signature_required:
             self.__headers["x-signature"] = sign(full_url + form_data, self.__eckey)
             self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
@@ -114,7 +113,7 @@ class RESTcli:
         return json_response
 
     def response_to_json_string(self, response):
-        if not response:
+        if not response.json():
             raise BitPayException("Error: HTTP response is null")
 
         response_obj = response.json()

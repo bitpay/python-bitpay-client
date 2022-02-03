@@ -140,7 +140,7 @@ class BitPayTest(unittest.TestCase):
         )
         first_invoice = invoices[0]
         create_refund = self.client.create_refund(
-            first_invoice.get_id(), 1.0, "BTC", True, False, False
+            first_invoice.get_id(), first_invoice.get_price(), first_invoice.get_currency(), True, False, False
         )
         retrieved_refunds = self.client.get_refunds(first_invoice.get_id())
         last_refund = retrieved_refunds[-1]
@@ -150,7 +150,6 @@ class BitPayTest(unittest.TestCase):
             last_refund.get_id()
         )
         cancel_refund = self.client.cancel_refund(last_refund.get_id())
-        supported_wallets = self.client.get_supported_wallets()
 
         self.assertIsNotNone(invoices)
         self.assertIsNotNone(create_refund.get_id())
@@ -158,7 +157,10 @@ class BitPayTest(unittest.TestCase):
         self.assertEqual("created", update_refund.get_status())
         self.assertEqual(last_refund.get_id(), retrieved_refund.get_id())
         self.assertTrue(notification_status)
-        self.assertEqual("cancelled", cancel_refund.get_status())
+        self.assertEqual("canceled", cancel_refund.get_status())
+
+    def test_should_get_supported_wallets(self):
+        supported_wallets = self.client.get_supported_wallets()
         self.assertIsNotNone(supported_wallets)
 
     def test_should_create_bill_usd(self):
@@ -417,7 +419,7 @@ class BitPayTest(unittest.TestCase):
         recipients_list = []
 
         payout_recipient = PayoutRecipient()
-        payout_recipient.set_email("sandbox@bitpay.com")
+        payout_recipient.set_email("nsoni@mailinator.com")
         payout_recipient.set_label("recipient1")
         payout_recipient.set_notification_url("https://hookb.in/QJOPBdMgRkukpp2WO60o")
         recipients_list.append(payout_recipient)
@@ -489,7 +491,7 @@ class BitPayTest(unittest.TestCase):
     def test_should_submit_payout(self):
         recipients = self.client.get_payout_recipients(None, 1)
         currency = Currency.USD
-        ledger_currency = Currency.ETH
+        ledger_currency = Currency.USD
 
         payout = Payout(5.0, currency, ledger_currency)
         payout.set_recipient_id(recipients[0].get_id())
@@ -511,7 +513,7 @@ class BitPayTest(unittest.TestCase):
     def test_should_submit_get_and_delete_payout(self):
         recipients = self.client.get_payout_recipients(None, 1)
         currency = Currency.USD
-        ledger_currency = Currency.ETH
+        ledger_currency = Currency.USD
 
         payout = Payout(5.0, currency, ledger_currency)
         payout.set_recipient_id(recipients[0].get_id())
@@ -529,7 +531,7 @@ class BitPayTest(unittest.TestCase):
     def test_should_request_payout_notification(self):
         recipients = self.client.get_payout_recipients(None, 1)
         currency = Currency.USD
-        ledger_currency = Currency.ETH
+        ledger_currency = Currency.USD
 
         payout = Payout(5.0, currency, ledger_currency)
         payout.set_recipient_id(recipients[0].get_id())
@@ -547,16 +549,16 @@ class BitPayTest(unittest.TestCase):
         self.assertTrue(cancel_payout)
 
     def test_should_submit_payout_batch(self):
-        recipients = self.client.get_payout_recipients(None, 2)
+        recipients = self.client.get_payout_recipients("active", 2)
         currency = Currency.USD
-        ledger_currency = Currency.ETH
+        ledger_currency = Currency.USD
         effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
         instructions = [
             PayoutInstruction(
                 5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
             ),
             PayoutInstruction(
-                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email()
+                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_id()
             ),
         ]
         batch = PayoutBatch(currency, effective_date, ledger_currency)
@@ -569,9 +571,9 @@ class BitPayTest(unittest.TestCase):
         self.assertTrue(cancel_batch)
 
     def test_should_submit_get_and_delete_payout_batch(self):
-        recipients = self.client.get_payout_recipients(None, 2)
+        recipients = self.client.get_payout_recipients("active", 2)
         currency = Currency.USD
-        ledger_currency = Currency.ETH
+        ledger_currency = Currency.USD
         effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
 
         instructions = [
@@ -579,7 +581,7 @@ class BitPayTest(unittest.TestCase):
                 5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
             ),
             PayoutInstruction(
-                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email()
+                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_id()
             ),
         ]
         batch = PayoutBatch(currency, effective_date, ledger_currency)
@@ -597,9 +599,9 @@ class BitPayTest(unittest.TestCase):
         self.assertEqual(PayoutStatus.New, retrieve_batch.get_status())
 
     def test_should_request_payout_batch_notification(self):
-        recipients = self.client.get_payout_recipients(None, 2)
+        recipients = self.client.get_payout_recipients("active", 2)
         currency = Currency.USD
-        ledger_currency = Currency.ETH
+        ledger_currency = Currency.USD
         effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
 
         instructions = [
@@ -607,7 +609,7 @@ class BitPayTest(unittest.TestCase):
                 5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
             ),
             PayoutInstruction(
-                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_email()
+                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_id()
             ),
         ]
         batch = PayoutBatch(currency, effective_date, ledger_currency)

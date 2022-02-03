@@ -47,8 +47,9 @@ class PayoutBatch:
     def __init__(
         self, currency=None, effective_date=None, ledger_currency=None, **kwargs
     ):
-        self.set_currency(currency)
         self.set_effective_date(effective_date)
+        if currency:
+            self.set_currency(currency)
         if ledger_currency:
             self.set_ledger_currency(ledger_currency)
 
