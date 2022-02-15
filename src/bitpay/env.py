@@ -1,0 +1,8 @@
+TEST = "Test"
+PROD = "Prod"
+TESTURL = "https://test.bitpay.com/"
+PRODURL = "https://bitpay.com/"
+BITPAYAPIVERSION = "1.0.2201"
+BITPAYPLUGININFO = "BitPay_Python_Client_v1.0.2201"
+BITPAYAPIFRAME = "std"
+BITPAYAPIFRAMEVERSION = "1.0.2201"
