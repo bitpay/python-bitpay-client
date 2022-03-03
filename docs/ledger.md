@@ -172,5 +172,41 @@ print(ledger)
 ]
 ```
 
+## Ledger Codes
 
-### [Back to guide index](../GUIDE.md)
+| Code   | Name                                                                   | Type     | Description |
+|-------------|-------------------------------------------------------------------------------|----------|--|
+| 1050    | Immediate Invoice Refund                  | `debit` | This entry is written once an made on an invoice is created. Theimmediate refund request merchant balance is debited with the refund amount requested. |
+
+## Ledger Entries
+
+Here is an example of what a ledger entry for a refund will look like from the settlement report:
+
+```json
+{
+"code": 1050,
+"description": "Immediate Invoice Refund",
+"timestamp": "2022-02-14T16:57:48.810Z",
+"amount": -1540,
+"invoiceId": "QXfxh8bx1z6qzLsNcTSW9N",
+"invoiceData": {
+"date": "2022-02-14T15:51:55.048Z",
+"price": 1540,
+"currency": "USD",
+"transactionCurrency": "BTC",
+"buyerEmailAddress": "example@email.com",
+"payoutPercentage": {
+"USD": 100
+}
+},
+"refundInfo": {
+"supportRequest": "P2z9ke5phuhZRHoBJtqSjU",
+"currency": "USD",
+"amounts": {
+"USD": 100,
+"BTC": 0.002265
+},
+"reference": "customReference"
+}
+}
+```

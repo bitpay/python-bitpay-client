@@ -803,6 +803,40 @@ cancel_invoice = bitpay.cancel_invoice(invoice_id)
 invoice_status = bitpay.request_invoice_notifications(invoice_id)
 ```
 
+## Pay an invoice
+
+Pay an invoice with a mock transaction
+
+:warning: Only available in test or demo environment
+
+:warning: HVT invoices require buyer E-mail
+
+`PUT /invoices/pay/:invoiceId`  
+
+Facades  **`MERCHANT`**
+
+### HTTP Request
+
+**URL Parameters**
+
+| Parameter | Description                                                                        |Type | Presence
+| ------ |------------------------------------------------------------------------------------| -- |------ |
+|  complete  | Indicate if paid invoice should have status if complete true or a confirmed status | `boolean` | **Mandatory** |
+
+**Headers**
+
+| Fields | Description | Presence
+| ------ | ------ | ------ |
+|  X-Accept-Version  | must be set to `2.0.0` for requests to the BitPay API  | **Mandatory** |
+| Content-Type | must be set to `application/json` for requests to the BitPay API | **Mandatory** | 
+|  X-Identity  | the hexadecimal public key generated from the client private key. This header is required when using tokens with higher privileges (merchant facade). When using standard pos facade token directly from the BitPay dashboard (with "Require Authentication" disabled), this header is not needed.  | C |
+| X-Signature | header is the ECDSA signature of the full request URL concatenated with the request body, signed with your private key. This header is required when using tokens with higher privileges (merchant facade). When using standard pos facade token directly from the BitPay dashboard (with "Require Authentication" disabled), this header is not needed. | C |
+
+```python
+create_invoice = bitpay.create_invoice(new Invoice(100.0, "USD"))
+pay_invoice = bitpay.pay_invoice(create_invoice.get_id())
+```
+
 ### Error Scenarios & Format:
 
 | Field | Description |Type |
@@ -811,7 +845,7 @@ invoice_status = bitpay.request_invoice_notifications(invoice_id)
 |  code  | six digit code that maps to an error on BitPay’s side | `string` |
 |  data  | will be null in an error scenario | `string` |
 |  message  | error message pertaining to the specific error | `string` |
-
+    
 ```json
 {
 "status": "error",
@@ -821,6 +855,5 @@ invoice_status = bitpay.request_invoice_notifications(invoice_id)
 }
 
 ```
-
 
 ### [Back to guide index](../GUIDE.md)

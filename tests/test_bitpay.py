@@ -116,7 +116,7 @@ class BitPayTest(unittest.TestCase):
         updated_invoice = self.client.update_invoice(
             retrieved_invoice.get_id(), "sandbox@bitpay.com"
         )
-        cancelled_invoice = self.client.cancel_invoice(updated_invoice.get_id())
+        cancelled_invoice = self.client.cancel_invoice(updated_invoice.get_id(), False)
         retrieved_cancelled_invoice = self.client.get_invoice(
             cancelled_invoice.get_id()
         )
@@ -132,13 +132,19 @@ class BitPayTest(unittest.TestCase):
         result = self.client.request_invoice_notifications(basic_invoice.get_id())
         self.assertTrue(result)
 
+    def test_should_pay_invoice(self):
+        basic_invoice = self.client.create_invoice(Invoice(2, "btc"))
+        pay_invoice = self.client.pay_invoice(basic_invoice.get_id())
+        self.assertIsNotNone(basic_invoice)
+        self.assertIsNotNone(pay_invoice)
+
     def test_should_create_get_cancel_refund_request_new(self):
         today = date.today().strftime("%Y-%m-%d")
         date_start = (date.today() - timedelta(days=30)).strftime("%Y-%m-%d")
         invoices = self.client.get_invoices(
             date_start, today, "complete", None, None, None
         )
-        first_invoice = invoices[0]
+        first_invoice = invoices[14]
         create_refund = self.client.create_refund(
             first_invoice.get_id(), first_invoice.get_price(), first_invoice.get_currency(), True, False, False
         )
