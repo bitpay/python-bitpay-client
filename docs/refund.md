@@ -272,6 +272,64 @@ result = bitpay.request_refund_notification(refund_id)
 | --- | --- | :---: | 
 | status | successful response status will be always be “success” | `string` |
 
+## Refund Webhooks
 
+To receive webhooks, pass a `notificationURL` along during invoice creation for the webhook destination.
+
+**Refund Webhook Lifecycle:**
+
+| Order of Execution | Name           | Code |                                     Description                                     |
+|--------------------|----------------|:----:|:-----------------------------------------------------------------------------------:|
+| 1                  | refund_created | 7001 |                       received after refund request creation                        |
+| 2                  | refund_pending | 7002 |                 received after customer has provided refund address                 |
+| 3*                 | refund_success | 7003 | received after refund request has executed and funds have been paid out to customer |
+| 3*                 | refund_failure | 7004 |               received after a refund request fails during execution                |
+
+* either one of these will occur on the final step of refund proces
+
+**Refund Webhook Body:**
+
+| Name                    | Description                                                                                             |   Type    |  
+|-------------------------|---------------------------------------------------------------------------------------------------------|:---------:| 
+| event                   | metadata about webhook                                                                                  | `object`  |
+| code                    | system code associated with the refund status (reference chart above)                                   | `number`  |
+| name                    | refund status name (reference chart above)                                                              | `string`  |
+| data                    | refund request data for webhook                                                                         | `object`  |
+| id                      | the refund request id                                                                                   | `string`  |
+| invoice                 | associated invoice id                                                                                   | `string`  |
+| supportRequest *        | associated support request id                                                                           | `string`  |
+| status                  | status refund lifecycle status of the request (refer to field in POST status refunds response)          | `string`  |
+| amount                  | amount to be refunded in the currency indicated                                                         | `number`  |
+| currency                | reference currency used for the refund, usually the same as the currency used to create the invoice     |  `date`   |
+| lastRefundNotification* | timestamp of last notification sent to customer about refund                                            | `number`  |
+| refundFee                 | the amount of refund fee expressed in terms of pricing currency                                         | `boolean` |
+| immediate                 | whether funds should be removed from merchant ledger immediately on submission or at time of processing | `boolean` |
+| buyerPaysRefundFee                 | whether the buyer should pay the refund fee (default is merchant)                                       | `string`  |
+| requestDate                 | timestamp the refund request was created                                                                |  `date`   |
+
+* these fields are only sent on webhooks that occur AFTER refund_created
+
+```json
+# example refund webhook
+{
+"event": {
+"code": 7002,
+"name": "refund_pending"
+},
+"data": {
+"id": "GZBBLcsgQamua3PN8GX92s",
+"invoice": "Wp9cpGphCz7cSeFh6MSYpb",
+"supportRequest": "XuuYtZfTw7G99Ws3z38kWZ",
+"status": "pending",
+"amount": 6,
+"currency": "USD",
+"lastRefundNotification": "2022-01-11T16:58:23.967Z",
+"refundFee": 2.31,
+"immediate": false,
+"buyerPaysRefundFee": true,
+"requestDate": "2022-01-11T16:58:23.000Z"
+}
+}
+```
 
 ### [Back to guide index](../GUIDE.md)

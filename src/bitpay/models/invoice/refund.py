@@ -23,6 +23,7 @@ class Refund:
     __invoice_id = None
     __preview = None
     __immediate = None
+    __reference = None
     __buyer_pays_refund_fee = None
     __refund_fee = None
     __last_refund_notification = None
@@ -107,6 +108,20 @@ class Refund:
         :param immediate: immediate
         """
         self.__immediate = immediate
+
+    def get_reference(self):
+        """
+        Get method for the reference
+        :return: reference
+        """
+        return self.__reference
+
+    def set_reference(self, reference):
+        """
+        Set method for the reference
+        :param reference: reference
+        """
+        self.__reference = reference
 
     def get_buyer_pays_refund_fee(self):
         """
@@ -295,6 +310,7 @@ class Refund:
             "lastRefundNotification": self.get_last_refund_notification(),
             "invoice": self.get_invoice(),
             "immediate": self.get_immediate(),
+            "reference": self.get_reference(),
             "preview": self.get_preview(),
             "invoiceId": self.get_invoice_id(),
         }

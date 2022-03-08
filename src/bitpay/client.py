@@ -43,6 +43,7 @@ from .exceptions.invoice_update_exception import InvoiceUpdateException
 from .exceptions.currency_query_exception import CurrencyQueryException
 from .exceptions.refund_creation_exception import RefundCreationException
 from .exceptions.payout_creation_exception import PayoutCreationException
+from .exceptions.invoice_payment_exception import InvoicePaymentException
 from .exceptions.settlement_query_exception import SettlementQueryException
 from .exceptions.invoice_creation_exception import InvoiceCreationException
 from .exceptions.payoutbatch_query_exception import PayoutBatchQueryException
@@ -407,18 +408,23 @@ class Client:
 
         return invoice
 
-    def cancel_invoice(self, invoice_id: str) -> Invoice:
+    def cancel_invoice(self, invoice_id: str, force_cancel: bool = False) -> Invoice:
         """
         Delete a previously created BitPay invoice.
 
         :param str invoice_id: The Id of the BitPay invoice to be canceled.
+        :param bool force_cancel: Query param that will cancel the invoice even if
+        no contact information is present
         :return: A BitPay generated Invoice object.
         :rtype: Invoice
         :raises BitPayException
         :raises InvoiceCancellationException
         """
         try:
-            params = {"token": self.get_access_token(Facade.Merchant)}
+            params = {
+                "token": self.get_access_token(Facade.Merchant),
+                "force_cancel": force_cancel,
+            }
             response_json = self.__restcli.delete("invoices/%s" % invoice_id, params)
         except BitPayException as exe:
             raise InvoiceCancellationException(
@@ -433,6 +439,45 @@ class Client:
             invoice = Invoice(**response_json)
         except Exception as exe:
             raise InvoiceCancellationException(
+                "failed to deserialize BitPay server"
+                " response (Invoice) : %s" % str(exe)
+            )
+        return invoice
+
+    def pay_invoice(self, invoice_id: str, complete: bool = True) -> Invoice:
+        """
+        Pay an invoice with a mock transaction.
+
+        :param str invoice_id: The Id of the BitPay invoice.
+        :param bool complete: indicate if paid invoice should have status if complete true or a confirmed status.
+        :return: A BitPay generated Invoice object.
+        :rtype: Invoice
+        :raises BitPayException
+        :raises InvoicePaymentException
+        """
+        if self.__env.lower() != "test":
+            raise InvoicePaymentException(
+                "Pay Invoice method only available in test or demo environments"
+            )
+        try:
+            params = {
+                "token": self.get_access_token(Facade.Merchant),
+                "complete": complete,
+            }
+            response_json = self.__restcli.update("invoices/pay/%s" % invoice_id, params)
+        except BitPayException as exe:
+            raise InvoicePaymentException(
+                "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
+            )
+        except Exception as exe:
+            raise InvoicePaymentException(
+                "failed to serialize Invoice object : %s" % str(exe)
+            )
+
+        try:
+            invoice = Invoice(**response_json)
+        except Exception as exe:
+            raise InvoicePaymentException(
                 "failed to deserialize BitPay server"
                 " response (Invoice) : %s" % str(exe)
             )

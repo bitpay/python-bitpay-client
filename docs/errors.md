@@ -51,8 +51,8 @@ These errors are not mapped to a specific resource
 
 These errors are mapped to the invoice resource
 
-| Code | Error | Type
-| ------ | ------ | ------ |
+| Code   | Error | Type
+|--------| ------ | ------ |
 | xx0100 | Generic server error | `string` |
 | xx0101 | Invoice not found | `string` |
 | xx0102 | Invalid params | `string` |
@@ -64,17 +64,24 @@ These errors are mapped to the invoice resource
 | xx0111 | Invoice price is above maximum threshold | `string` |
 | xx0112 | Invalid sms number | `string` |
 | xx0113 | Error verifying sms | `string` |
+| xx0114 | Unable to update contact information on high value transaction | `string` |
+| xx0115 | Email already set on invoice  | `string` |
+| xx0116 | Unable to perform action outside of demo environment | `string` |
+| xx0117 | nvalid invoice state  | `string` |
+| xx0118 | Misconfigured account | `string` |
+| xx0119 | Unable to apply mock transaction | `string` |
 
 **Refund Errors: xx02xx**
 
 These errors are mapped to the refund resource
 
-| Code | Error | Type
-| ------ | ------ | ------ |
+| Code   | Error | Type
+|--------| ------ | ------ |
 | xx0200 | Generic refund error | `string` |
 | xx0201 | Refund not found | `string` |
 | xx0202 | Invalid params | `string` |
 | xx0203 | Missing params | `string` |
+| xx0204 | Active refund request already exists | `string` |
 | xx0207 | Invalid invoice state for refund | `string` |
 | xx0208 | Fees are greater than refund amount | `string` |
 
