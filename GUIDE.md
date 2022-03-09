@@ -59,6 +59,8 @@ The comments in this script will assist you to create the environment file which
 
 Once the Config Generator has run and generated the Json/Yml correctly, read the console output and follow the instructions in order to pair your new tokens.
 
+You can find bitpay_setup.py file at `bitpay/bitpay_setup.py` under site-packages in your system
+
 ```json
 
 {
