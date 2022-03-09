@@ -125,7 +125,7 @@ class RESTcli:
 
         if "error" in response_obj:
             raise BitPayException(
-                "Error: " + response_obj["error"], response_obj["code"]
+                "Error: " + response_obj["error"]
             )
         elif "errors" in response_obj:
             message = ""
