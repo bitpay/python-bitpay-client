@@ -37,11 +37,13 @@ For more information about testing, please see https://bitpay.com/docs/testing
 
 ## Installation
 
+### Manual
 1. Download the package and extract it into a local directory or clone the repo.
 2. cd into the root directory where setup.py is located 
 3. Enter: python setup.py install
 
-
+### Using pip
+pip install bitpay
 
 ### Handling your client private key
 
