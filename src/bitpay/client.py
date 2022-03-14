@@ -2,7 +2,7 @@
 Class Client
 package Bitpay
 author  Antonio Buedo
-version 3.3.2203
+version 14.3.2203
 See bitpay.com/api for more information.
 """
 import os
@@ -81,7 +81,7 @@ class Client:
     * Class Client
     * @package Bitpay
     * @author  Antonio Buedo
-    * @version 3.3.2203
+    * @version 3.4.2203
     * See bitpay.com/api for more information.
     """
 
