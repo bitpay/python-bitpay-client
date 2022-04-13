@@ -44,7 +44,7 @@ Facade **`POS` `MERCHANT`**
 An example code of the create invoice
 
 ```python
-// Setting mandatory parameters in invoice i.e price and currency.
+# Setting mandatory parameters in invoice i.e price and currency.
 Invoice invoice = new Invoice(100.0, "USD");
 
 # Setting invoice optional parameters
@@ -717,7 +717,8 @@ Facade **`MERCHANT`**
 To get the generated invoices filtered by query parameters 
 
 ```python
-get_invoices = bitpay.get_invoices('YYYY-MM-DD', 'YYYY-MM-DD', InvoiceStatus.Complete, None, 10); //Always use the included InvoiceStatus model to avoid typos
+from bitpay.models.invoice.invoice_status import InvoiceStatus
+get_invoices = bitpay.get_invoices('YYYY-MM-DD', 'YYYY-MM-DD', InvoiceStatus.Complete, None, 10) # Always use the included InvoiceStatus model to avoid typos
 ```
 
 ## Update an invoice
