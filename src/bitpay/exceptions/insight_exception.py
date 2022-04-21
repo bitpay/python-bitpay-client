@@ -1,16 +1,15 @@
 """
-Bill Exception gets raised when some unexpected error occurs while processing a request
-or trying to manage bills.
+Insight Exception gets raised when some unexpected error occurs while processing a request.
 """
 from .bitpay_exception import BitPayException
 
 
 class InsightException(BitPayException):
     """
-    BillException
+    InsightException
     """
 
-    __bitpay_message = "An unexpected error occurred while trying to manage the insight"
+    __bitpay_message = "An unexpected error occurred while trying to manage the transaction insight"
     __bitpay_code = "BITPAY-INSIGHT-GENERIC"
     __api_code = ""
 
