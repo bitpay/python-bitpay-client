@@ -26,6 +26,7 @@ from .models.payout.payout_batch import PayoutBatch
 from .models.ledger.ledger_entry import LedgerEntry
 from .models.settlement.settlement import Settlement
 from .exceptions.bitpay_exception import BitPayException
+from .exceptions.insight_exception import InsightException
 from .models.subscription.subscription import Subscription
 from .models.payout.payout_recipient import PayoutRecipient
 from .models.payout.payout_recipients import PayoutRecipients
@@ -290,7 +291,7 @@ class Client:
             r = requests.get(url)
             response = json.loads(r.text)
         except Exception as exe:
-            print(
+            raise InsightException(
                 f"Transaction with ID: {txid} Not Found : ", str(exe)
             )
         return response
