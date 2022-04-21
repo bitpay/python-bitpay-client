@@ -7,6 +7,7 @@ See bitpay.com/api for more information.
 """
 import os
 import json
+import requests
 
 from .config import Config
 from .tokens import Tokens
@@ -269,6 +270,31 @@ class Client:
 
         return invoice
 
+    def get_insight(self, txid: str, currency: str, environment: str = None) -> dict:
+        """
+        Retrieve a BitPay insight of a transaction
+        
+        :param str txid: The id of the transaction
+        :param str currency: The currecy of the transcation
+        :param str environment: Prod / Test (mainnet / testnet)
+        """
+        response = {}
+        try:
+            if environment is None:
+                environment = self.__env
+            if environment.lower() != "test":
+                network = "mainnet"
+            else:
+                network = "testnet"
+            url = f"https://api.bitcore.io/api/{currency}/{network}/tx/{txid}/coins"
+            r = requests.get(url)
+            response = json.loads(r.text)
+        except Exception as exe:
+            print(
+                f"Transaction with ID: {txid} Not Found : ", str(exe)
+            )
+        return response
+
     def get_invoice(
         self, invoice_id: str, facade: str = Facade.Merchant, sign_request: bool = True
     ) -> Invoice:
@@ -497,7 +523,7 @@ class Client:
             invoice = self.get_invoice(invoice_id)
         except Exception as exe:
             raise InvoiceNotificationException(
-                f"Invoice with ID: " + {invoice_id} + " Not Found : ", str(exe)
+                f"Invoice with ID: {invoice_id} Not Found : ", str(exe)
             )
         params = {"token": invoice.get_token()}
 
