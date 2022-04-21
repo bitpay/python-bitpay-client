@@ -166,7 +166,7 @@ class Client:
                 private_key_path = self.__configuration.get_envconfig()[self.__env][
                     "PrivateKeyPath"
                 ]
-                if os.path.exists(private_key_path):
+                if private_key_path and os.path.exists(private_key_path):
                     with open(private_key_path) as f:
                         self.__ec_key = f.read()
                 else:
