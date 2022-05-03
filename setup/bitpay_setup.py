@@ -8,12 +8,12 @@ from bitpay.exceptions.bitpay_exception import BitPayException
 # Will be set to Test otherwise
 private_key_name = "private_key.pem"  # Add here the name for your Private key
 private_key_path = os.path.join(os.path.abspath(os.curdir), private_key_name)
-plain_private_key = None
-proxy = None
-api_url = None
-environment = None
-merchant_token = None
-payout_token = None
+plain_private_key = ""
+proxy = ""
+api_url = ""
+environment = ""
+merchant_token = ""
+payout_token = ""
 
 
 def select_env():
@@ -75,12 +75,12 @@ def store_key(private_key):
         if input_value.lower() == "f":
             with open(str(private_key_path), "wb") as f:
                 f.write(private_key.encode())
-            plain_private_key = None
+            plain_private_key = ""
             print("Private key saved at path:", private_key_path)
             select_tokens(private_key)
         elif input_value.lower() == "t":
             plain_private_key = private_key
-            private_key_path = None
+            private_key_path = ""
             print("Saving private key... \n")
             select_tokens(private_key)
         else:
