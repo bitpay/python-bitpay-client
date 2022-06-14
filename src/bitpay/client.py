@@ -106,7 +106,7 @@ class Client:
                 self.init_keys()
                 self.init()
         except Exception as exe:
-            raise BitPayException("failed to initiate client: " + str(exe))
+            raise BitPayException("failed to initiate client: ", str(exe))
 
     def build_config_from_file(self, config_file_path: str):
         try:
@@ -132,7 +132,7 @@ class Client:
                 raise BitPayException("Configuration file not found")
 
         except Exception as exe:
-            raise BitPayException("failed to process configuration: " + str(exe))
+            raise BitPayException("failed to process configuration: ", str(exe))
 
     def build_config(self, private_key_path: str, tokens: Tokens):
         """
@@ -158,7 +158,7 @@ class Client:
             self.__configuration.set_environment(self.__env)
             self.__configuration.set_envconfig({self.__env: env_config})
         except Exception as exe:
-            raise BitPayException("failed to process configuration: " + str(exe))
+            raise BitPayException("failed to process configuration: ", str(exe))
 
     def init_keys(self):
         if not self.__ec_key:
@@ -166,7 +166,7 @@ class Client:
                 private_key_path = self.__configuration.get_envconfig()[self.__env][
                     "PrivateKeyPath"
                 ]
-                if os.path.exists(private_key_path):
+                if private_key_path and os.path.exists(private_key_path):
                     with open(private_key_path) as f:
                         self.__ec_key = f.read()
                 else:
@@ -497,7 +497,7 @@ class Client:
             invoice = self.get_invoice(invoice_id)
         except Exception as exe:
             raise InvoiceNotificationException(
-                f"Invoice with ID: " + {invoice_id} + " Not Found : ", str(exe)
+                f"Invoice with ID: {invoice_id} Not Found : ", str(exe)
             )
         params = {"token": invoice.get_token()}
 
