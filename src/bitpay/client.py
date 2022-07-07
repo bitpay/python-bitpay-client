@@ -444,12 +444,12 @@ class Client:
             )
         return invoice
 
-    def pay_invoice(self, invoice_id: str, complete: bool = True) -> Invoice:
+    def pay_invoice(self, invoice_id: str, status: str) -> Invoice:
         """
         Pay an invoice with a mock transaction.
 
         :param str invoice_id: The Id of the BitPay invoice.
-        :param bool complete: indicate if paid invoice should have status if complete true or a confirmed status.
+        :param str status: Status the invoice will become. Acceptable values are confirmed and complete
         :return: A BitPay generated Invoice object.
         :rtype: Invoice
         :raises BitPayException
@@ -462,7 +462,7 @@ class Client:
         try:
             params = {
                 "token": self.get_access_token(Facade.Merchant),
-                "complete": complete,
+                "status": status,
             }
             response_json = self.__restcli.update("invoices/pay/%s" % invoice_id, params)
         except BitPayException as exe:

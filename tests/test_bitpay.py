@@ -134,7 +134,7 @@ class BitPayTest(unittest.TestCase):
 
     def test_should_pay_invoice(self):
         basic_invoice = self.client.create_invoice(Invoice(2, "btc"))
-        pay_invoice = self.client.pay_invoice(basic_invoice.get_id())
+        pay_invoice = self.client.pay_invoice(basic_invoice.get_id(), "confirmed")
         self.assertIsNotNone(basic_invoice)
         self.assertIsNotNone(pay_invoice)
 

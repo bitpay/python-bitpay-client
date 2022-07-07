@@ -12,6 +12,7 @@ class Wallet(object):
     __avatar = None
     __pay_pro = None
     __currencies = Currencies()
+    __image = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -103,6 +104,20 @@ class Wallet(object):
         """
         self.__currencies = currencies
 
+    def get_pay_pro(self):
+        """
+        Get method for to image
+        :return: image
+        """
+        return self.__image
+
+    def set_image(self, image):
+        """
+        Set method for to image
+        :param image: image
+        """
+        self.__image = image
+
     def to_json(self):
         """
         :return: data in json
@@ -113,5 +128,6 @@ class Wallet(object):
             "avatar": self.get_avatar(),
             "payPro": self.get_pay_pro(),
             "currencies": self.get_currencies(),
+            "image": self.get_image(),
         }
         return data

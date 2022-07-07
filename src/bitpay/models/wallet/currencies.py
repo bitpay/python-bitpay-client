@@ -18,6 +18,7 @@ class Currencies(object):
     __withdrawal_fee = None
     __wallet_connect = None
     __currencies = None
+    __image = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -129,6 +130,20 @@ class Currencies(object):
         """
         self.__wallet_connect = wallet_connect
 
+    def get_image(self):
+        """
+        Get method for to image
+        :return: image
+        """
+        return self.__image
+
+    def set_image(self, image):
+        """
+        Set method for to image
+        :param image: image
+        """
+        self.__image = image
+
     def to_json(self):
         """
         :return: data in json
@@ -141,5 +156,6 @@ class Currencies(object):
             "qr": self.get_qr(),
             "withdrawalFee": self.get_withdrawal_fee(),
             "walletConnect": self.get_wallet_connect(),
+            "image": self.get_image(),
         }
         return data
