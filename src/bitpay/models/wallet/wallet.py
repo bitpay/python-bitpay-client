@@ -104,7 +104,7 @@ class Wallet(object):
         """
         self.__currencies = currencies
 
-    def get_pay_pro(self):
+    def get_image(self):
         """
         Get method for to image
         :return: image
