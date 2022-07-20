@@ -1042,11 +1042,17 @@ class Invoice:
         """
         supported_transaction_currencies = {}
         for key, value in self.get_supported_transaction_currencies().to_json().items():
-            supported_transaction_currencies[key] = value.to_json()
+            if isinstance(value, dict):
+                supported_transaction_currencies[key] = value
+            else:
+                supported_transaction_currencies[key] = value.to_json()
 
         miner_fees = {}
         for key, value in self.get_miner_fees().to_json().items():
-            miner_fees[key] = value.to_json()
+            if isinstance(value, dict):
+                miner_fees[key] = value
+            else:
+                miner_fees[key] = value.to_json()
 
         data = {
             "currency": self.get_currency(),
