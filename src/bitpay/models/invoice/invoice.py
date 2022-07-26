@@ -414,14 +414,14 @@ class Invoice:
         """
         self.__refund_addresses = refund_addresses
 
-    def get_close_url(self):
+    def get_close_u_r_l(self):
         """
         Get method for the close_url
         :return: close_url
         """
         return self.__close_url
 
-    def set_close_url(self, close_url):
+    def set_close_u_r_l(self, close_url):
         """
         Set method for the close_url
         :param close_url: close_url
@@ -1070,7 +1070,7 @@ class Invoice:
             "physical": self.get_physical(),
             "paymentCurrencies": self.get_payment_currencies(),
             "acceptanceWindow": self.get_acceptance_window(),
-            "closeURL": self.get_close_url(),
+            "closeURL": self.get_close_u_r_l(),
             "buyer": self.get_buyer().to_json(),
             "refundAddresses": self.get_refund_addresses(),
             "id": self.get_id(),
