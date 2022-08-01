@@ -687,6 +687,37 @@ To get the generated invoice details, pass the Invoice Id with URL parameter
 retrieve_invoice = bitpay.get_invoice(invoice_id)
 ```
 
+## Retrieve an invoice using guid
+
+`GET /invoices/guid/:guid`
+
+Facade **`MERCHANT`**
+
+### HTTP Request
+
+**URL Parameters**
+
+| Parameter | Description | Type | Presence |
+| --- | --- | :---: | :---: |
+| ?token= | When fetching an invoice via the `merchant` facade, pass the API token as a URL parameter - the same token used to create the invoice in the first place. | `string` | **Mandatory** |
+
+**Headers**
+
+| Fields | Description | Presence |
+| --- | --- | :---: |
+| X-Accept-Version | Must be set to `2.0.0` for requests to the BitPay API. | **Mandatory** |
+| Content-Type | must be set to `application/json` for requests to the BitPay API. | **Mandatory** |
+| X-Identity | the hexadecimal public key generated from the client private key. This header is required when using tokens with higher privileges (`merchant` facade). When using standard `merchant` facade token directly from the [BitPay dashboard](https://test.bitpay.com/dashboard/merchant/api-tokens) (with `"Require Authentication"` disabled), this header is not needed. | **Mandatory** |
+| X-Signature | header is the ECDSA signature of the full request URL concatenated with the request body, signed with your private key. This header is required when using tokens with higher privileges (`merchant` facade). When using standard `merchant` facade token directly from the [BitPay dashboard](https://test.bitpay.com/dashboard/merchant/api-tokens) (with `"Require Authentication"` disabled), this header is not needed. | **Mandatory** |
+
+
+To get the generated invoice details, pass the guid with URL parameter
+
+```python
+basic_invoice = bitpay.create_invoice(Invoice(2, "BTC"))
+get_invoice = bitpay.get_invoice_using_guid(basic_invoice.get_guid())
+```
+
 ## Retrieve invoices filtered by query
 
 Facade **`MERCHANT`**

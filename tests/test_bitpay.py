@@ -102,6 +102,13 @@ class BitPayTest(unittest.TestCase):
 
         self.assertEqual(basic_invoice.get_id(), retrieved_invoice.get_id())
 
+    def test_should_get_invoice_using_guid(self):
+        basic_invoice = self.client.create_invoice(Invoice(5.0, "eur"))
+        retrieved_invoice = self.client.get_invoice_using_guid(basic_invoice.get_guid())
+
+        self.assertIsNotNone(basic_invoice)
+        self.assertEqual(basic_invoice.get_id(), retrieved_invoice.get_id())
+
     def test_should_get_invoices(self):
         today = date.today().strftime("%Y-%m-%d")
         date_start = (date.today() - timedelta(days=30)).strftime("%Y-%m-%d")

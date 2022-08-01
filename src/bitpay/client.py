@@ -7,6 +7,7 @@ See bitpay.com/api for more information.
 """
 import os
 import json
+import uuid
 
 from .config import Config
 from .tokens import Tokens
@@ -199,6 +200,9 @@ class Client:
                 str(exe),
             )
 
+    def get_guid(self):
+        return str(uuid.uuid4())
+
     def load_currencies(self):
         try:
             return []
@@ -247,6 +251,7 @@ class Client:
         """
         try:
             invoice.set_token(self.get_access_token(facade))
+            invoice.set_guid(self.get_guid())
             invoice_json = invoice.to_json()
             response_json = self.__restcli.post("invoices", invoice_json, sign_request)
         except BitPayException as exe:
@@ -289,6 +294,46 @@ class Client:
             params = {"token": self.get_access_token(facade)}
             response_json = self.__restcli.get(
                 "invoices/%s" % invoice_id, params, sign_request
+            )
+        except BitPayException as exe:
+            raise InvoiceQueryException(
+                "failed to serialize Invoice object : " "%s" % str(exe),
+                exe.get_api_code(),
+            )
+        except Exception as exe:
+            raise InvoiceQueryException(
+                "failed to serialize Invoice object :" " %s" % str(exe)
+            )
+
+        try:
+            invoice = Invoice(**response_json)
+        except Exception as exe:
+            raise InvoiceQueryException(
+                "failed to deserialize BitPay server response"
+                " (Invoice) : %s" % str(exe)
+            )
+
+        return invoice
+
+    def get_invoice_using_guid(
+        self, guid: str, facade: str = Facade.Merchant, sign_request: bool = True
+    ) -> Invoice:
+        """
+        Retrieve a BitPay invoice by guid using the specified facade.
+        The client must have been previously authorized for the specified facade.
+
+        :param str guid: The guid of the invoice to retrieve.
+        :param str facade: The facade used to create it
+        :param bool sign_request: Signed request
+        :return: A BitPay Invoice object
+        :rtype: Invoice
+        :raises BitPayException
+        :raises InvoiceQueryException
+        """
+        try:
+            params = {"token": self.get_access_token(facade)}
+            response_json = self.__restcli.get(
+                "invoices/guid/%s" % guid, params, sign_request
             )
         except BitPayException as exe:
             raise InvoiceQueryException(
