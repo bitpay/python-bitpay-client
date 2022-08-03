@@ -176,14 +176,14 @@ class Invoice:
         """
         self.__pos_data = pos_data
 
-    def get_notification_url(self):
+    def get_notification_u_r_l(self):
         """
         Get method for the notification_url
         :return: notification_url
         """
         return self.__notification_url
 
-    def set_notification_url(self, notification_url):
+    def set_notification_u_r_l(self, notification_url):
         """
         Set method for the notification_url
         :param notification_url: notification_url
@@ -1059,7 +1059,7 @@ class Invoice:
             "price": self.get_price(),
             "token": self.get_token(),
             "posData": self.get_pos_data(),
-            "notificationURL": self.get_notification_url(),
+            "notificationURL": self.get_notification_u_r_l(),
             "transactionSpeed": self.get_transaction_speed(),
             "fullNotifications": self.get_full_notifications(),
             "notificationEmail": self.get_notification_email(),
