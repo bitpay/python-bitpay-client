@@ -17,7 +17,6 @@ class Wallet(object):
         for key, value in kwargs.items():
             try:
                 if key in ["currencies"]:
-
                     klass = globals()[key[0].upper() + key[1:]]
 
                     if isinstance(value, list):

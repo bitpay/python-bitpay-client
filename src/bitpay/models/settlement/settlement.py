@@ -36,7 +36,6 @@ class Settlement:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-
                 if key in ["withHoldings", "ledgerEntries", "payoutInfo"]:
                     klass = (
                         SettlementLedgerEntry

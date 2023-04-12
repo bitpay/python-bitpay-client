@@ -464,7 +464,9 @@ class Client:
                 "token": self.get_access_token(Facade.Merchant),
                 "complete": complete,
             }
-            response_json = self.__restcli.update("invoices/pay/%s" % invoice_id, params)
+            response_json = self.__restcli.update(
+                "invoices/pay/%s" % invoice_id, params
+            )
         except BitPayException as exe:
             raise InvoicePaymentException(
                 "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()

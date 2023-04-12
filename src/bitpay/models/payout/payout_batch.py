@@ -56,7 +56,6 @@ class PayoutBatch:
         for key, value in kwargs.items():
             try:
                 if key in ["instructions"]:
-
                     klass = (
                         PayoutInstruction
                         if key == "instructions"

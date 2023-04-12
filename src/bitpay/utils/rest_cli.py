@@ -31,7 +31,7 @@ class RESTcli:
                 "x-bitpay-api-frame": env.BITPAYAPIFRAME,
                 "x-bitpay-api-frame-version": env.BITPAYAPIFRAMEVERSION,
                 "content-type": "application/json",
-                "X-accept-version": "2.0.0"
+                "X-accept-version": "2.0.0",
             }
             if self.__proxy != "":
                 self.__headers["proxy"] = self.__proxy
@@ -51,7 +51,9 @@ class RESTcli:
         form_data = json.dumps(form_data)
         if signature_required:
             self.__headers["x-signature"] = sign(full_url + form_data, self.__eckey)
-            self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
+            self.__headers["x-identity"] = get_compressed_public_key_from_pem(
+                self.__eckey
+            )
 
         response = requests.post(full_url, data=form_data, headers=self.__headers)
         json_response = self.response_to_json_string(response)
@@ -71,7 +73,9 @@ class RESTcli:
 
         if signature_required:
             self.__headers["x-signature"] = sign(full_url, self.__eckey)
-            self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
+            self.__headers["x-identity"] = get_compressed_public_key_from_pem(
+                self.__eckey
+            )
 
         response = requests.get(full_url, headers=self.__headers)
         json_response = self.response_to_json_string(response)
@@ -124,9 +128,7 @@ class RESTcli:
                 )
 
         if "error" in response_obj:
-            raise BitPayException(
-                "Error: " + response_obj["error"]
-            )
+            raise BitPayException("Error: " + response_obj["error"])
         elif "errors" in response_obj:
             message = ""
             for error in response_obj["errors"]:
