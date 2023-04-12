@@ -23,7 +23,11 @@ class Currencies(object):
         for key, value in kwargs.items():
             try:
                 if key in ["qr"]:
-                    klass = CurrencyQr if key == "qr" else globals()[key[0].upper() + key[1:]]
+                    klass = (
+                        CurrencyQr
+                        if key == "qr"
+                        else globals()[key[0].upper() + key[1:]]
+                    )
                     value = klass(**value)
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)

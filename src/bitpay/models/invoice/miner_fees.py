@@ -24,7 +24,6 @@ class MinerFees:
     __xrp = MinerFeesItem()
 
     def __init__(self, **kwargs):
-
         for key, value in kwargs.items():
             try:
                 if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX", "BUSD", "XRP"]:
