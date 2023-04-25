@@ -82,7 +82,7 @@ Facades : **`MERCHANT`**
 ```python
 today = date.today().strftime("%Y%m%d")
 date_start = (date.today() - timedelta(days=100)).strftime("%Y%m%d")
-ledger = bitpay.get_ledger(Currency.USD, date_start, today)
+ledger = bitpay.get_ledger_entries(Currency.USD, date_start, today)
 print(ledger)
 ```
 

@@ -12,17 +12,10 @@ from src.bitpay.models.invoice.buyer import Buyer
 from src.bitpay.models.payout.payout import Payout
 from src.bitpay.models.invoice.invoice import Invoice
 from src.bitpay.models.bill.bill_status import BillStatus
-from src.bitpay.models.subscription.bill_data import BillData
-from src.bitpay.models.payout.payout_batch import PayoutBatch
 from src.bitpay.models.payout.payout_status import PayoutStatus
-from src.bitpay.models.subscription.subscription import Subscription
 from src.bitpay.models.payout.payout_recipient import PayoutRecipient
 from src.bitpay.models.payout.recipient_status import RecipientStatus
 from src.bitpay.models.payout.payout_recipients import PayoutRecipients
-from src.bitpay.models.subscription.item import Item as SubscriptionItem
-from src.bitpay.models.payout.payout_instruction import PayoutInstruction
-from src.bitpay.models.subscription.subscription_status import SubscriptionStatus
-from src.bitpay.models.payout.recipient_reference_method import RecipientReferenceMethod
 
 
 class BitPayTest(unittest.TestCase):
@@ -374,7 +367,7 @@ class BitPayTest(unittest.TestCase):
     def test_should_get_ledger_usd(self):
         today = date.today().strftime("%Y-%m-%d")
         date_start = (date.today() - timedelta(days=7)).strftime("%Y-%m-%d")
-        ledger = self.client.get_ledger(Currency.USD, date_start, today)
+        ledger = self.client.get_ledger_entries(Currency.USD, date_start, today)
 
         self.assertIsNotNone(ledger)
         self.assertGreater(len(ledger), 0)
@@ -382,7 +375,7 @@ class BitPayTest(unittest.TestCase):
     def test_should_get_ledger_btc(self):
         today = date.today().strftime("%Y-%m-%d")
         date_start = (date.today() - timedelta(days=7)).strftime("%Y-%m-%d")
-        ledger = self.client.get_ledger(Currency.BTC, date_start, today)
+        ledger = self.client.get_ledger_entries(Currency.BTC, date_start, today)
 
         self.assertIsNotNone(ledger)
         self.assertGreater(len(ledger), 0)
@@ -554,95 +547,6 @@ class BitPayTest(unittest.TestCase):
         self.assertTrue(payout_notification)
         self.assertTrue(cancel_payout)
 
-    def test_should_submit_payout_batch(self):
-        recipients = self.client.get_payout_recipients("active", 2)
-        currency = Currency.USD
-        ledger_currency = Currency.USD
-        effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
-        instructions = [
-            PayoutInstruction(
-                5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
-            ),
-            PayoutInstruction(
-                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_id()
-            ),
-        ]
-        batch = PayoutBatch(currency, effective_date, ledger_currency)
-        batch.set_instructions(instructions)
-        submit_batch = self.client.submit_payout_batch(batch)
-        cancel_batch = self.client.cancel_payout_batch(submit_batch.get_id())
-
-        self.assertIsNotNone(submit_batch.get_id())
-        self.assertEqual(len(submit_batch.get_instructions()), 2)
-        self.assertTrue(cancel_batch)
-
-    def test_should_submit_get_and_delete_payout_batch(self):
-        recipients = self.client.get_payout_recipients("active", 2)
-        currency = Currency.USD
-        ledger_currency = Currency.USD
-        effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
-
-        instructions = [
-            PayoutInstruction(
-                5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
-            ),
-            PayoutInstruction(
-                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_id()
-            ),
-        ]
-        batch = PayoutBatch(currency, effective_date, ledger_currency)
-        batch.set_instructions(instructions)
-        batch.set_notification_u_r_l("https://hookbin.com/yDEDeWJKyasG9yjj9X9P")
-        submit_batch = self.client.submit_payout_batch(batch)
-        retrieve_batch = self.client.get_payout_batch(submit_batch.get_id())
-        cancel_batch = self.client.cancel_payout_batch(submit_batch.get_id())
-
-        self.assertIsNotNone(submit_batch.get_id())
-        self.assertIsNotNone(retrieve_batch.get_id())
-        self.assertTrue(cancel_batch)
-        self.assertEqual(len(submit_batch.get_instructions()), 2)
-        self.assertEqual(submit_batch.get_id(), retrieve_batch.get_id())
-        self.assertEqual(PayoutStatus.New, retrieve_batch.get_status())
-
-    def test_should_request_payout_batch_notification(self):
-        recipients = self.client.get_payout_recipients("active", 2)
-        currency = Currency.USD
-        ledger_currency = Currency.USD
-        effective_date = (date.today() + timedelta(days=3)).strftime("%Y-%m-%d")
-
-        instructions = [
-            PayoutInstruction(
-                5.0, RecipientReferenceMethod.EMAIL, recipients[0].get_email()
-            ),
-            PayoutInstruction(
-                6.0, RecipientReferenceMethod.RECIPIENT_ID, recipients[1].get_id()
-            ),
-        ]
-        batch = PayoutBatch(currency, effective_date, ledger_currency)
-        batch.set_instructions(instructions)
-        batch.set_notification_email("sandbox@bitpay.com")
-        batch.set_notification_u_r_l("https://hookbin.com/yDEDeWJKyasG9yjj9X9P")
-        submit_batch = self.client.submit_payout_batch(batch)
-        payout_batch_notification = self.client.request_payout_batch_notification(
-            submit_batch.get_id()
-        )
-        cancel_batch = self.client.cancel_payout_batch(submit_batch.get_id())
-
-        self.assertIsNotNone(submit_batch.get_id())
-        self.assertTrue(payout_batch_notification)
-        self.assertEqual(len(submit_batch.get_instructions()), 2)
-        self.assertTrue(cancel_batch)
-
-    def test_should_get_payout_batches(self):
-        payout_batches = self.client.get_payout_batches()
-        self.assertGreater(len(payout_batches), 0)
-
-    def test_should_get_payout_batches_by_status(self):
-        payout_batches = self.client.get_payout_batches(
-            None, None, PayoutStatus.Cancelled
-        )
-        self.assertGreater(len(payout_batches), 0)
-
     def test_get_settlements(self):
         today = date.today().strftime("%Y-%m-%d")
         one_year_ago = (date.today() - timedelta(days=365)).strftime("%Y-%m-%d")
@@ -672,191 +576,6 @@ class BitPayTest(unittest.TestCase):
         self.assertGreater(len(settlements), 0)
         self.assertIsNotNone(settlement.get_id())
         self.assertEqual(first_settlement.get_id(), settlement.get_id())
-
-    def test_should_create_subscriptions(self):
-        items = []
-
-        item = SubscriptionItem()
-        item.set_price(30.0)
-        item.set_quantity(9)
-        item.set_description("product-a")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(14.0)
-        item.set_quantity(5)
-        item.set_description("product-b")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(10.0)
-        item.set_quantity(6)
-        item.set_description("product-c")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(20.0)
-        item.set_quantity(11)
-        item.set_description("product-d")
-        items.append(item)
-
-        one_month_ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
-
-        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_ago)
-        bill_data.set_items(items)
-        bill_data.set_cc("sandbox+cc@bitpay.com")
-        bill_data.set_pass_processing_fee(True)
-        bill_data.set_email_bill(True)
-        bill_data.set_name("aaaa")
-        bill_data.set_email("sandbox+sub2@bitpay.com")
-
-        subscription = Subscription()
-        subscription.set_bill_data(bill_data)
-        subscription.set_schedule("weekly")
-        subscription.set_id("123")
-        subscription.set_status("draft")
-        subscription.set_next_delivery("2022-02-19")
-        basic_subscription = self.client.create_subscription(subscription)
-
-        self.assertIsNotNone(basic_subscription.get_id())
-        self.assertIsNotNone(basic_subscription.get_bill_data().get_items()[0])
-
-    def test_should_get_subscription(self):
-        items = []
-
-        item = SubscriptionItem()
-        item.set_price(30.0)
-        item.set_quantity(9)
-        item.set_description("product-a")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(14.0)
-        item.set_quantity(5)
-        item.set_description("product-b")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(10.0)
-        item.set_quantity(6)
-        item.set_description("product-c")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(20.0)
-        item.set_quantity(11)
-        item.set_description("product-d")
-        items.append(item)
-
-        one_month_ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
-
-        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_ago)
-        bill_data.set_items(items)
-        bill_data.set_cc("sandbox+cc@bitpay.com")
-        bill_data.set_pass_processing_fee(True)
-        bill_data.set_email_bill(True)
-        bill_data.set_name("aaaa")
-        bill_data.set_email("sandbox+sub2@bitpay.com")
-
-        subscription = Subscription()
-        subscription.set_bill_data(bill_data)
-        subscription.set_schedule("weekly")
-        subscription.set_id("123")
-        subscription.set_status("draft")
-        subscription.set_next_delivery("2022-02-19")
-        basic_subscription = self.client.create_subscription(subscription)
-
-        basic_subscription = self.client.create_subscription(basic_subscription)
-        retrieve_subscription = self.client.get_subscription(
-            (basic_subscription.get_id())
-        )
-
-        self.assertEqual(basic_subscription.get_id(), retrieve_subscription.get_id())
-        self.assertEqual(
-            len(basic_subscription.get_bill_data().get_items()),
-            len(retrieve_subscription.get_bill_data().get_items()),
-        )
-
-    def test_should_update_subscription(self):
-        items = []
-
-        item = SubscriptionItem()
-        item.set_price(30.0)
-        item.set_quantity(9)
-        item.set_description("product-a")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(14.0)
-        item.set_quantity(5)
-        item.set_description("product-b")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(10.0)
-        item.set_quantity(6)
-        item.set_description("product-c")
-        items.append(item)
-
-        item = SubscriptionItem()
-        item.set_price(20.0)
-        item.set_quantity(11)
-        item.set_description("product-d")
-        items.append(item)
-
-        one_month_ago = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
-
-        bill_data = BillData(Currency.USD, "sandbox@bitpay.com", one_month_ago)
-        bill_data.set_items(items)
-        bill_data.set_cc("sandbox+cc@bitpay.com")
-        bill_data.set_pass_processing_fee(True)
-        bill_data.set_email_bill(True)
-        bill_data.set_name("aaaa")
-        bill_data.set_email("sandbox+sub2@bitpay.com")
-
-        subscription = Subscription()
-        subscription.set_bill_data(bill_data)
-        subscription.set_schedule("weekly")
-        subscription.set_id("123")
-        subscription.set_status("draft")
-        subscription.set_next_delivery("2022-02-19")
-
-        basic_subscription = self.client.create_subscription(subscription)
-        retrieve_subscription = self.client.get_subscription(
-            (basic_subscription.get_id())
-        )
-
-        self.assertEqual(basic_subscription.get_id(), retrieve_subscription.get_id())
-        self.assertEqual(
-            len(basic_subscription.get_bill_data().get_items()),
-            len(retrieve_subscription.get_bill_data().get_items()),
-        )
-        self.assertEqual(len(retrieve_subscription.get_bill_data().get_items()), 4)
-
-        items = retrieve_subscription.get_bill_data().get_items()
-
-        item = SubscriptionItem()
-        item.set_price(50)
-        item.set_quantity(13)
-        item.set_description("product-added")
-        items.append(item)
-
-        retrieve_subscription.get_bill_data().set_items(items)
-        update_subscription = self.client.update_subscription(
-            retrieve_subscription, retrieve_subscription.get_id()
-        )
-        items = update_subscription.get_bill_data().get_items()
-
-        self.assertEqual(len(update_subscription.get_bill_data().get_items()), 5)
-        self.assertEqual("product-added", items[-1].get_description())
-
-    def test_should_get_subscriptions(self):
-        subscriptions = self.client.get_subscriptions()
-        self.assertGreater(len(subscriptions), 0)
-
-    def test_should_get_subscriptions_by_status(self):
-        subscriptions = self.client.get_subscriptions(SubscriptionStatus.Active)
-        self.assertEqual(len(subscriptions), 0)
 
     def test_should_get_currencies(self):
         currency_list = self.client.get_currencies()

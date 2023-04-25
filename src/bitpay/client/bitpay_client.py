@@ -1,26 +1,23 @@
-"""
-HTTP methods
-"""
 import json
 import urllib
+
 import requests
 
-from .. import env
-from ..exceptions.bitpay_exception import BitPayException
-from .key_utils import get_compressed_public_key_from_pem, sign
+from bitpay.exceptions.bitpay_exception import BitPayException
+from bitpay.utils.key_utils import sign, get_compressed_public_key_from_pem
+from build.lib.bitpay import env
 
 
-class RESTcli:
+class BitPayClient:
     __headers = {}
-    __baseurl = ""
-    __eckey = ""
-    __identity = ""
-    __proxy = ""
+    __base_url = None
+    __ec_key = None
+    __proxy = None
 
-    def __init__(self, environment, eckey, proxy=None):
-        self.__eckey = eckey
-        self.__baseurl = env.TESTURL if environment == env.TEST else env.PRODURL
-        self.__proxy = proxy
+    def __init__(self, base_url, ec_key=None, proxy=None):
+        self.base_url = base_url
+        self.ec_key = ec_key
+        self.proxy = proxy
         self.init()
 
     def init(self):
@@ -47,12 +44,12 @@ class RESTcli:
         with the request body
         :return: json response
         """
-        full_url = self.__baseurl + uri
+        full_url = self.__base_url + uri
         form_data = json.dumps(form_data)
         if signature_required:
-            self.__headers["x-signature"] = sign(full_url + form_data, self.__eckey)
+            self.__headers["x-signature"] = sign(full_url + form_data, self.__ec_key)
             self.__headers["x-identity"] = get_compressed_public_key_from_pem(
-                self.__eckey
+                self.__ec_key
             )
 
         response = requests.post(full_url, data=form_data, headers=self.__headers)
@@ -67,14 +64,14 @@ class RESTcli:
         :param signature_required: Signature of the full request URL concatenated
         :return: json response
         """
-        full_url = self.__baseurl + uri
+        full_url = self.__base_url + uri
         if parameters is not None:
             full_url = "%s?%s" % (full_url, urllib.parse.urlencode(parameters))
 
         if signature_required:
-            self.__headers["x-signature"] = sign(full_url, self.__eckey)
+            self.__headers["x-signature"] = sign(full_url, self.__ec_key)
             self.__headers["x-identity"] = get_compressed_public_key_from_pem(
-                self.__eckey
+                self.__ec_key
             )
 
         response = requests.get(full_url, headers=self.__headers)
@@ -88,13 +85,13 @@ class RESTcli:
         :param parameters: These are query parameters
         :return: json response
         """
-        full_url = self.__baseurl + uri
+        full_url = self.__base_url + uri
 
         if parameters is not None:
             full_url = "%s?%s" % (full_url, urllib.parse.urlencode(parameters))
 
-        self.__headers["x-signature"] = sign(full_url, self.__eckey)
-        self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
+        self.__headers["x-signature"] = sign(full_url, self.__ec_key)
+        self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__ec_key)
 
         response = requests.delete(full_url, headers=self.__headers)
         json_response = self.response_to_json_string(response)
@@ -106,11 +103,11 @@ class RESTcli:
         :param form_data: the data to be updated
         :return: json response
         """
-        full_url = self.__baseurl + uri
+        full_url = self.__base_url + uri
         form_data = json.dumps(form_data)
 
-        self.__headers["x-signature"] = sign(full_url + form_data, self.__eckey)
-        self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__eckey)
+        self.__headers["x-signature"] = sign(full_url + form_data, self.__ec_key)
+        self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__ec_key)
 
         response = requests.put(full_url, data=form_data, headers=self.__headers)
         json_response = self.response_to_json_string(response)

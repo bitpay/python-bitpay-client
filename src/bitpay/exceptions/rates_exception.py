@@ -1,5 +1,5 @@
 """
-Rate Exception gets raised when some unexpected error occurs while processing a request
+rate Exception gets raised when some unexpected error occurs while processing a request
 or trying to manage rates.
 """
 from .bitpay_exception import BitPayException
