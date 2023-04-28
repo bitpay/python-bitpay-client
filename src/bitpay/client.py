@@ -2,7 +2,7 @@
 Class Client
 package Bitpay
 author  Antonio Buedo
-version 14.3.2203
+version 4.0.0
 See bitpay.com/api for more information.
 """
 import os
@@ -50,14 +50,18 @@ class Client:
     * See bitpay.com/api for more information.
     """
 
-    __guid_generator = None
-    __bitpay_client = None
-    __token_container = None
+    __bitpay_client = BitPayClient
+    __token_container = TokenContainer
+    __guid_generator = GuidGenerator
 
-    def __init__(self, bitpay_client, token_container, guid_generator):
+    def __init__(
+            self, bitpay_client: BitPayClient, token_container: TokenContainer, guid_generator: GuidGenerator = None
+    ):
         try:
             self.__bitpay_client = bitpay_client
             self.__token_container = token_container
+            if guid_generator is None:
+                guid_generator = GuidGenerator()
             self.__guid_generator = guid_generator
         except Exception as exe:
             raise BitPayException("failed to initiate client: " + str(exe))
