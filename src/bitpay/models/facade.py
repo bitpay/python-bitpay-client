@@ -1,12 +1,14 @@
 """
 Facade
 """
+from enum import Enum
 
 
-class Facade:
+class Facade(Enum):
     """
     Facade
     """
 
-    Merchant = "merchant"
-    Payout = "payout"
+    MERCHANT = "merchant"
+    PAYOUT = "payout"
+    POS = "pos"
