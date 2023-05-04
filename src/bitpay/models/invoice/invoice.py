@@ -1052,6 +1052,7 @@ class Invoice:
             "currency": self.get_currency(),
             "price": self.get_price(),
             "token": self.get_token(),
+            "guid": self.get_guid(),
             "posData": self.get_pos_data(),
             "notificationURL": self.get_notification_url(),
             "transactionSpeed": self.get_transaction_speed(),
