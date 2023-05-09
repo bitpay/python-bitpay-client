@@ -1,7 +1,10 @@
 """
 MinerFees
 """
+from typing import Optional
+
 from .miner_fees_item import MinerFeesItem
+from ...utils.model_util import ModelUtil
 
 
 class MinerFees:
@@ -26,13 +29,13 @@ class MinerFees:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
-                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX", "BUSD", "XRP"]:
+                if not isinstance(value, MinerFeesItem):
                     value = MinerFeesItem(**value)
                 getattr(self, "set_%s" % key.lower())(value)
             except AttributeError:
                 pass
 
-    def get_btc(self):
+    def get_btc(self) -> Optional[MinerFeesItem]:
         """
         Get method for the btc
         :return: btc
@@ -46,7 +49,7 @@ class MinerFees:
         """
         self.__btc = btc
 
-    def get_bch(self):
+    def get_bch(self) -> Optional[MinerFeesItem]:
         """
         Get method for the bch
         :return: bch
@@ -60,7 +63,7 @@ class MinerFees:
         """
         self.__bch = bch
 
-    def get_eth(self):
+    def get_eth(self) -> Optional[MinerFeesItem]:
         """
         Get method for the eth
         :return: eth
@@ -74,7 +77,7 @@ class MinerFees:
         """
         self.__eth = eth
 
-    def get_usdc(self):
+    def get_usdc(self) -> Optional[MinerFeesItem]:
         """
         Get method for the usdc
         :return: usdc
@@ -88,7 +91,7 @@ class MinerFees:
         """
         self.__usdc = usdc
 
-    def get_gusd(self):
+    def get_gusd(self) -> Optional[MinerFeesItem]:
         """
         Get method for the gusd
         :return: gusd
@@ -102,7 +105,7 @@ class MinerFees:
         """
         self.__gusd = gusd
 
-    def get_doge(self):
+    def get_doge(self) -> Optional[MinerFeesItem]:
         """
         Get method for the doge
         :return: doge
@@ -116,7 +119,7 @@ class MinerFees:
         """
         self.__doge = doge
 
-    def get_ltc(self):
+    def get_ltc(self) -> Optional[MinerFeesItem]:
         """
         Get method for the ltc
         :return: ltc
@@ -130,7 +133,7 @@ class MinerFees:
         """
         self.__ltc = ltc
 
-    def get_pax(self):
+    def get_pax(self) -> Optional[MinerFeesItem]:
         """
         Get method for the pax
         :return: pax
@@ -144,7 +147,7 @@ class MinerFees:
         """
         self.__pax = pax
 
-    def get_busd(self):
+    def get_busd(self) -> Optional[MinerFeesItem]:
         """
         Get method for the busd
         :return: busd
@@ -158,7 +161,7 @@ class MinerFees:
         """
         self.__busd = busd
 
-    def get_xrp(self):
+    def get_xrp(self) -> Optional[MinerFeesItem]:
         """
         Get method for the xrp
         :return: xrp
@@ -172,21 +175,8 @@ class MinerFees:
         """
         self.__xrp = xrp
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """
-        data = {
-            "btc": self.get_btc(),
-            "bch": self.get_bch(),
-            "eth": self.get_eth(),
-            "usdc": self.get_usdc(),
-            "gusd": self.get_gusd(),
-            "pax": self.get_pax(),
-            "doge": self.get_doge(),
-            "ltc": self.get_ltc(),
-            "xrp": self.get_xrp(),
-            "busd": self.get_busd(),
-        }
-        data = {key: value for key, value in data.items() if value}
-        return data
+        return ModelUtil.to_json(self)

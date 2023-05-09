@@ -1,7 +1,10 @@
 """
 PayoutTransaction
 """
+from typing import Optional
+
 from ...utils.key_utils import change_camel_case_to_snake_case
+from ...utils.model_util import ModelUtil
 
 
 class PayoutTransaction:
@@ -17,74 +20,69 @@ class PayoutTransaction:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
+                value = ModelUtil.get_field_value(key, value, {"amount": "float", "date": "str"}, {})
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
                 pass
 
-    def get_txid(self):
+    def get_txid(self) -> Optional[str]:
         """
         Get method for txid
         :return: txid
         """
         return self.__txid
 
-    def set_txid(self, txid):
+    def set_txid(self, txid: Optional[str]):
         """
         Set method for to txid
         :param txid: txid
         """
         self.__txid = txid
 
-    def get_amount(self):
+    def get_amount(self) -> Optional[float]:
         """
         Get method for amount
         :return: amount
         """
         return self.__amount
 
-    def set_amount(self, amount):
+    def set_amount(self, amount: Optional[float]):
         """
         Set method for to amount
         :param amount: amount
         """
         self.__amount = amount
 
-    def get_confirmations(self):
+    def get_confirmations(self) -> Optional[str]:
         """
         Get method for confirmations
         :return: confirmations
         """
         return self.__confirmations
 
-    def set_confirmations(self, confirmations):
+    def set_confirmations(self, confirmations: Optional[str]):
         """
         Set method for to confirmations
         :param confirmations: confirmations
         """
         self.__confirmations = confirmations
 
-    def get_date(self):
+    def get_date(self) -> Optional[str]:
         """
         Get method for date
         :return: date
         """
         return self.__date
 
-    def set_date(self, date):
+    def set_date(self, date: Optional[str]):
         """
         Set method for to date
         :param date: date
         """
         self.__date = date
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """
-        data = {
-            "txid": self.get_txid(),
-            "amount": self.get_amount(),
-            "date": self.get_date(),
-            "confirmations": self.get_confirmations(),
-        }
-        return data
+        return ModelUtil.to_json(self)

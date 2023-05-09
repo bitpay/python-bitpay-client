@@ -9,17 +9,17 @@ import os
 import json
 from typing import List
 
-from bitpay.client.bill_client import BillClient
-from bitpay.client.bitpay_client import BitPayClient
-from bitpay.client.currency_client import CurrencyClient
-from bitpay.client.invoice_client import InvoiceClient
-from bitpay.client.ledger_client import LedgerClient
-from bitpay.client.payout_client import PayoutClient
-from bitpay.client.payout_recipient_client import PayoutRecipientClient
-from bitpay.client.rate_client import RateClient
-from bitpay.client.refund_client import RefundClient
-from bitpay.client.settlement_client import SettlementClient
-from bitpay.client.wallet_client import WalletClient
+from bitpay.clients.bill_client import BillClient
+from bitpay.clients.bitpay_client import BitPayClient
+from bitpay.clients.currency_client import CurrencyClient
+from bitpay.clients.invoice_client import InvoiceClient
+from bitpay.clients.ledger_client import LedgerClient
+from bitpay.clients.payout_client import PayoutClient
+from bitpay.clients.payout_recipient_client import PayoutRecipientClient
+from bitpay.clients.rate_client import RateClient
+from bitpay.clients.refund_client import RefundClient
+from bitpay.clients.settlement_client import SettlementClient
+from bitpay.clients.wallet_client import WalletClient
 from .config import Config
 from .environment import Environment
 from .models.facade import Facade
@@ -65,10 +65,10 @@ class Client:
                 guid_generator = GuidGenerator()
             self.__guid_generator = guid_generator
         except Exception as exe:
-            raise BitPayException("failed to initiate client: " + str(exe))
+            raise BitPayException("failed to initiate clients: " + str(exe))
 
     @staticmethod
-    def create_pos_client(self, pos_token, environment: Environment.PROD) -> Client:
+    def create_pos_client(self, pos_token: str, environment: Environment.PROD):
         token_container = TokenContainer()
         token_container.add_pos(pos_token)
 
@@ -77,24 +77,23 @@ class Client:
         return Client(bitpay_client, token_container, GuidGenerator())
 
     @staticmethod
-    def create_client_by_private_key(
-        self, private_key, token_container, environment, proxy=None
-    ):
+    def create_client_by_private_key(private_key: str, token_container: TokenContainer,
+                                     environment: Environment = Environment.PROD, proxy=None):
         if environment is None:
             environment = Environment.PROD
 
         try:
-            base_url = self.get_base_url(environment)
-            ec_key = self.get_ec_key(private_key)
+            base_url = Client.get_base_url(environment)
+            ec_key = Client.get_ec_key(private_key)
             bitpay_client = BitPayClient(base_url, ec_key, proxy)
-            self.__guid_generator = GuidGenerator()
+            guid_generator = GuidGenerator()
 
-            return Client(bitpay_client, token_container, GuidGenerator())
+            return Client(bitpay_client, token_container, guid_generator)
         except Exception as exe:
             raise BitPayException("failed to process configuration: " + str(exe))
 
     @staticmethod
-    def create_client_by_config_file_path(self, config_file_path):
+    def create_client_by_config_file_path(config_file_path):
         if not os.path.exists(config_file_path):
             raise BitPayException("Configuration file not found")
 
@@ -107,12 +106,17 @@ class Client:
             proxy = config["proxy"]
             ec_key = config["PrivateKey"]
             token_container = TokenContainer()
-            token_container.add_pos(config["ApiTokens"]["pos"])
-            token_container.add_merchant(config["ApiTokens"]["merchant"])
-            token_container.add_payout(config["ApiTokens"]["payout"])
+            token_container.add_pos(config["ApiTokens"].get("pos", None))
+            token_container.add_merchant(config["ApiTokens"].get("merchant", None))
+            token_container.add_payout(config["ApiTokens"].get("payout", None))
             read_file.close()
 
-            return self.__create_client_by_private_key(
+            if "test" == environment.lower():
+                environment = Environment.TEST
+            else:
+                environment = Environment.PROD
+
+            return Client.create_client_by_private_key(
                 ec_key, token_container, environment, proxy
             )
         except Exception as exe:
@@ -133,7 +137,7 @@ class Client:
 
     @staticmethod
     def get_base_url(environment: Environment):
-        return Config.TEST_URL if environment == environment.TEST else Config.PROD_URL
+        return Config.TEST_URL.value if environment == environment.TEST else Config.PROD_URL.value
 
     def get_access_token(self, key: str):
         try:
@@ -150,7 +154,7 @@ class Client:
     # //////////////////////////////////////////////////////////////////////////////
 
     def create_invoice(
-        self, invoice: Invoice, facade: str = Facade.MERCHANT, sign_request: bool = True
+        self, invoice: Invoice, facade: str = Facade.MERCHANT.name, sign_request: bool = True
     ) -> Invoice:
         """
         Create a BitPay invoice
@@ -164,14 +168,15 @@ class Client:
         :raises InvoiceCreationException
         """
         client = self.create_invoice_client()
-        return client.create(invoice, facade, sign_request)
+
+        return client.create(invoice, Facade.from_str(facade), sign_request)
 
     def get_invoice(
-        self, invoice_id: str, facade: str = Facade.MERCHANT, sign_request: bool = True
+        self, invoice_id: str, facade: str = Facade.MERCHANT.name, sign_request: bool = True
     ) -> Invoice:
         """
         Retrieve a BitPay invoice by invoice id using the specified facade.
-        The client must have been previously authorized for the specified
+        The clients must have been previously authorized for the specified
         facade (the public facade requires no authorization)
 
         :param str invoice_id: The id of the invoice to retrieve
@@ -183,14 +188,14 @@ class Client:
         :raises InvoiceQueryException
         """
         client = self.create_invoice_client()
-        return client.get(invoice_id, facade, sign_request)
+        return client.get(invoice_id, Facade.from_str(facade), sign_request)
 
     def get_invoice_by_guid(
-        self, guid: str, facade: str = Facade.MERCHANT, sign_request: bool = True
+        self, guid: str, facade: str = Facade.MERCHANT.name, sign_request: bool = True
     ) -> Invoice:
         """
         Retrieve a BitPay invoice by invoice id using the specified facade.
-        The client must have been previously authorized for the specified
+        The clients must have been previously authorized for the specified
         facade (the public facade requires no authorization)
 
         :param str guid: The id of the invoice to retrieve
@@ -202,7 +207,7 @@ class Client:
         :raises InvoiceQueryException
         """
         client = self.create_invoice_client()
-        return client.get_by_guid(guid, facade, sign_request)
+        return client.get_by_guid(guid, Facade.from_str(facade), sign_request)
 
     def get_invoices(
         self,
@@ -300,19 +305,19 @@ class Client:
         client = self.create_invoice_client()
         return client.cancel_by_guid(guid, force_cancel)
 
-    def pay_invoice(self, invoice_id: str, complete: bool = True) -> Invoice:
+    def pay_invoice(self, invoice_id: str, status: str = "complete") -> Invoice:
         """
         Pay an invoice with a mock transaction - it works only for test environment.
 
         :param str invoice_id: The Id of the BitPay invoice.
-        :param bool complete: indicate if paid invoice should have status if complete true or a confirmed status.
+        :param bool status: indicate if paid invoice should have status if complete true or a confirmed status.
         :return: A BitPay generated Invoice object.
         :rtype: Invoice
         :raises BitPayException
         :raises InvoicePaymentException
         """
         client = self.create_invoice_client()
-        return client.pay(invoice_id, complete)
+        return client.pay(invoice_id, status)
 
     def request_invoice_notifications(self, invoice_id: str) -> bool:
         """
@@ -482,7 +487,7 @@ class Client:
         return client.get_supported_wallets()
 
     def create_bill(
-        self, bill: Bill, facade: str = Facade.MERCHANT, sign_request: bool = True
+        self, bill: Bill, facade: str = Facade.MERCHANT.name, sign_request: bool = True
     ) -> Bill:
         """
         Create a BitPay Bill.
@@ -496,7 +501,7 @@ class Client:
         :raises BillCreationException
         """
         client = self.create_bill_client()
-        return client.create(bill, facade, sign_request)
+        return client.create(bill, Facade.from_str(facade), sign_request)
 
     def get_bills(self, status: str = None) -> List[Bill]:
         """
@@ -511,18 +516,20 @@ class Client:
         client = self.create_bill_client()
         return client.get_bills(status)
 
-    def get_bill(self, bill_id: str) -> Bill:
+    def get_bill(self, bill_id: str, facade: str = Facade.MERCHANT.name, sign_request: bool = True) -> Bill:
         """
         Retrieve a BitPay bill by bill id using the specified facade.
 
         :param str bill_id: The id of the bill to retrieve.
+        :param str facade: The facade used to create it.
+        :param bool sign_request: Signed request.
         :return: A BitPay Bill object.
         :rtype: Bill
         :raises BitPayException
         :raises BillQueryException
         """
         client = self.create_bill_client()
-        return client.get(bill_id)
+        return client.get(bill_id, Facade.from_str(facade), sign_request)
 
     def update_bill(self, bill: Bill, bill_id: str) -> Bill:
         """
@@ -597,7 +604,7 @@ class Client:
 
     def get_payout_recipient(self, recipient_id: str) -> PayoutRecipient:
         """
-        Retrieve a BitPay payout recipient by batch id using.The client must have been
+        Retrieve a BitPay payout recipient by batch id using.The clients must have been
         previously authorized for the payout facade.
 
         :param str recipient_id: The id of the recipient to retrieve.
@@ -680,7 +687,7 @@ class Client:
 
     def get_payout(self, payout_id: str) -> Payout:
         """
-        Retrieve a BitPay payout by payout id using.The client must have been
+        Retrieve a BitPay payout by payout id using.The clients must have been
         previously authorized for the payout facade.
 
         :param str payout_id: The id of the payout to retrieve.
@@ -799,21 +806,22 @@ class Client:
         return client.get(settlement_id)
 
     def get_settlement_reconciliation_report(
-        self, settlement: Settlement
+        self, settlement_id: str, settlement_token: str
     ) -> Settlement:
         """
         Gets a detailed reconciliation report of the activity within the settlement period
 
-        :param Settlement settlement: Settlement to generate report for.
+        :param str settlement_id: Settlement id to generate report for.
+        :param str settlement_token: Settlement token to generate report for.
         :return: A detailed BitPay Settlement object.
         :rtype: Settlement
         :raises BitPayException
         :raises SettlementQueryException
         """
         client = self.create_settlement_client()
-        return client.get_reconciliation_report(settlement)
+        return client.get_reconciliation_report(settlement_id, settlement_token)
 
-    def get_currencies(self) -> List[Currency]:
+    def get_currencies(self) -> dict:
         """
         Fetch the supported currencies.
 
@@ -837,7 +845,7 @@ class Client:
         client = self.create_rate_client()
         return client.get_rates()
 
-    def get_currency_rates(self, base_currency: str) -> List[Rates]:
+    def get_currency_rates(self, base_currency: str) -> Rates:
         """
         Retrieve all the rates for a given cryptocurrency
 

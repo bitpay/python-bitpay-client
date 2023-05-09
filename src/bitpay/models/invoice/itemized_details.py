@@ -1,7 +1,10 @@
 """
 ItemizedDetails
 """
+from typing import Optional
+
 from ...utils import key_utils
+from ...utils.model_util import ModelUtil
 
 
 class ItemizedDetails:
@@ -11,53 +14,54 @@ class ItemizedDetails:
 
     __amount = None
     __description = None
-    __is_fee = None
+    __is_fee = False
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
+                value = ModelUtil.get_field_value(key, value, {"amount": "float", "isFee": "bool"}, {})
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
                 )(value)
             except AttributeError:
                 pass
 
-    def get_amount(self):
+    def get_amount(self) -> Optional[float]:
         """
         Get method for the amount
         :return: amount
         """
         return self.__amount
 
-    def set_amount(self, amount):
+    def set_amount(self, amount: Optional[float]):
         """
         Set method for the amount
         :param amount: amount
         """
         self.__amount = amount
 
-    def get_description(self):
+    def get_description(self) -> Optional[str]:
         """
         Get method for the description
         :return: description
         """
         return self.__description
 
-    def set_description(self, description):
+    def set_description(self, description: Optional[str]):
         """
         Set method for the description
         :param description: description
         """
         self.__description = description
 
-    def get_is_fee(self):
+    def get_is_fee(self) -> bool:
         """
         Get method for the is_fee
         :return: is_fee
         """
         return self.__is_fee
 
-    def set_is_fee(self, is_fee):
+    def set_is_fee(self, is_fee: bool):
         """
         Set method for the is_fee
         :param is_fee: is_fee
@@ -68,10 +72,4 @@ class ItemizedDetails:
         """
         :return: data in json
         """
-        data = {
-            "amount": self.get_amount(),
-            "description": self.get_description(),
-            "is_fee": self.get_is_fee(),
-        }
-        data = {key: value for key, value in data.items() if value}
-        return data
+        return ModelUtil.to_json(self)

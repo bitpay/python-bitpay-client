@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from bitpay.utils.key_utils import change_camel_case_to_snake_case
+from bitpay.utils.model_util import ModelUtil
 
 
 class InvoiceEventToken:
@@ -11,6 +12,7 @@ class InvoiceEventToken:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             try:
+                value = ModelUtil.get_field_value(key, value, {}, {"events": "str", "actions": "str"})
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
                 pass
@@ -32,3 +34,6 @@ class InvoiceEventToken:
 
     def set_actions(self, actions: List[str]):
         self.__actions = actions
+
+    def to_json(self) -> dict:
+        return ModelUtil.to_json(self)

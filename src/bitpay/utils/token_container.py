@@ -1,12 +1,11 @@
+from typing import Dict
+
 from bitpay.exceptions.bitpay_exception import BitPayException
 from bitpay.models.facade import Facade
 
 
 class TokenContainer:
-    __data__ = None
-
-    def __init__(self):
-        self.__data__ = {}
+    __data__: Dict[Facade, str] = {}
 
     def get_access_token(self, facade):
         if not isinstance(facade, Facade):

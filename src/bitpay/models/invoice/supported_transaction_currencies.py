@@ -1,7 +1,10 @@
 """
 SupportedTransactionCurrencies
 """
+from typing import Optional
+
 from .supported_transaction_currency import SupportedTransactionCurrency
+from ...utils.model_util import ModelUtil
 
 
 class SupportedTransactionCurrencies:
@@ -35,12 +38,13 @@ class SupportedTransactionCurrencies:
                     "DOGE",
                     "LTC",
                 ]:
-                    value = SupportedTransactionCurrency(**value)
+                    if not isinstance(value, SupportedTransactionCurrency):
+                        value = SupportedTransactionCurrency(**value)
                 getattr(self, "set_%s" % key.lower())(value)
             except AttributeError:
                 pass
 
-    def get_btc(self):
+    def get_btc(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to btc
         :return: btc
@@ -54,7 +58,7 @@ class SupportedTransactionCurrencies:
         """
         self.__btc = btc
 
-    def get_bch(self):
+    def get_bch(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to bch
         :return: bch
@@ -68,7 +72,7 @@ class SupportedTransactionCurrencies:
         """
         self.__bch = bch
 
-    def get_eth(self):
+    def get_eth(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to eth
         :return: eth
@@ -82,7 +86,7 @@ class SupportedTransactionCurrencies:
         """
         self.__eth = eth
 
-    def get_usdc(self):
+    def get_usdc(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to usdc
         :return: usdc
@@ -96,7 +100,7 @@ class SupportedTransactionCurrencies:
         """
         self.__usdc = usdc
 
-    def get_gusd(self):
+    def get_gusd(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to gusd
         :return: gusd
@@ -110,7 +114,7 @@ class SupportedTransactionCurrencies:
         """
         self.__gusd = gusd
 
-    def get_busd(self):
+    def get_busd(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to busd
         :return: busd
@@ -124,7 +128,7 @@ class SupportedTransactionCurrencies:
         """
         self.__busd = busd
 
-    def get_pax(self):
+    def get_pax(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to pax
         :return: pax
@@ -138,7 +142,7 @@ class SupportedTransactionCurrencies:
         """
         self.__pax = pax
 
-    def get_xrp(self):
+    def get_xrp(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to xrp
         :return: xrp
@@ -152,7 +156,7 @@ class SupportedTransactionCurrencies:
         """
         self.__xrp = xrp
 
-    def get_doge(self):
+    def get_doge(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to doge
         :return: doge
@@ -166,7 +170,7 @@ class SupportedTransactionCurrencies:
         """
         self.__doge = doge
 
-    def get_ltc(self):
+    def get_ltc(self) -> Optional[SupportedTransactionCurrency]:
         """
         Get method for to ltc
         :return: ltc
@@ -184,17 +188,4 @@ class SupportedTransactionCurrencies:
         """
         :return: data in json
         """
-        data = {
-            "btc": self.get_btc(),
-            "bch": self.get_bch(),
-            "eth": self.get_eth(),
-            "usdc": self.get_usdc(),
-            "gusd": self.get_gusd(),
-            "busd": self.get_busd(),
-            "pax": self.get_pax(),
-            "xrp": self.get_xrp(),
-            "doge": self.get_doge(),
-            "ltc": self.get_ltc(),
-        }
-        data = {key: value for key, value in data.items() if value}
-        return data
+        return ModelUtil.to_json(self)
