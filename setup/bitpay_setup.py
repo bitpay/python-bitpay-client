@@ -1,6 +1,9 @@
 import os
 import json
 import requests
+import sys
+
+sys.path.insert(1, 'src')
 
 from bitpay.utils.key_utils import *
 from bitpay.exceptions.bitpay_exception import BitPayException
