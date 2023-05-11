@@ -36,6 +36,7 @@ class RefundClient:
         immediate: bool = False,
         buyer_pays_refund_fee: bool = False,
         reference: str = None,
+        guid: str = None
     ) -> Refund:
         """
         Create a refund for a BitPay invoice.
@@ -51,15 +52,21 @@ class RefundClient:
         :param str reference: Present only if specified in the request to create the refund.
         This is your reference label for this refund. It will be passed-through on each response for you to identify
         the refund in your system. Maximum string length is 100 characters.
+        :param str guid: Variable provided by the merchant and designed to be used by the merchant
+        to correlate the refund with a refund ID in their system.
         :return: An updated Refund Object
         :rtype: Refund
         :raises BitPayException
         :raises RefundCreationException
         """
         try:
+            if guid is None:
+                guid = self.__guid_generator.execute()
+
             params = {
                 "token": self.__token_container.get_access_token(Facade.MERCHANT),
                 "invoiceId": invoice_id,
+                "guid": guid,
                 "amount": amount,
                 "preview": preview,
                 "immediate": immediate,
@@ -91,6 +98,33 @@ class RefundClient:
         try:
             params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
             response_json = self.__bitpay_client.get("refunds/%s" % refund_id, params)
+        except BitPayException as exe:
+            raise RefundQueryException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
+        except Exception as exe:
+            raise RefundQueryException("failed to serialize refund object : %s" % exe)
+        try:
+            return Refund(**response_json)
+        except Exception as exe:
+            raise RefundQueryException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
+
+    def get_by_guid(self, guid: str) -> Refund:
+        """
+        Retrieve a previously made refund request on a BitPay invoice.
+
+        :param str guid: The BitPay refund GUID.
+        :return: BitPay Refund object with the associated Refund object.
+        :rtype: Refund
+        :raises BitPayException
+        :raises RefundQueryException
+        """
+        try:
+            params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
+            response_json = self.__bitpay_client.get("refunds/guid/%s" % guid, params)
         except BitPayException as exe:
             raise RefundQueryException(
                 "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
@@ -179,6 +213,43 @@ class RefundClient:
                 " (Refund) : %s" % str(exe)
             )
 
+    def update_refund_by_guid(self, refund_guid: str, status: str) -> Refund:
+        """
+        Update the status of a BitPay invoice refund.
+
+        :param str refund_guid: BitPay refund GUID.
+        :param str status: The new status for the refund to be updated
+        :return: A BitPay generated Refund object.
+        :rtype: Refund
+        :raises BitPayException
+        :raises RefundUpdateException
+        """
+        try:
+            params = {
+                "token": self.__token_container.get_access_token(Facade.MERCHANT),
+                "status": status,
+            }
+
+            response_json = self.__bitpay_client.update(
+                "refunds/guid/%s" % refund_guid, params
+            )
+        except BitPayException as exe:
+            raise RefundUpdateException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
+        except Exception as exe:
+            raise RefundUpdateException(
+                "failed to serialize refund object : %s" % str(exe)
+            )
+
+        try:
+            return Refund(**response_json)
+        except Exception as exe:
+            raise RefundUpdateException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
+
     def cancel(self, refund_id: str) -> Refund:
         """
         Cancel a previously submitted refund request on a BitPay invoice.
@@ -193,6 +264,38 @@ class RefundClient:
             params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
             response_json = self.__bitpay_client.delete(
                 "refunds/%s" % refund_id, params
+            )
+        except BitPayException as exe:
+            raise RefundCancellationException(
+                "failed to serialize refund object :  %s" % str(exe), exe.get_api_code()
+            )
+        except Exception as exe:
+            raise RefundCancellationException(
+                "failed to serialize refund object : %s" % str(exe)
+            )
+
+        try:
+            return Refund(**response_json)
+        except Exception as exe:
+            raise RefundCancellationException(
+                "failed to deserialize BitPay server response"
+                " (Refund) : %s" % str(exe)
+            )
+
+    def cancel_by_guid(self, guid) -> Refund:
+        """
+        Cancel a previously submitted refund request on a BitPay invoice.
+
+        :param str guid: The refund GUID for the refund to be canceled.
+        :return: Cancelled refund Object.
+        :rtype: Refund
+        :raises BitPayException
+        :raises RefundCancellationException
+        """
+        try:
+            params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
+            response_json = self.__bitpay_client.delete(
+                "refunds/%s" % guid, params
             )
         except BitPayException as exe:
             raise RefundCancellationException(

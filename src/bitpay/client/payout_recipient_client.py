@@ -50,6 +50,9 @@ class PayoutRecipientClient:
         :raises PayoutRecipientCreationException
         """
         try:
+            if recipients.get_guid() is None:
+                recipients.set_guid(self.__guid_generator.execute())
+
             recipients.set_token(self.__token_container.get_access_token(Facade.PAYOUT))
 
             response_json = self.__bitpay_client.post(

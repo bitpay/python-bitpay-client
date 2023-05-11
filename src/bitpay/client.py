@@ -2,7 +2,7 @@
 Class Client
 package Bitpay
 author  Antonio Buedo
-version 14.3.2203
+version 4.0.0
 See bitpay.com/api for more information.
 """
 import os
@@ -24,6 +24,7 @@ from .config import Config
 from .environment import Environment
 from .models.facade import Facade
 from .models.bill.bill import Bill
+from .models.invoice.invoice_event_token import InvoiceEventToken
 from .models.rate.rate import Rate
 from .utils.guid_generator import GuidGenerator
 from .models.rate.rates import Rates
@@ -50,14 +51,18 @@ class Client:
     * See bitpay.com/api for more information.
     """
 
-    __guid_generator = None
-    __bitpay_client = None
-    __token_container = None
+    __bitpay_client = BitPayClient
+    __token_container = TokenContainer
+    __guid_generator = GuidGenerator
 
-    def __init__(self, bitpay_client, token_container, guid_generator):
+    def __init__(
+            self, bitpay_client: BitPayClient, token_container: TokenContainer, guid_generator: GuidGenerator = None
+    ):
         try:
             self.__bitpay_client = bitpay_client
             self.__token_container = token_container
+            if guid_generator is None:
+                guid_generator = GuidGenerator()
             self.__guid_generator = guid_generator
         except Exception as exe:
             raise BitPayException("failed to initiate client: " + str(exe))
@@ -180,6 +185,25 @@ class Client:
         client = self.create_invoice_client()
         return client.get(invoice_id, facade, sign_request)
 
+    def get_invoice_by_guid(
+        self, guid: str, facade: str = Facade.MERCHANT, sign_request: bool = True
+    ) -> Invoice:
+        """
+        Retrieve a BitPay invoice by invoice id using the specified facade.
+        The client must have been previously authorized for the specified
+        facade (the public facade requires no authorization)
+
+        :param str guid: The id of the invoice to retrieve
+        :param str facade: The facade used to create it
+        :param bool sign_request: Signed request
+        :return: A BitPay Invoice object
+        :rtype: Invoice
+        :raises BitPayException
+        :raises InvoiceQueryException
+        """
+        client = self.create_invoice_client()
+        return client.get_by_guid(guid, facade, sign_request)
+
     def get_invoices(
         self,
         date_start: str,
@@ -207,6 +231,21 @@ class Client:
         client = self.create_invoice_client()
         return client.get_invoices(
             date_start, date_end, status, order_id, limit, offset
+        )
+
+    def get_invoice_event_token(self, invoice_id: str) -> InvoiceEventToken:
+        """
+        Retrieves a bus token which can be used to subscribe to invoice events.
+
+        :param str invoice_id: The id of the invoice for which you want to fetch an event token.
+        :return: Invoice Event Token.
+        :rtype: InvoiceEventToken
+        :raises BitPayException
+        :raises InvoiceQueryException
+        """
+        client = self.create_invoice_client()
+        return client.get_event_token(
+            invoice_id
         )
 
     def update_invoice(
@@ -246,6 +285,21 @@ class Client:
         client = self.create_invoice_client()
         return client.cancel(invoice_id, force_cancel)
 
+    def cancel_invoice_by_guid(self, guid: str, force_cancel: bool = False) -> Invoice:
+        """
+        Delete a previously created BitPay invoice.
+
+        :param str guid: The GUID of the BitPay invoice to be canceled.
+        :param bool force_cancel: Query param that will cancel the invoice even if
+        no contact information is present
+        :return: A BitPay generated Invoice object.
+        :rtype: Invoice
+        :raises BitPayException
+        :raises InvoiceCancellationException
+        """
+        client = self.create_invoice_client()
+        return client.cancel_by_guid(guid, force_cancel)
+
     def pay_invoice(self, invoice_id: str, complete: bool = True) -> Invoice:
         """
         Pay an invoice with a mock transaction - it works only for test environment.
@@ -281,6 +335,7 @@ class Client:
         immediate: bool = False,
         buyer_pays_refund_fee: bool = False,
         reference: str = None,
+        guid: str = None
     ) -> Refund:
         """
         Create a refund for a BitPay invoice.
@@ -296,6 +351,8 @@ class Client:
         :param str reference: Present only if specified in the request to create the refund.
         This is your reference label for this refund. It will be passed-through on each response for you to identify
         the refund in your system. Maximum string length is 100 characters.
+        :param str guid: Variable provided by the merchant and designed to be used by the merchant
+        to correlate the refund with a refund ID in their system.
         :return: An updated Refund Object
         :rtype: Refund
         :raises BitPayException
@@ -303,7 +360,7 @@ class Client:
         """
         client = self.create_refund_client()
         return client.create(
-            invoice_id, amount, preview, immediate, buyer_pays_refund_fee, reference
+            invoice_id, amount, preview, immediate, buyer_pays_refund_fee, reference, guid
         )
 
     def get_refund(self, refund_id: str) -> Refund:
@@ -318,6 +375,19 @@ class Client:
         """
         client = self.create_refund_client()
         return client.get(refund_id)
+
+    def get_refund_by_guid(self, guid: str) -> Refund:
+        """
+        Retrieve a previously made refund request on a BitPay invoice.
+
+        :param str guid: The BitPay refund GUID.
+        :return: BitPay Refund object with the associated Refund object.
+        :rtype: Refund
+        :raises BitPayException
+        :raises RefundQueryException
+        """
+        client = self.create_refund_client()
+        return client.get_by_guid(guid)
 
     def get_refunds(self, invoice_id: str) -> List[Refund]:
         """
@@ -346,6 +416,20 @@ class Client:
         client = self.create_refund_client()
         return client.update(refund_id, status)
 
+    def update_refund_by_guid(self, refund_guid: str, status: str) -> Refund:
+        """
+        Update the status of a BitPay invoice refund.
+
+        :param str refund_guid: BitPay refund GUID.
+        :param str status: The new status for the refund to be updated
+        :return: A BitPay generated Refund object.
+        :rtype: Refund
+        :raises BitPayException
+        :raises RefundUpdateException
+        """
+        client = self.create_refund_client()
+        return client.update_by_guid(refund_guid, status)
+
     def cancel_refund(self, refund_id: str) -> Refund:
         """
         Cancel a previously submitted refund request on a BitPay invoice.
@@ -358,6 +442,19 @@ class Client:
         """
         client = self.create_refund_client()
         return client.cancel(refund_id)
+
+    def cancel_refund_by_guid(self, guid: str) -> Refund:
+        """
+        Cancel a previously submitted refund request on a BitPay invoice.
+
+        :param str guid: The refund GUID for the refund to be canceled.
+        :return: Cancelled refund Object.
+        :rtype: Refund
+        :raises BitPayException
+        :raises RefundCancellationException
+        """
+        client = self.create_refund_client()
+        return client.cancel_by_guid(guid)
 
     def request_refund_notification(self, refund_id: str) -> bool:
         """
