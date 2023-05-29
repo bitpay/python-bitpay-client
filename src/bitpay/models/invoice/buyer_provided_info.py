@@ -22,10 +22,12 @@ class BuyerProvidedInfo:
     __sms = None
     __sms_verified = False
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
-                value = ModelUtil.get_field_value(key, value, {"smsVerified": "bool"}, {})
+                value = ModelUtil.get_field_value(
+                    key, value, {"smsVerified": "bool"}, {}
+                )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
                 pass
@@ -37,7 +39,7 @@ class BuyerProvidedInfo:
         """
         return self.__name
 
-    def set_name(self, name: Optional[str]):
+    def set_name(self, name: Optional[str]) -> None:
         """
         Set method for to name
         :param name: name
@@ -51,7 +53,7 @@ class BuyerProvidedInfo:
         """
         return self.__phone_number
 
-    def set_phone_number(self, phone_number: Optional[str]):
+    def set_phone_number(self, phone_number: Optional[str]) -> None:
         """
         Set method for to phone_number
         :param phone_number: phone_number
@@ -65,7 +67,7 @@ class BuyerProvidedInfo:
         """
         return self.__selected_wallet
 
-    def set_selected_wallet(self, selected_wallet: Optional[str]):
+    def set_selected_wallet(self, selected_wallet: Optional[str]) -> None:
         """
         Set method for to selected_wallet
         :param selected_wallet: selected_wallet
@@ -79,7 +81,7 @@ class BuyerProvidedInfo:
         """
         return self.__email_address
 
-    def set_email_address(self, email_address: Optional[str]):
+    def set_email_address(self, email_address: Optional[str]) -> None:
         """
         Set method for to email_address
         :param email_address: email_address
@@ -93,7 +95,9 @@ class BuyerProvidedInfo:
         """
         return self.__selected_transaction_currency
 
-    def set_selected_transaction_currency(self, selected_transaction_currency: Optional[str]):
+    def set_selected_transaction_currency(
+        self, selected_transaction_currency: Optional[str]
+    ) -> None:
         """
         Set method for to selected_transaction_currency
         :param selected_transaction_currency: selected_transaction_currency
@@ -114,14 +118,14 @@ class BuyerProvidedInfo:
         """
         return self.__sms_verified
 
-    def set_sms(self, value: Optional[str]):
+    def set_sms(self, value: Optional[str]) -> None:
         """
         Set sms
         :param value: str
         """
         self.__sms = value
 
-    def set_sms_verified(self, value: bool):
+    def set_sms_verified(self, value: bool) -> None:
         """
         Set sms verified
         :param value: bool

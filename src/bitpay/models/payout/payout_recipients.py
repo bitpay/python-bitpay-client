@@ -14,13 +14,15 @@ class PayoutRecipients:
     """
 
     __guid = None
-    __recipients = []
+    __recipients: Optional[List[PayoutRecipient]] = None
     __token = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
-                value = ModelUtil.get_field_value(key, value, {}, {"recipients": PayoutRecipient})
+                value = ModelUtil.get_field_value(
+                    key, value, {}, {"recipients": PayoutRecipient}
+                )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
                 pass
@@ -32,7 +34,7 @@ class PayoutRecipients:
         """
         return self.__guid
 
-    def set_guid(self, guid: Optional[str]):
+    def set_guid(self, guid: Optional[str]) -> None:
         """
         Set method for guid
         :param guid: guid
@@ -46,7 +48,7 @@ class PayoutRecipients:
         """
         return self.__token
 
-    def set_token(self, token: Optional[str]):
+    def set_token(self, token: Optional[str]) -> None:
         """
         Set method for token
         :param token: token
@@ -60,7 +62,7 @@ class PayoutRecipients:
         """
         return self.__recipients
 
-    def set_recipients(self, recipients: Optional[List[PayoutRecipient]]):
+    def set_recipients(self, recipients: Optional[List[PayoutRecipient]]) -> None:
         """
         Set method for recipients
         :param recipients: recipients

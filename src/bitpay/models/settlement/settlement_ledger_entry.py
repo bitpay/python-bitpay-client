@@ -19,16 +19,21 @@ class SettlementLedgerEntry:
     __timestamp = None
     __description = None
     __reference = None
-    __invoice_data = InvoiceData()
+    __invoice_data: Optional[InvoiceData] = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(
                     key,
                     value,
-                    {"invoiceData": InvoiceData, "code": "int", "amount": "float", "timestamp": "str"},
-                    {}
+                    {
+                        "invoiceData": InvoiceData,
+                        "code": "int",
+                        "amount": "float",
+                        "timestamp": "str",
+                    },
+                    {},
                 )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
@@ -41,7 +46,7 @@ class SettlementLedgerEntry:
         """
         return self.__code
 
-    def set_code(self, code: Optional[int]):
+    def set_code(self, code: Optional[int]) -> None:
         """
         Set method for the code
         :param code: code
@@ -55,7 +60,7 @@ class SettlementLedgerEntry:
         """
         return self.__invoice_id
 
-    def set_invoice_id(self, invoice_id: Optional[str]):
+    def set_invoice_id(self, invoice_id: Optional[str]) -> None:
         """
         Set method for the invoice_id
         :param invoice_id: invoice_id
@@ -69,7 +74,7 @@ class SettlementLedgerEntry:
         """
         return self.__amount
 
-    def set_amount(self, amount: Optional[float]):
+    def set_amount(self, amount: Optional[float]) -> None:
         """
         Set method for the amount
         :param amount: amount
@@ -83,7 +88,7 @@ class SettlementLedgerEntry:
         """
         return self.__timestamp
 
-    def set_timestamp(self, timestamp: Optional[str]):
+    def set_timestamp(self, timestamp: Optional[str]) -> None:
         """
         Set method for the timestamp
         :param timestamp: timestamp
@@ -97,7 +102,7 @@ class SettlementLedgerEntry:
         """
         return self.__description
 
-    def set_description(self, description: Optional[str]):
+    def set_description(self, description: Optional[str]) -> None:
         """
         Set method for the description
         :param description: description
@@ -111,7 +116,7 @@ class SettlementLedgerEntry:
         """
         return self.__reference
 
-    def set_reference(self, reference: Optional[str]):
+    def set_reference(self, reference: Optional[str]) -> None:
         """
         Set method for the reference
         :param reference: reference
@@ -125,14 +130,14 @@ class SettlementLedgerEntry:
         """
         return self.__invoice_data
 
-    def set_invoice_data(self, invoice_data: Optional[InvoiceData]):
+    def set_invoice_data(self, invoice_data: Optional[InvoiceData]) -> None:
         """
         Set method for the invoice_data
         :param invoice_data: invoice_data
         """
         self.__invoice_data = invoice_data
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

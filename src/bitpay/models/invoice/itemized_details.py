@@ -16,10 +16,12 @@ class ItemizedDetails:
     __description = None
     __is_fee = False
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
-                value = ModelUtil.get_field_value(key, value, {"amount": "float", "isFee": "bool"}, {})
+                value = ModelUtil.get_field_value(
+                    key, value, {"amount": "float", "isFee": "bool"}, {}
+                )
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
                 )(value)
@@ -33,7 +35,7 @@ class ItemizedDetails:
         """
         return self.__amount
 
-    def set_amount(self, amount: Optional[float]):
+    def set_amount(self, amount: Optional[float]) -> None:
         """
         Set method for the amount
         :param amount: amount
@@ -47,7 +49,7 @@ class ItemizedDetails:
         """
         return self.__description
 
-    def set_description(self, description: Optional[str]):
+    def set_description(self, description: Optional[str]) -> None:
         """
         Set method for the description
         :param description: description
@@ -61,14 +63,14 @@ class ItemizedDetails:
         """
         return self.__is_fee
 
-    def set_is_fee(self, is_fee: bool):
+    def set_is_fee(self, is_fee: bool) -> None:
         """
         Set method for the is_fee
         :param is_fee: is_fee
         """
         self.__is_fee = is_fee
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

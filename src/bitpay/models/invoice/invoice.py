@@ -1,7 +1,7 @@
 """
 Invoice
 """
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Dict
 
 from .buyer import Buyer
 from .shopper import Shopper
@@ -41,15 +41,15 @@ class Invoice:
     __item_desc = None
     __item_code = None
     __physical = False
-    __payment_currencies = []
-    __payment_subtotals = []
-    __payment_totals = []
-    __payment_display_totals = []
-    __payment_display_subtotals = []
-    __payment_codes = []
+    __payment_currencies: Optional[List[str]] = None
+    __payment_subtotals: Optional[dict] = None
+    __payment_totals: Optional[dict] = None
+    __payment_display_totals: Optional[dict] = None
+    __payment_display_subtotals: Optional[dict] = None
+    __payment_codes: Optional[dict] = None
     __acceptance_window = None
     __buyer = None
-    __refund_addresses = []
+    __refund_addresses: Optional[List[str]]
     __close_url = None
     __auto_redirect = False
     __json_paypro_required = False
@@ -61,7 +61,7 @@ class Invoice:
     __invoice_time = None
     __expiration_time = None
     __current_time = None
-    __transactions = []
+    __transactions: Optional[List[Transaction]] = None
     __exception_status = None
     __target_confirmations = None
     __refund_address_request_pending = False
@@ -73,7 +73,7 @@ class Invoice:
     __non_pay_pro_payment_received = False
     __shopper = None
     __bill_id = None
-    __refund_info = []
+    __refund_info: Optional[List[RefundInfo]] = None
     __extended_notifications = False
     __invoice_buyer_provided_info = None
 
@@ -82,7 +82,7 @@ class Invoice:
     __overpaid_amount = None
     __amount_paid = None
     __display_amount_paid = None
-    __exchange_rates = []
+    __exchange_rates: Optional[dict] = None
 
     __payment_string = None
     __verification_link = None
@@ -90,12 +90,17 @@ class Invoice:
     __merchant_name = None
     __forced_buyer_selected_wallet = None
     __forced_buyer_selected_transaction_currency = None
-    __itemized_details = []
+    __itemized_details: Optional[List[ItemizedDetails]] = None
     __universal_codes = None
     __is_cancelled = False
     __bitpay_id_required = False
 
-    def __init__(self, price=None, currency=None, **kwargs):
+    def __init__(
+        self,
+        price: Optional[float] = None,
+        currency: Optional[str] = None,
+        **kwargs: dict
+    ) -> None:
         self.set_price(price)
         self.set_currency(currency)
 
@@ -129,7 +134,7 @@ class Invoice:
                         "supportedTransactionCurrencies": SupportedTransactionCurrencies,
                         "minerFees": MinerFees,
                         "universalCodes": UniversalCodes,
-                        "fullNotifications": "bool"
+                        "fullNotifications": "bool",
                     },
                     {
                         "paymentCurrencies": "str",
@@ -142,8 +147,8 @@ class Invoice:
                         "refundInfo": RefundInfo,
                         "paymentCodes": "dict",
                         "transactions": Transaction,
-                        "exchangeRates": "dict"
-                    }
+                        "exchangeRates": "dict",
+                    },
                 )
 
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
@@ -157,7 +162,7 @@ class Invoice:
         """
         return self.__guid
 
-    def set_guid(self, guid: Optional[str]):
+    def set_guid(self, guid: Optional[str]) -> None:
         """
         Set method for the guid
         :param guid: guid
@@ -171,7 +176,7 @@ class Invoice:
         """
         return self.__token
 
-    def set_token(self, token: Optional[str]):
+    def set_token(self, token: Optional[str]) -> None:
         """
         Set method for the token
         :param token: token
@@ -185,7 +190,7 @@ class Invoice:
         """
         return self.__pos_data
 
-    def set_pos_data(self, pos_data: Optional[str]):
+    def set_pos_data(self, pos_data: Optional[str]) -> None:
         """
         Set method for the pos_data
         :param pos_data: posData
@@ -199,7 +204,7 @@ class Invoice:
         """
         return self.__notification_url
 
-    def set_notification_url(self, notification_url: Optional[str]):
+    def set_notification_url(self, notification_url: Optional[str]) -> None:
         """
         Set method for the notification_url
         :param notification_url: notification_url
@@ -213,7 +218,7 @@ class Invoice:
         """
         return self.__transaction_speed
 
-    def set_transaction_speed(self, transaction_speed: Optional[str]):
+    def set_transaction_speed(self, transaction_speed: Optional[str]) -> None:
         """
         Set method for the transaction_speed
         :param transaction_speed: transaction_speed
@@ -227,7 +232,7 @@ class Invoice:
         """
         return self.__full_notifications
 
-    def set_full_notifications(self, full_notifications: bool):
+    def set_full_notifications(self, full_notifications: bool) -> None:
         """
         Set method for the full_notifications
         :param full_notifications: full_notifications
@@ -241,7 +246,7 @@ class Invoice:
         """
         return self.__notification_email
 
-    def set_notification_email(self, notification_email: Optional[str]):
+    def set_notification_email(self, notification_email: Optional[str]) -> None:
         """
         Set method for the notification_email
         :param notification_email: notification_email
@@ -255,7 +260,7 @@ class Invoice:
         """
         return self.__redirect_URL
 
-    def set_redirect_u_r_l(self, redirect_url: Optional[str]):
+    def set_redirect_u_r_l(self, redirect_url: Optional[str]) -> None:
         """
         Set method for the redirect_URL
         :param redirect_url: redirect_URL
@@ -269,7 +274,7 @@ class Invoice:
         """
         return self.__order_id
 
-    def set_order_id(self, order_id: Optional[str]):
+    def set_order_id(self, order_id: Optional[str]) -> None:
         """
         Set method for the order_id
         :param order_id: order_id
@@ -283,7 +288,7 @@ class Invoice:
         """
         return self.__item_desc
 
-    def set_item_desc(self, item_desc: Optional[str]):
+    def set_item_desc(self, item_desc: Optional[str]) -> None:
         """
         Set method for the item_desc
         :param item_desc: item_desc
@@ -297,7 +302,7 @@ class Invoice:
         """
         return self.__item_code
 
-    def set_item_code(self, item_code: Optional[str]):
+    def set_item_code(self, item_code: Optional[str]) -> None:
         """
         Set method for the item_code
         :param item_code: item_code
@@ -311,21 +316,21 @@ class Invoice:
         """
         return self.__physical
 
-    def set_physical(self, physical: bool):
+    def set_physical(self, physical: bool) -> None:
         """
         Set method for the physical
         :param physical: physical
         """
         self.__physical = physical
 
-    def get_payment_currencies(self) -> List[str]:
+    def get_payment_currencies(self) -> Optional[List[str]]:
         """
         Get method for the payment_currencies
         :return: payment_currencies
         """
         return self.__payment_currencies
 
-    def set_payment_currencies(self, payment_currencies: List[str]):
+    def set_payment_currencies(self, payment_currencies: List[str]) -> None:
         """
         Set method for the payment_currencies
         :param payment_currencies: payment_currencies
@@ -339,7 +344,7 @@ class Invoice:
         """
         return self.__payment_subtotals
 
-    def set_payment_subtotals(self, payment_subtotals: Optional[dict]):
+    def set_payment_subtotals(self, payment_subtotals: Optional[dict]) -> None:
         """
         Set method for the payment_subtotals
         :param payment_subtotals: payment_subtotals
@@ -353,7 +358,7 @@ class Invoice:
         """
         return self.__payment_totals
 
-    def set_payment_totals(self, payment_totals: Optional[dict]):
+    def set_payment_totals(self, payment_totals: Optional[dict]) -> None:
         """
         Set method for the payment_totals
         :param payment_totals: payment_totals
@@ -367,7 +372,9 @@ class Invoice:
         """
         return self.__payment_display_totals
 
-    def set_payment_display_totals(self, payment_display_totals: Optional[dict]):
+    def set_payment_display_totals(
+        self, payment_display_totals: Optional[dict]
+    ) -> None:
         """
         Set method for the payment_display_totals
         :param payment_display_totals: payment_display_totals
@@ -381,7 +388,9 @@ class Invoice:
         """
         return self.__payment_display_subtotals
 
-    def set_payment_display_sub_totals(self, payment_display_subtotals: Optional[dict]):
+    def set_payment_display_sub_totals(
+        self, payment_display_subtotals: Optional[dict]
+    ) -> None:
         """
         Set method for the payment_display_subtotals
         :param payment_display_subtotals: payment_display_subtotals
@@ -395,7 +404,7 @@ class Invoice:
         """
         return self.__payment_codes
 
-    def set_payment_codes(self, payment_codes: Optional[dict]):
+    def set_payment_codes(self, payment_codes: Optional[dict]) -> None:
         """
         Set method for the payment_codes
         :param payment_codes: payment_codes
@@ -409,21 +418,21 @@ class Invoice:
         """
         return self.__acceptance_window
 
-    def set_acceptance_window(self, acceptance_window: Optional[int]):
+    def set_acceptance_window(self, acceptance_window: Optional[int]) -> None:
         """
         Set method for the acceptance_window
         :param acceptance_window: acceptance_window
         """
         self.__acceptance_window = acceptance_window
 
-    def get_refund_addresses(self) -> Optional[str]:
+    def get_refund_addresses(self) -> Optional[List[str]]:
         """
         Get method for the refund_addresses
         :return: refund_addresses
         """
         return self.__refund_addresses
 
-    def set_refund_addresses(self, refund_addresses: Optional[str]):
+    def set_refund_addresses(self, refund_addresses: Optional[List[str]]) -> None:
         """
         Set method for the refund_addresses
         :param refund_addresses: refund_addresses
@@ -437,7 +446,7 @@ class Invoice:
         """
         return self.__close_url
 
-    def set_close_url(self, close_url: Optional[str]):
+    def set_close_url(self, close_url: Optional[str]) -> None:
         """
         Set method for the close_url
         :param close_url: close_url
@@ -451,7 +460,7 @@ class Invoice:
         """
         return self.__auto_redirect
 
-    def set_auto_redirect(self, auto_redirect: bool):
+    def set_auto_redirect(self, auto_redirect: bool) -> None:
         """
         Set method for the auto_redirect
         :param auto_redirect: auto_redirect
@@ -465,7 +474,7 @@ class Invoice:
         """
         return self.__json_paypro_required
 
-    def set_json_pay_pro_required(self, json_paypro_required: bool):
+    def set_json_pay_pro_required(self, json_paypro_required: bool) -> None:
         """
         Set method for the json_paypro_required
         :param json_paypro_required: json_paypro_required
@@ -479,7 +488,7 @@ class Invoice:
         """
         return self.__id
 
-    def set_id(self, id: Optional[str]):
+    def set_id(self, id: Optional[str]) -> None:
         """
         Set method for the id
         :param id: id
@@ -493,7 +502,7 @@ class Invoice:
         """
         return self.__url
 
-    def set_url(self, url: Optional[str]):
+    def set_url(self, url: Optional[str]) -> None:
         """
         Set method for the url
         :param url: url
@@ -507,7 +516,7 @@ class Invoice:
         """
         return self.__status
 
-    def set_status(self, status: Optional[str]):
+    def set_status(self, status: Optional[str]) -> None:
         """
         Set method for the status
         :param status: status
@@ -521,7 +530,7 @@ class Invoice:
         """
         return self.__low_fee_detected
 
-    def set_low_fee_detected(self, low_fee_detected: bool):
+    def set_low_fee_detected(self, low_fee_detected: bool) -> None:
         """
         Set method for the low_fee_detected
         :param low_fee_detected: low_fee_detected
@@ -535,7 +544,7 @@ class Invoice:
         """
         return self.__invoice_time
 
-    def set_invoice_time(self, invoice_time: Optional[int]):
+    def set_invoice_time(self, invoice_time: Optional[int]) -> None:
         """
         Set method for the invoice_time
         :param invoice_time: invoice_time
@@ -549,7 +558,7 @@ class Invoice:
         """
         return self.__expiration_time
 
-    def set_expiration_time(self, expiration_time: Optional[int]):
+    def set_expiration_time(self, expiration_time: Optional[int]) -> None:
         """
         Set method for the expiration_time
         :param expiration_time: expiration_time
@@ -563,21 +572,21 @@ class Invoice:
         """
         return self.__current_time
 
-    def set_current_time(self, current_time: Optional[int]):
+    def set_current_time(self, current_time: Optional[int]) -> None:
         """
         Set method for the current_time
         :param current_time: current_time
         """
         self.__current_time = current_time
 
-    def get_transactions(self) -> List[Transaction]:
+    def get_transactions(self) -> Optional[List[Transaction]]:
         """
         Get method for the transactions
         :return: transactions
         """
         return self.__transactions
 
-    def set_transactions(self, transactions: List[Transaction]):
+    def set_transactions(self, transactions: List[Transaction]) -> None:
         """
         Set method for the transactions
         :param transactions: transactions
@@ -591,7 +600,7 @@ class Invoice:
         """
         return self.__exception_status
 
-    def set_exception_status(self, exception_status: Optional[str]):
+    def set_exception_status(self, exception_status: Optional[str]) -> None:
         """
         Set method for the exception_status
         :param exception_status: exception_status
@@ -605,7 +614,7 @@ class Invoice:
         """
         return self.__target_confirmations
 
-    def set_target_confirmations(self, target_confirmations: Optional[int]):
+    def set_target_confirmations(self, target_confirmations: Optional[int]) -> None:
         """
         Set method for the target_confirmations
         :param target_confirmations: target_confirmations
@@ -619,7 +628,9 @@ class Invoice:
         """
         return self.__refund_address_request_pending
 
-    def set_refund_address_request_pending(self, refund_address_request_pending: bool):
+    def set_refund_address_request_pending(
+        self, refund_address_request_pending: bool
+    ) -> None:
         """
         Set method for the refund_address_request_pending
         :param refund_address_request_pending: refund_address_request_pending
@@ -633,7 +644,7 @@ class Invoice:
         """
         return self.__buyer_provided_email
 
-    def set_buyer_provided_email(self, buyer_provided_email: Optional[str]):
+    def set_buyer_provided_email(self, buyer_provided_email: Optional[str]) -> None:
         """
         Set method for the buyer_provided_email
         :param buyer_provided_email: buyer_provided_email
@@ -647,14 +658,16 @@ class Invoice:
         """
         return self.__buyer_provided_info
 
-    def set_buyer_provided_info(self, buyer_provided_info: BuyerProvidedInfo):
+    def set_buyer_provided_info(self, buyer_provided_info: BuyerProvidedInfo) -> None:
         """
         Set method for the buyer_provided_info
         :param buyer_provided_info: buyer_provided_info
         """
         self.__buyer_provided_info = buyer_provided_info
 
-    def get_supported_transaction_currencies(self) -> Optional[SupportedTransactionCurrencies]:
+    def get_supported_transaction_currencies(
+        self,
+    ) -> Optional[SupportedTransactionCurrencies]:
         """
         Get method for the supported_transaction_currencies
         :return: supported_transaction_currencies
@@ -662,8 +675,8 @@ class Invoice:
         return self.__supported_transaction_currencies
 
     def set_supported_transaction_currencies(
-            self, supported_transaction_currencies: SupportedTransactionCurrencies
-    ):
+        self, supported_transaction_currencies: SupportedTransactionCurrencies
+    ) -> None:
         """
         Set method for the supported_transaction_currencies
         :param supported_transaction_currencies: supported_transaction_currencies
@@ -677,7 +690,7 @@ class Invoice:
         """
         return self.__miner_fees
 
-    def set_miner_fees(self, miner_fees: Optional[MinerFees]):
+    def set_miner_fees(self, miner_fees: Optional[MinerFees]) -> None:
         """
         Set method for the miner_fees
         :param miner_fees: miner_fees
@@ -691,7 +704,9 @@ class Invoice:
         """
         return self.__non_pay_pro_payment_received
 
-    def set_non_pay_pro_payment_received(self, non_pay_pro_payment_received: bool):
+    def set_non_pay_pro_payment_received(
+        self, non_pay_pro_payment_received: bool
+    ) -> None:
         """
         Set method for the non_paypro_payment_received
         :param non_pay_pro_payment_received: non_paypro_payment_received
@@ -705,7 +720,7 @@ class Invoice:
         """
         return self.__shopper
 
-    def set_shopper(self, shopper: Optional[Shopper]):
+    def set_shopper(self, shopper: Optional[Shopper]) -> None:
         """
         Set method for the shopper
         :param shopper: shopper
@@ -719,21 +734,21 @@ class Invoice:
         """
         return self.__bill_id
 
-    def set_bill_id(self, bill_id: Optional[str]):
+    def set_bill_id(self, bill_id: Optional[str]) -> None:
         """
         Set method for the bill_id
         :param bill_id: bill_id
         """
         self.__bill_id = bill_id
 
-    def get_refund_info(self) -> Optional[RefundInfo]:
+    def get_refund_info(self) -> Optional[List[RefundInfo]]:
         """
         Get method for the refund_info
         :return: refund_info
         """
         return self.__refund_info
 
-    def set_refund_info(self, refund_info: Optional[RefundInfo]):
+    def set_refund_info(self, refund_info: Optional[List[RefundInfo]]) -> None:
         """
         Set method for the refund_info
         :param refund_info: refund_info
@@ -747,7 +762,7 @@ class Invoice:
         """
         return self.__extended_notifications
 
-    def set_extended_notifications(self, extended_notifications: bool):
+    def set_extended_notifications(self, extended_notifications: bool) -> None:
         """
         Set method for the extended_notifications
         :param extended_notifications: extended_notifications
@@ -761,7 +776,7 @@ class Invoice:
         """
         return self.__transaction_currency
 
-    def set_transaction_currency(self, transaction_currency: Optional[str]):
+    def set_transaction_currency(self, transaction_currency: Optional[str]) -> None:
         """
         Set method for the transaction_currency
         :param transaction_currency: transaction_currency
@@ -775,7 +790,7 @@ class Invoice:
         """
         return self.__underpaid_amount
 
-    def set_underpaid_amount(self, underpaid_amount: Optional[float]):
+    def set_underpaid_amount(self, underpaid_amount: Optional[float]) -> None:
         """
         Set method for the underpaid_amount
         :param underpaid_amount: underpaid_amount
@@ -789,7 +804,7 @@ class Invoice:
         """
         return self.__overpaid_amount
 
-    def set_overpaid_amount(self, overpaid_amount: Optional[float]):
+    def set_overpaid_amount(self, overpaid_amount: Optional[float]) -> None:
         """
         Set method for the overpaid_amount
         :param overpaid_amount: overpaid_amount
@@ -803,7 +818,7 @@ class Invoice:
         """
         return self.__amount_paid
 
-    def set_amount_paid(self, amount_paid: Optional[float]):
+    def set_amount_paid(self, amount_paid: Optional[float]) -> None:
         """
         Set method for the amount_paid
         :param amount_paid: amount_paid
@@ -817,7 +832,7 @@ class Invoice:
         """
         return self.__display_amount_paid
 
-    def set_display_amount_paid(self, display_amount_paid: Optional[str]):
+    def set_display_amount_paid(self, display_amount_paid: Optional[str]) -> None:
         """
         Set method for the display_amount_paid
         :param display_amount_paid: display_amount_paid
@@ -831,7 +846,7 @@ class Invoice:
         """
         return self.__exchange_rates
 
-    def set_exchange_rates(self, exchange_rates: Optional[dict]):
+    def set_exchange_rates(self, exchange_rates: Optional[dict]) -> None:
         """
         Set method for the exchange_rates
         :param exchange_rates: exchange_rates
@@ -845,7 +860,7 @@ class Invoice:
         """
         return self.__price
 
-    def set_price(self, price: Optional[float]):
+    def set_price(self, price: Optional[float]) -> None:
         """
         Set method for the price
         :param price: price
@@ -859,7 +874,7 @@ class Invoice:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: Optional[str]) -> None:
         """
         Set method for the currency
         :param currency: currency
@@ -873,7 +888,7 @@ class Invoice:
         """
         return self.__payment_string
 
-    def set_payment_string(self, payment_string: Optional[str]):
+    def set_payment_string(self, payment_string: Optional[str]) -> None:
         """
         Set method for the payment_string
         :param payment_string: payment_string
@@ -887,7 +902,7 @@ class Invoice:
         """
         return self.__verification_link
 
-    def set_verification_link(self, verification_link: Optional[str]):
+    def set_verification_link(self, verification_link: Optional[str]) -> None:
         """
         Set method for the verification_link
         :param verification_link: verification_link
@@ -901,7 +916,7 @@ class Invoice:
         """
         return self.__buyer_email
 
-    def set_buyer_email(self, buyer_email: Optional[str]):
+    def set_buyer_email(self, buyer_email: Optional[str]) -> None:
         """
         Set method for the buyer_email
         :param buyer_email: buyer_email
@@ -915,7 +930,7 @@ class Invoice:
         """
         return self.__merchant_name
 
-    def set_merchant_name(self, merchant_name: Optional[str]):
+    def set_merchant_name(self, merchant_name: Optional[str]) -> None:
         """
         Set method for the merchant_name
         :param merchant_name: merchant_name
@@ -929,7 +944,9 @@ class Invoice:
         """
         return self.__forced_buyer_selected_wallet
 
-    def set_forced_buyer_selected_wallet(self, forced_buyer_selected_wallet: Optional[str]):
+    def set_forced_buyer_selected_wallet(
+        self, forced_buyer_selected_wallet: Optional[str]
+    ) -> None:
         """
         Set method for the forced_buyer_selected_wallet
         :param forced_buyer_selected_wallet: forced_buyer_selected_wallet
@@ -944,8 +961,8 @@ class Invoice:
         return self.__forced_buyer_selected_transaction_currency
 
     def set_forced_buyer_selected_transaction_currency(
-            self, forced_buyer_selected_transaction_currency: Optional[str]
-    ):
+        self, forced_buyer_selected_transaction_currency: Optional[str]
+    ) -> None:
         """
         Set method for the forced_buyer_selected_transaction_currency
         :param forced_buyer_selected_transaction_currency: forced_buyer_selected_transaction_currency
@@ -961,7 +978,7 @@ class Invoice:
         """
         return self.__is_cancelled
 
-    def set_is_cancelled(self, is_cancelled: bool):
+    def set_is_cancelled(self, is_cancelled: bool) -> None:
         """
         Set method for the is_cancelled
         :param is_cancelled: is_cancelled
@@ -975,7 +992,7 @@ class Invoice:
         """
         return self.__bitpay_id_required
 
-    def set_bitpay_id_required(self, bitpay_id_required: bool):
+    def set_bitpay_id_required(self, bitpay_id_required: bool) -> None:
         """
         Set method for the bitpay_id_required
         :param bitpay_id_required: bitpay_id_required
@@ -989,7 +1006,7 @@ class Invoice:
         """
         return self.__universal_codes
 
-    def set_universal_codes(self, universal_codes: Optional[UniversalCodes]):
+    def set_universal_codes(self, universal_codes: Optional[UniversalCodes]) -> None:
         """
         Set method for the universal_codes
         :param universal_codes: universal_codes
@@ -1003,7 +1020,7 @@ class Invoice:
         """
         return self.__itemized_details
 
-    def set_itemized_details(self, itemized_details: List[ItemizedDetails]):
+    def set_itemized_details(self, itemized_details: List[ItemizedDetails]) -> None:
         """
         Set method for the itemized_details
         :param itemized_details: itemized_details
@@ -1019,7 +1036,7 @@ class Invoice:
         """
         return self.__buyer
 
-    def set_buyer(self, buyer: Optional[Buyer]):
+    def set_buyer(self, buyer: Optional[Buyer]) -> None:
         """
         Set method for the buyer
         :param buyer: buyer
@@ -1033,7 +1050,7 @@ class Invoice:
         """
         return self.__buyer_sms
 
-    def set_buyer_sms(self, sms: Optional[str]):
+    def set_buyer_sms(self, sms: Optional[str]) -> None:
         """
         Set method for the buyer
         :param sms: str

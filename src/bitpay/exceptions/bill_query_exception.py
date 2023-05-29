@@ -13,7 +13,7 @@ class BillQueryException(BillException):
     __bitpay_code = "BITPAY-BILL-GET"
     __api_code = ""
 
-    def __init__(self, message, code=113, api_code="000000"):
+    def __init__(self, message: str, code: int = 113, api_code: str = "000000"):
         """
         Construct the BillQueryException.
 

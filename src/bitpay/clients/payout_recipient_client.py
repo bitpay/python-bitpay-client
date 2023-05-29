@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from bitpay.clients.bitpay_client import BitPayClient
 from bitpay.exceptions.bitpay_exception import BitPayException
@@ -106,7 +106,7 @@ class PayoutRecipientClient:
             )
 
     def get_recipients(
-        self, status: str = None, limit: int = 100, offset: int = 0
+        self, status: Optional[str] = None, limit: int = 100, offset: int = 0
     ) -> List[PayoutRecipient]:
         """
         Retrieve a collection of BitPay Payout Recipients.

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from bitpay.clients.bitpay_client import BitPayClient
 from bitpay.exceptions.bill_creation_exception import BillCreationException
@@ -15,12 +15,14 @@ class BillClient:
     __bitpay_client = BitPayClient
     __token_container = TokenContainer
 
-    def __init__(self, bitpay_client: BitPayClient, token_container: TokenContainer):
+    def __init__(
+        self, bitpay_client: BitPayClient, token_container: TokenContainer
+    ) -> None:
         self.__bitpay_client = bitpay_client
         self.__token_container = token_container
 
     def create(
-        self, bill: Bill, facade: str = Facade.MERCHANT.name, sign_request: bool = True
+        self, bill: Bill, facade: Facade = Facade.MERCHANT, sign_request: bool = True
     ) -> Bill:
         """
         Create a BitPay Bill.
@@ -51,7 +53,7 @@ class BillClient:
             )
 
     def get(
-            self, bill_id: str, facade: str = Facade.MERCHANT.name, sign_request: bool = True
+        self, bill_id: str, facade: Facade = Facade.MERCHANT, sign_request: bool = True
     ) -> Bill:
         """
         Retrieve a BitPay bill by bill id using the specified facade.
@@ -66,7 +68,9 @@ class BillClient:
         """
         try:
             params = {"token": self.__token_container.get_access_token(facade)}
-            response_json = self.__bitpay_client.get("bills/%s" % bill_id, params, sign_request)
+            response_json = self.__bitpay_client.get(
+                "bills/%s" % bill_id, params, sign_request
+            )
         except BitPayException as exe:
             raise BillQueryException(
                 "failed to serialize bill object :  %s" % str(exe), exe.get_api_code()
@@ -79,7 +83,7 @@ class BillClient:
                 "failed to deserialize BitPay server response" " (Bill) : %s" % str(exe)
             )
 
-    def get_bills(self, status: str = None) -> List[Bill]:
+    def get_bills(self, status: Optional[str] = None) -> List[Bill]:
         """
         Retrieve a collection of BitPay bills.
 

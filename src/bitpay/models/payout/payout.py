@@ -1,7 +1,7 @@
 """
 Payout
 """
-from typing import Optional, List
+from typing import Optional, List, Any, Dict
 
 from ..currency import Currency
 from .payout_transaction import PayoutTransaction
@@ -39,10 +39,16 @@ class Payout:
     __message = None
     __request_date = None
     __date_executed = None
-    __transactions = []
+    __transactions: Optional[List[PayoutTransaction]]
     __account_id = None
 
-    def __init__(self, amount=None, currency=None, ledger_currency=None, **kwargs):
+    def __init__(
+        self,
+        amount: float = 0.0,
+        currency: Optional[str] = None,
+        ledger_currency: Optional[str] = None,
+        **kwargs: Dict[str, Any]
+    ) -> None:
         self.set_amount(amount)
         if currency:
             self.set_currency(currency)
@@ -54,12 +60,17 @@ class Payout:
                 value = ModelUtil.get_field_value(
                     key,
                     value,
-                    {"amount": "float", "effectiveDate": "str", "requestDate": "str", "dateExecuted": "str",
-                     "code": "int"},
-                    {"exchangeRates": "dict", "transactions": PayoutTransaction}
+                    {
+                        "amount": "float",
+                        "effectiveDate": "str",
+                        "requestDate": "str",
+                        "dateExecuted": "str",
+                        "code": "int",
+                    },
+                    {"exchangeRates": "dict", "transactions": PayoutTransaction},
                 )
-                if key in ['notificationURL']:
-                    self.set_notification_url(value)
+                if key in ["notificationURL"]:
+                    self.set_notification_url(str(value))
                     continue
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
@@ -72,21 +83,21 @@ class Payout:
         """
         return self.__token
 
-    def set_token(self, token :Optional[str]):
+    def set_token(self, token: Optional[str]) -> None:
         """
         Set method for to token
         :param token: token
         """
         self.__token = token
 
-    def get_amount(self) -> Optional[float]:
+    def get_amount(self) -> float:
         """
         Get method for to amount
         :return: amount
         """
         return self.__amount
 
-    def set_amount(self, amount: Optional[float]):
+    def set_amount(self, amount: float) -> None:
         """
         Set method for to amount
         :param amount: amount
@@ -100,7 +111,7 @@ class Payout:
         """
         return self.__account_id
 
-    def set_account_id(self, account_id: Optional[str]):
+    def set_account_id(self, account_id: Optional[str]) -> None:
         """
         Set method for to account_id
         :param account_id: account_id
@@ -114,7 +125,7 @@ class Payout:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: str) -> None:
         """
         Set method for to currency
         :param currency: currency
@@ -130,7 +141,7 @@ class Payout:
         """
         return self.__effective_date
 
-    def set_effective_date(self, effective_date: Optional[str]):
+    def set_effective_date(self, effective_date: Optional[str]) -> None:
         """
         Set method for to effective_date
         :param effective_date: effective_date
@@ -144,7 +155,7 @@ class Payout:
         """
         return self.__reference
 
-    def set_reference(self, reference: Optional[str]):
+    def set_reference(self, reference: Optional[str]) -> None:
         """
         Set method for to reference
         :param reference: reference
@@ -158,7 +169,7 @@ class Payout:
         """
         return self.__notification_email
 
-    def set_notification_email(self, notification_email: Optional[str]):
+    def set_notification_email(self, notification_email: Optional[str]) -> None:
         """
         Set method for to notification_email
         :param notification_email: notification_email
@@ -172,7 +183,7 @@ class Payout:
         """
         return self.__notification_url
 
-    def set_notification_url(self, notification_url: Optional[str]):
+    def set_notification_url(self, notification_url: Optional[str]) -> None:
         """
         Set method for to notification_url
         :param notification_url: notification_url
@@ -186,7 +197,7 @@ class Payout:
         """
         return self.__redirect_url
 
-    def set_redirect_url(self, redirect_url: Optional[str]):
+    def set_redirect_url(self, redirect_url: Optional[str]) -> None:
         """
         Set method for to redirect_url
         :param redirect_url: redirect_url
@@ -200,7 +211,7 @@ class Payout:
         """
         return self.__ledger_currency
 
-    def set_ledger_currency(self, ledger_currency: Optional[str]):
+    def set_ledger_currency(self, ledger_currency: str) -> None:
         """
         Set method for to ledger_currency
         :param ledger_currency: ledger_currency
@@ -216,7 +227,7 @@ class Payout:
         """
         return self.__id
 
-    def set_id(self, id: Optional[str]):
+    def set_id(self, id: Optional[str]) -> None:
         """
         Set method for to id
         :param id: id
@@ -230,7 +241,7 @@ class Payout:
         """
         return self.__shopper_id
 
-    def set_shopper_id(self, shopper_id: Optional[str]):
+    def set_shopper_id(self, shopper_id: Optional[str]) -> None:
         """
         Set method for to shopper_id
         :param shopper_id: shopper_id
@@ -244,7 +255,7 @@ class Payout:
         """
         return self.__recipient_id
 
-    def set_recipient_id(self, recipient_id: Optional[str]):
+    def set_recipient_id(self, recipient_id: Optional[str]) -> None:
         """
         Set method for to recipient_id
         :param recipient_id: recipient_id
@@ -258,7 +269,7 @@ class Payout:
         """
         return self.__exchange_rates
 
-    def set_exchange_rates(self, exchange_rates: Optional[List[dict]]):
+    def set_exchange_rates(self, exchange_rates: Optional[List[dict]]) -> None:
         """
         Set method for to exchange_rates
         :param exchange_rates: exchange_rates
@@ -272,7 +283,7 @@ class Payout:
         """
         return self.__account
 
-    def set_account(self, account: Optional[str]):
+    def set_account(self, account: Optional[str]) -> None:
         """
         Set method for to account
         :param account: account
@@ -286,7 +297,7 @@ class Payout:
         """
         return self.__email
 
-    def set_email(self, email: Optional[str]):
+    def set_email(self, email: Optional[str]) -> None:
         """
         Set method for to email
         :param email: email
@@ -300,7 +311,7 @@ class Payout:
         """
         return self.__label
 
-    def set_label(self, label: Optional[str]):
+    def set_label(self, label: Optional[str]) -> None:
         """
         Set method for to label
         :param label: label
@@ -314,7 +325,7 @@ class Payout:
         """
         return self.__support_phone
 
-    def set_support_phone(self, support_phone: Optional[str]):
+    def set_support_phone(self, support_phone: Optional[str]) -> None:
         """
         Set method for to support_phone
         :param support_phone: support_phone
@@ -328,7 +339,7 @@ class Payout:
         """
         return self.__status
 
-    def set_status(self, status: Optional[str]):
+    def set_status(self, status: Optional[str]) -> None:
         """
         Set method for to status
         :param status: status
@@ -342,7 +353,7 @@ class Payout:
         """
         return self.__message
 
-    def set_message(self, message: Optional[str]):
+    def set_message(self, message: Optional[str]) -> None:
         """
         Set method for to message
         :param message: message
@@ -356,7 +367,7 @@ class Payout:
         """
         return self.__request_date
 
-    def set_request_date(self, request_date: Optional[str]):
+    def set_request_date(self, request_date: Optional[str]) -> None:
         """
         Set method for to request_date
         :param request_date: request_date
@@ -370,7 +381,7 @@ class Payout:
         """
         return self.__date_executed
 
-    def set_date_executed(self, date_executed: Optional[str]):
+    def set_date_executed(self, date_executed: Optional[str]) -> None:
         """
         Set method for to date_executed
         :param date_executed: date_executed
@@ -384,14 +395,14 @@ class Payout:
         """
         return self.__transactions
 
-    def set_transactions(self, transactions: Optional[List[PayoutTransaction]]):
+    def set_transactions(self, transactions: Optional[List[PayoutTransaction]]) -> None:
         """
         Set method for to transactions
         :param transactions: transactions
         """
         self.__transactions = transactions
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

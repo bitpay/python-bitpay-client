@@ -25,17 +25,20 @@ class InvoiceClient:
     __guid_generator = GuidGenerator
 
     def __init__(
-            self,
-            bitpay_client: BitPayClient,
-            token_container: TokenContainer,
-            guid_generator: GuidGenerator,
+        self,
+        bitpay_client: BitPayClient,
+        token_container: TokenContainer,
+        guid_generator: GuidGenerator,
     ):
         self.__bitpay_client = bitpay_client
         self.__token_container = token_container
         self.__guid_generator = guid_generator
 
     def create(
-            self, invoice: Invoice, facade: Facade = Facade.MERCHANT, sign_request: bool = True
+        self,
+        invoice: Invoice,
+        facade: Facade = Facade.MERCHANT,
+        sign_request: bool = True,
     ) -> Invoice:
         """
         Create a BitPay invoice
@@ -78,7 +81,10 @@ class InvoiceClient:
         return invoice
 
     def get(
-            self, invoice_id: str, facade: str = Facade.MERCHANT, sign_request: bool = True
+        self,
+        invoice_id: str,
+        facade: Facade = Facade.MERCHANT,
+        sign_request: bool = True,
     ) -> Invoice:
         """
         Retrieve a BitPay invoice by invoice id using the specified facade.
@@ -119,7 +125,7 @@ class InvoiceClient:
         return invoice
 
     def get_by_guid(
-            self, guid: str, facade: str = Facade.MERCHANT, sign_request: bool = True
+        self, guid: str, facade: Facade = Facade.MERCHANT, sign_request: bool = True
     ) -> Invoice:
         """
         Retrieve a BitPay invoice by invoice id using the specified facade.
@@ -160,13 +166,13 @@ class InvoiceClient:
         return invoice
 
     def get_invoices(
-            self,
-            date_start: str,
-            date_end: str,
-            status=Optional[int],
-            order_id=Optional[int],
-            limit=Optional[int],
-            offset=Optional[int],
+        self,
+        date_start: str,
+        date_end: str,
+        status: Optional[int] = None,
+        order_id: Optional[int] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
     ) -> List[Invoice]:
         """
         Retrieve a collection of BitPay invoices.
@@ -221,11 +227,11 @@ class InvoiceClient:
         return invoices
 
     def update(
-            self,
-            invoice_id: str,
-            buyer_email: str = None,
-            buyer_sms: str = None,
-            sms_code: str = None,
+        self,
+        invoice_id: str,
+        buyer_email: Optional[str] = None,
+        buyer_sms: Optional[str] = None,
+        sms_code: Optional[str] = None,
     ) -> Invoice:
         """
         Update a BitPay invoice with communication method.
@@ -312,7 +318,7 @@ class InvoiceClient:
             )
         return invoice
 
-    def cancel_by_guid(self, guid, force_cancel) -> Invoice:
+    def cancel_by_guid(self, guid: str, force_cancel: bool = False) -> Invoice:
         """
         Delete a previously created BitPay invoice.
 
@@ -364,7 +370,9 @@ class InvoiceClient:
             params = {
                 "token": self.__token_container.get_access_token(Facade.MERCHANT),
             }
-            response_json = self.__bitpay_client.get("invoices/%s/events" % invoice_id, params, True)
+            response_json = self.__bitpay_client.get(
+                "invoices/%s/events" % invoice_id, params, True
+            )
         except BitPayException as exe:
             raise InvoiceCancellationException(
                 "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
@@ -419,7 +427,7 @@ class InvoiceClient:
             )
         return invoice
 
-    def request_invoice_notifications(self, invoice_id) -> bool:
+    def request_invoice_notifications(self, invoice_id: str) -> bool:
         """
         Request a BitPay Invoice Webhook.
 

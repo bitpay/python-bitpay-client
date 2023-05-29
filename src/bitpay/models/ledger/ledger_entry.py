@@ -32,14 +32,14 @@ class LedgerEntry:
     __invoice_currency = None
     __transaction_currency = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(
                     key,
                     value,
                     {"amount": "float", "invoiceAmount": "float", "buyerFields": Buyer},
-                    {}
+                    {},
                 )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
@@ -52,7 +52,7 @@ class LedgerEntry:
         """
         return self.__type
 
-    def set_type(self, type: Optional[str]):
+    def set_type(self, type: Optional[str]) -> None:
         """
         Set method for to type
         :param type: type
@@ -66,7 +66,7 @@ class LedgerEntry:
         """
         return self.__amount
 
-    def set_amount(self, amount: Optional[float]):
+    def set_amount(self, amount: Optional[float]) -> None:
         """
         Set method for to amount
         :param amount: amount
@@ -80,7 +80,7 @@ class LedgerEntry:
         """
         return self.__code
 
-    def set_code(self, code: Optional[str]):
+    def set_code(self, code: Optional[str]) -> None:
         """
         Set method for to code
         :param code: code
@@ -94,7 +94,7 @@ class LedgerEntry:
         """
         return self.__timestamp
 
-    def set_timestamp(self, timestamp: Optional[str]):
+    def set_timestamp(self, timestamp: Optional[str]) -> None:
         """
         Set method for to timestamp
         :param timestamp: timestamp
@@ -108,7 +108,7 @@ class LedgerEntry:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: Optional[str]) -> None:
         """
         Set method for to currency
         :param currency: currency
@@ -122,7 +122,7 @@ class LedgerEntry:
         """
         return self.__tx_type
 
-    def set_tx_type(self, tx_type: Optional[str]):
+    def set_tx_type(self, tx_type: Optional[str]) -> None:
         """
         Set method for to tx_type
         :param tx_type: tx_type
@@ -136,7 +136,7 @@ class LedgerEntry:
         """
         return self.__scale
 
-    def set_scale(self, scale: Optional[str]):
+    def set_scale(self, scale: Optional[str]) -> None:
         """
         Set method for to scale
         :param scale: scale
@@ -150,7 +150,7 @@ class LedgerEntry:
         """
         return self.__id
 
-    def set_id(self, id: Optional[str]):
+    def set_id(self, id: Optional[str]) -> None:
         """
         Set method for to id
         :param id: id
@@ -164,7 +164,7 @@ class LedgerEntry:
         """
         return self.__support_request
 
-    def set_support_request(self, support_request: Optional[str]):
+    def set_support_request(self, support_request: Optional[str]) -> None:
         """
         Set method for to support_request
         :param support_request: support_request
@@ -178,7 +178,7 @@ class LedgerEntry:
         """
         return self.__description
 
-    def set_description(self, description: Optional[str]):
+    def set_description(self, description: Optional[str]) -> None:
         """
         Set method for to description
         :param description: description
@@ -192,7 +192,7 @@ class LedgerEntry:
         """
         return self.__invoice_id
 
-    def set_invoice_id(self, invoice_id: Optional[str]):
+    def set_invoice_id(self, invoice_id: Optional[str]) -> None:
         """
         Set method for to invoice_id
         :param invoice_id: invoice_id
@@ -206,7 +206,7 @@ class LedgerEntry:
         """
         return self.__buyer_fields
 
-    def set_buyer_fields(self, buyer_fields: Buyer):
+    def set_buyer_fields(self, buyer_fields: Buyer) -> None:
         """
         Set method for to buyer_fields
         :param buyer_fields: buyer_fields
@@ -220,7 +220,7 @@ class LedgerEntry:
         """
         return self.__invoice_amount
 
-    def set_invoice_amount(self, invoice_amount: Optional[float]):
+    def set_invoice_amount(self, invoice_amount: Optional[float]) -> None:
         """
         Set method for to invoice_amount
         :param invoice_amount: invoice_amount
@@ -234,7 +234,7 @@ class LedgerEntry:
         """
         return self.__invoice_currency
 
-    def set_invoice_currency(self, invoice_currency: Optional[str]):
+    def set_invoice_currency(self, invoice_currency: Optional[str]) -> None:
         """
         Set method for to invoice_currency
         :param invoice_currency: invoice_currency
@@ -248,14 +248,14 @@ class LedgerEntry:
         """
         return self.__transaction_currency
 
-    def set_transaction_currency(self, transaction_currency: Optional[str]):
+    def set_transaction_currency(self, transaction_currency: Optional[str]) -> None:
         """
         Set method for to transaction_currency
         :param transaction_currency: transaction_currency
         """
         self.__transaction_currency = transaction_currency
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

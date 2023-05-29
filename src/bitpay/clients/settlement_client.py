@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from bitpay.clients.bitpay_client import BitPayClient
 from bitpay.exceptions.bitpay_exception import BitPayException
@@ -18,10 +18,10 @@ class SettlementClient:
 
     def get_settlements(
         self,
-        currency: str = None,
-        date_start: str = None,
-        date_end: str = None,
-        status: str = None,
+        currency: Optional[str] = None,
+        date_start: Optional[str] = None,
+        date_end: Optional[str] = None,
+        status: Optional[str] = None,
         limit: int = 100,
         offset: int = 0,
     ) -> List[Settlement]:
@@ -107,7 +107,9 @@ class SettlementClient:
             )
         return settlement
 
-    def get_reconciliation_report(self, settlement_id: str, settlement_token: str) -> Settlement:
+    def get_reconciliation_report(
+        self, settlement_id: str, settlement_token: str
+    ) -> Settlement:
         """
         Gets a detailed reconciliation report of the activity within the settlement period
 

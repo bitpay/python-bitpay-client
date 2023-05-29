@@ -15,7 +15,7 @@ class UniversalCodes:
     __payment_string = None
     __verification_link = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 getattr(
@@ -31,7 +31,7 @@ class UniversalCodes:
         """
         return self.__payment_string
 
-    def set_payment_string(self, payment_string: Optional[str]):
+    def set_payment_string(self, payment_string: Optional[str]) -> None:
         """
         Set method for to payment_string
         :param payment_string: payment_string
@@ -45,14 +45,14 @@ class UniversalCodes:
         """
         return self.__verification_link
 
-    def set_verification_link(self, verification_link: Optional[str]):
+    def set_verification_link(self, verification_link: Optional[str]) -> None:
         """
         Set method for to verification_link
         :param verification_link: verification_link
         """
         self.__verification_link = verification_link
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

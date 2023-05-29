@@ -16,7 +16,7 @@ class Rate:
     __code = None
     __rate = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(key, value, {"rate": "float"}, {})
@@ -31,7 +31,7 @@ class Rate:
         """
         return self.__name
 
-    def set_name(self, name: Optional[str]):
+    def set_name(self, name: Optional[str]) -> None:
         """
         Set method for to name
         :param name: name
@@ -45,7 +45,7 @@ class Rate:
         """
         return self.__code
 
-    def set_code(self, code: Optional[str]):
+    def set_code(self, code: Optional[str]) -> None:
         """
         Set method for to code
         :param code: code
@@ -59,7 +59,7 @@ class Rate:
         """
         return self.__rate
 
-    def set_rate(self, rate: Optional[float]):
+    def set_rate(self, rate: Optional[float]) -> None:
         """
         Set method for to rate
         :param rate: rate

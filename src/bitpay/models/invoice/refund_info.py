@@ -14,9 +14,9 @@ class RefundInfo:
 
     __support_request = None
     __currency = None
-    __amounts = None
+    __amounts: Optional[List[dict]] = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(key, value, {}, {"amounts": "dict"})
@@ -32,7 +32,7 @@ class RefundInfo:
         """
         return self.__support_request
 
-    def set_support_request(self, support_request: Optional[str]):
+    def set_support_request(self, support_request: Optional[str]) -> None:
         """
         Set method for the support_request
         :param support_request: support_request
@@ -46,28 +46,28 @@ class RefundInfo:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: Optional[str]) -> None:
         """
         Set method for the currency
         :param currency: currency
         """
         self.__currency = currency
 
-    def get_amounts(self) -> List[dict]:
+    def get_amounts(self) -> Optional[List[dict]]:
         """
         Get method for the amounts
         :return: amounts
         """
         return self.__amounts
 
-    def set_amounts(self, amounts: List[dict]):
+    def set_amounts(self, amounts: Optional[List[dict]]) -> None:
         """
         Set method for the amounts
         :param amounts: amounts
         """
         self.__amounts = amounts
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

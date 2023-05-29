@@ -15,7 +15,7 @@ class SupportedTransactionCurrency:
     __enabled = False
     __reason = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict):
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(key, value, {"enabled": "bool"}, {})
@@ -30,7 +30,7 @@ class SupportedTransactionCurrency:
         """
         return self.__enabled
 
-    def set_enabled(self, enabled: bool):
+    def set_enabled(self, enabled: bool) -> None:
         """
         Set method for to enabled
         :param enabled: enabled
@@ -44,7 +44,7 @@ class SupportedTransactionCurrency:
         """
         return self.__reason
 
-    def set_reason(self, reason: Optional[str]):
+    def set_reason(self, reason: Optional[str]) -> None:
         """
         Set method for to reason
         :param reason: reason

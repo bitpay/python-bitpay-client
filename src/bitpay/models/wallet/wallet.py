@@ -15,13 +15,15 @@ class Wallet(object):
     __display_name = None
     __avatar = None
     __pay_pro = None
-    __currencies = []
+    __currencies: Optional[List[Currencies]] = None
     __image = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
-                value = ModelUtil.get_field_value(key, value, {"payPro": "bool"}, {"currencies": Currencies})
+                value = ModelUtil.get_field_value(
+                    key, value, {"payPro": "bool"}, {"currencies": Currencies}
+                )
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
                 )(value)
@@ -35,7 +37,7 @@ class Wallet(object):
         """
         return self.__key
 
-    def set_key(self, key: Optional[str]):
+    def set_key(self, key: Optional[str]) -> None:
         """
         Set method for to key
         :param key: key
@@ -49,7 +51,7 @@ class Wallet(object):
         """
         return self.__display_name
 
-    def set_display_name(self, display_name: Optional[str]):
+    def set_display_name(self, display_name: Optional[str]) -> None:
         """
         Set method for to display_name
         :param display_name: display_name
@@ -63,7 +65,7 @@ class Wallet(object):
         """
         return self.__avatar
 
-    def set_avatar(self, avatar: Optional[str]):
+    def set_avatar(self, avatar: Optional[str]) -> None:
         """
         Set method for to avatar
         :param avatar: avatar
@@ -77,7 +79,7 @@ class Wallet(object):
         """
         return self.__paypro
 
-    def set_pay_pro(self, paypro: Optional[bool]):
+    def set_pay_pro(self, paypro: Optional[bool]) -> None:
         """
         Set method for to paypro
         :param paypro: paypro
@@ -91,7 +93,7 @@ class Wallet(object):
         """
         return self.__currencies
 
-    def set_currencies(self, currencies: Optional[List[Currencies]]):
+    def set_currencies(self, currencies: Optional[List[Currencies]]) -> None:
         """
         Set method for to currencies
         :param currencies: currencies
@@ -105,14 +107,14 @@ class Wallet(object):
         """
         return self.__image
 
-    def set_image(self, value: Optional[str]):
+    def set_image(self, value: Optional[str]) -> None:
         """
         Set URL that displays wallet avatar image
         :param value: image
         """
         self.__image = value
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

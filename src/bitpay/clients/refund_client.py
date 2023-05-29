@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from bitpay.clients.bitpay_client import BitPayClient
 from bitpay.exceptions.bitpay_exception import BitPayException
@@ -35,8 +35,8 @@ class RefundClient:
         preview: bool = False,
         immediate: bool = False,
         buyer_pays_refund_fee: bool = False,
-        reference: str = None,
-        guid: str = None
+        reference: Optional[str] = None,
+        guid: Optional[str] = None,
     ) -> Refund:
         """
         Create a refund for a BitPay invoice.
@@ -94,7 +94,7 @@ class RefundClient:
                 " (Refund) : %s" % str(exe)
             )
 
-    def get(self, refund_id) -> Refund:
+    def get(self, refund_id: str) -> Refund:
         try:
             params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
             response_json = self.__bitpay_client.get("refunds/%s" % refund_id, params)
@@ -282,7 +282,7 @@ class RefundClient:
                 " (Refund) : %s" % str(exe)
             )
 
-    def cancel_by_guid(self, guid) -> Refund:
+    def cancel_by_guid(self, guid: str) -> Refund:
         """
         Cancel a previously submitted refund request on a BitPay invoice.
 

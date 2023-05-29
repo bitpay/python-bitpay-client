@@ -14,7 +14,7 @@ class Shopper:
 
     __user = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
@@ -28,14 +28,14 @@ class Shopper:
         """
         return self.__user
 
-    def set_user(self, user: Optional[str]):
+    def set_user(self, user: Optional[str]) -> None:
         """
         Set method for to user
         :param user: user
         """
         self.__user = user
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

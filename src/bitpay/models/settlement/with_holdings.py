@@ -16,7 +16,7 @@ class WithHoldings:
     __label = None
     __bank_country = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             value = ModelUtil.get_field_value(key, value, {"amount": "float"}, {})
             try:
@@ -31,7 +31,7 @@ class WithHoldings:
         """
         return self.__amount
 
-    def set_amount(self, amount: Optional[float]):
+    def set_amount(self, amount: Optional[float]) -> None:
         """
         Set method for to amount
         :param amount: amount
@@ -45,7 +45,7 @@ class WithHoldings:
         """
         return self.__code
 
-    def set_code(self, code: Optional[str]):
+    def set_code(self, code: Optional[str]) -> None:
         """
         Set method for to code
         :param code: code
@@ -59,7 +59,7 @@ class WithHoldings:
         """
         return self.__description
 
-    def set_description(self, description: Optional[str]):
+    def set_description(self, description: Optional[str]) -> None:
         """
         Set method for to description
         :param description: description
@@ -73,7 +73,7 @@ class WithHoldings:
         """
         return self.__notes
 
-    def set_notes(self, notes: Optional[str]):
+    def set_notes(self, notes: Optional[str]) -> None:
         """
         Set method for to notes
         :param notes: notes
@@ -87,7 +87,7 @@ class WithHoldings:
         """
         return self.__label
 
-    def set_label(self, label: Optional[str]):
+    def set_label(self, label: Optional[str]) -> None:
         """
         Set method for to label
         :param label: label
@@ -101,7 +101,7 @@ class WithHoldings:
         """
         return self.__bank_country
 
-    def set_bank_country(self, bank_country: Optional[str]):
+    def set_bank_country(self, bank_country: Optional[str]) -> None:
         """
         Set method for to bank_country
         :param bank_country: bank_country

@@ -1,15 +1,23 @@
+# mypy: disable-error-code="misc, union-attr, assignment, arg-type"
+from typing import Any
+
 from bitpay.exceptions.bitpay_exception import BitPayException
 
 
 class ModelUtil:
     @staticmethod
-    def get_field_value(key: str, value, singular_fields: dict, list_fields:  dict):
+    def get_field_value(
+        key: str, value: Any, singular_fields: dict, list_fields: dict
+    ) -> Any:
         """
         :param: singular fields key as field name (eg. "amountPaid"), value as type (eg. "str", Wallet, "bool", "int")
         :param: list fields key as field name (eg. "amountPaid"), value as type (of list eg. "str" means List[str])
         """
         if key in singular_fields:
             object_type = singular_fields.get(key)
+
+            if value is None:
+                return value
 
             if object_type == "float":
                 if isinstance(value, float):
@@ -70,7 +78,7 @@ class ModelUtil:
         return value
 
     @staticmethod
-    def to_json(model) -> dict:
+    def to_json(model: object) -> dict:
         result = {}
         fields = vars(model)
         for name, value in fields.items():
@@ -81,7 +89,6 @@ class ModelUtil:
             key = ModelUtil.convert_snake_case_fields_to_camel_case(key)
 
             if isinstance(value, (int, float, str, bool)):
-
                 result[key] = value
             elif isinstance(value, dict):
                 result[key] = ModelUtil.to_json(value)
@@ -98,11 +105,11 @@ class ModelUtil:
         return result
 
     @staticmethod
-    def convert_snake_case_fields_to_camel_case(key):
-        words = key.split('_')
-        key = words[0] + ''.join(word[:1].upper() + word[1:] for word in words[1:])
+    def convert_snake_case_fields_to_camel_case(key: str) -> str:
+        words = key.split("_")
+        key = words[0] + "".join(word[:1].upper() + word[1:] for word in words[1:])
         return key
 
     @staticmethod
-    def remove_class_name_from_name(model, name):
+    def remove_class_name_from_name(model: object, name: str) -> str:
         return name.replace("_" + type(model).__name__ + "__", "")

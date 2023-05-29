@@ -1,3 +1,5 @@
+from typing import Dict
+
 from bitpay.clients.bitpay_client import BitPayClient
 from bitpay.exceptions.bitpay_exception import BitPayException
 from bitpay.exceptions.currency_query_exception import CurrencyQueryException
@@ -10,7 +12,7 @@ class CurrencyClient:
     def __init__(self, bitpay_client: BitPayClient):
         self.__bitpay_client = bitpay_client
 
-    def get_currencies(self):
+    def get_currencies(self) -> Dict[str, Currency]:
         """
         Fetch the supported currencies.
 

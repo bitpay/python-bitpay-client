@@ -7,7 +7,7 @@ See bitpay.com/api for more information.
 """
 import os
 import json
-from typing import List
+from typing import List, Optional
 
 from bitpay.clients.bill_client import BillClient
 from bitpay.clients.bitpay_client import BitPayClient
@@ -51,13 +51,16 @@ class Client:
     * See bitpay.com/api for more information.
     """
 
-    __bitpay_client = BitPayClient
-    __token_container = TokenContainer
-    __guid_generator = GuidGenerator
+    __bitpay_client: BitPayClient
+    __token_container: TokenContainer
+    __guid_generator: GuidGenerator
 
     def __init__(
-            self, bitpay_client: BitPayClient, token_container: TokenContainer, guid_generator: GuidGenerator = None
-    ):
+        self,
+        bitpay_client: BitPayClient,
+        token_container: TokenContainer,
+        guid_generator: Optional[GuidGenerator] = None,
+    ) -> None:
         try:
             self.__bitpay_client = bitpay_client
             self.__token_container = token_container
@@ -68,7 +71,7 @@ class Client:
             raise BitPayException("failed to initiate clients: " + str(exe))
 
     @staticmethod
-    def create_pos_client(self, pos_token: str, environment: Environment.PROD):
+    def create_pos_client(self, pos_token: str, environment: Environment = Environment.PROD):  # type: ignore
         token_container = TokenContainer()
         token_container.add_pos(pos_token)
 
@@ -77,11 +80,12 @@ class Client:
         return Client(bitpay_client, token_container, GuidGenerator())
 
     @staticmethod
-    def create_client_by_private_key(private_key: str, token_container: TokenContainer,
-                                     environment: Environment = Environment.PROD, proxy=None):
-        if environment is None:
-            environment = Environment.PROD
-
+    def create_client_by_private_key(  # type: ignore
+        private_key: str,
+        token_container: TokenContainer,
+        environment: Environment = Environment.PROD,
+        proxy: Optional[str] = None,
+    ):
         try:
             base_url = Client.get_base_url(environment)
             ec_key = Client.get_ec_key(private_key)
@@ -93,7 +97,7 @@ class Client:
             raise BitPayException("failed to process configuration: " + str(exe))
 
     @staticmethod
-    def create_client_by_config_file_path(config_file_path):
+    def create_client_by_config_file_path(config_file_path: str):  # type: ignore
         if not os.path.exists(config_file_path):
             raise BitPayException("Configuration file not found")
 
@@ -120,10 +124,10 @@ class Client:
                 ec_key, token_container, environment, proxy
             )
         except Exception as exe:
-            raise BitPayException("Error when reading configuration file", str(exe))
+            raise BitPayException("Error when reading configuration file. " + str(exe))
 
     @staticmethod
-    def get_ec_key(private_key):
+    def get_ec_key(private_key: Optional[str]) -> str:
         if private_key is None:
             raise BitPayException("Private Key file not found")
 
@@ -136,14 +140,20 @@ class Client:
         return private_key
 
     @staticmethod
-    def get_base_url(environment: Environment):
-        return Config.TEST_URL.value if environment == environment.TEST else Config.PROD_URL.value
+    def get_base_url(environment: Environment) -> str:
+        return (
+            Config.TEST_URL.value
+            if environment == environment.TEST
+            else Config.PROD_URL.value
+        )
 
-    def get_access_token(self, key: str):
+    def get_access_token(self, facade: Facade) -> str:
         try:
-            return self.__token_container.get_access_token(key)
+            return self.__token_container.get_access_token(facade)
         except Exception as exe:
-            raise BitPayException("There is no token for the specified key: ", str(exe))
+            raise BitPayException(
+                "There is no token for the specified key: " + facade.value
+            )
 
     # //////////////////////////////////////////////////////////////////////////////
     # //////////////////////////////////////////////////////////////////////////////
@@ -154,7 +164,10 @@ class Client:
     # //////////////////////////////////////////////////////////////////////////////
 
     def create_invoice(
-        self, invoice: Invoice, facade: str = Facade.MERCHANT.name, sign_request: bool = True
+        self,
+        invoice: Invoice,
+        facade: Facade = Facade.MERCHANT,
+        sign_request: bool = True,
     ) -> Invoice:
         """
         Create a BitPay invoice
@@ -169,10 +182,13 @@ class Client:
         """
         client = self.create_invoice_client()
 
-        return client.create(invoice, Facade.from_str(facade), sign_request)
+        return client.create(invoice, facade, sign_request)
 
     def get_invoice(
-        self, invoice_id: str, facade: str = Facade.MERCHANT.name, sign_request: bool = True
+        self,
+        invoice_id: str,
+        facade: Facade = Facade.MERCHANT,
+        sign_request: bool = True,
     ) -> Invoice:
         """
         Retrieve a BitPay invoice by invoice id using the specified facade.
@@ -188,10 +204,10 @@ class Client:
         :raises InvoiceQueryException
         """
         client = self.create_invoice_client()
-        return client.get(invoice_id, Facade.from_str(facade), sign_request)
+        return client.get(invoice_id, facade, sign_request)
 
     def get_invoice_by_guid(
-        self, guid: str, facade: str = Facade.MERCHANT.name, sign_request: bool = True
+        self, guid: str, facade: Facade = Facade.MERCHANT, sign_request: bool = True
     ) -> Invoice:
         """
         Retrieve a BitPay invoice by invoice id using the specified facade.
@@ -207,16 +223,16 @@ class Client:
         :raises InvoiceQueryException
         """
         client = self.create_invoice_client()
-        return client.get_by_guid(guid, Facade.from_str(facade), sign_request)
+        return client.get_by_guid(guid, facade, sign_request)
 
     def get_invoices(
         self,
         date_start: str,
         date_end: str,
-        status: str = None,
-        order_id: str = None,
-        limit: int = None,
-        offset: int = None,
+        status: Optional[str] = None,
+        order_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
     ) -> List[Invoice]:
         """
         Retrieve a collection of BitPay invoices.
@@ -249,16 +265,14 @@ class Client:
         :raises InvoiceQueryException
         """
         client = self.create_invoice_client()
-        return client.get_event_token(
-            invoice_id
-        )
+        return client.get_event_token(invoice_id)
 
     def update_invoice(
         self,
         invoice_id: str,
-        buyer_email: str = None,
-        buyer_sms: str = None,
-        sms_code: str = None,
+        buyer_email: Optional[str] = None,
+        buyer_sms: Optional[str] = None,
+        sms_code: Optional[str] = None,
     ) -> Invoice:
         """
         Update a BitPay invoice with communication method.
@@ -339,8 +353,8 @@ class Client:
         preview: bool = False,
         immediate: bool = False,
         buyer_pays_refund_fee: bool = False,
-        reference: str = None,
-        guid: str = None
+        reference: Optional[str] = None,
+        guid: Optional[str] = None,
     ) -> Refund:
         """
         Create a refund for a BitPay invoice.
@@ -365,7 +379,13 @@ class Client:
         """
         client = self.create_refund_client()
         return client.create(
-            invoice_id, amount, preview, immediate, buyer_pays_refund_fee, reference, guid
+            invoice_id,
+            amount,
+            preview,
+            immediate,
+            buyer_pays_refund_fee,
+            reference,
+            guid,
         )
 
     def get_refund(self, refund_id: str) -> Refund:
@@ -487,7 +507,7 @@ class Client:
         return client.get_supported_wallets()
 
     def create_bill(
-        self, bill: Bill, facade: str = Facade.MERCHANT.name, sign_request: bool = True
+        self, bill: Bill, facade: Facade = Facade.MERCHANT, sign_request: bool = True
     ) -> Bill:
         """
         Create a BitPay Bill.
@@ -501,9 +521,9 @@ class Client:
         :raises BillCreationException
         """
         client = self.create_bill_client()
-        return client.create(bill, Facade.from_str(facade), sign_request)
+        return client.create(bill, facade, sign_request)
 
-    def get_bills(self, status: str = None) -> List[Bill]:
+    def get_bills(self, status: Optional[str] = None) -> List[Bill]:
         """
         Retrieve a collection of BitPay bills.
 
@@ -516,7 +536,9 @@ class Client:
         client = self.create_bill_client()
         return client.get_bills(status)
 
-    def get_bill(self, bill_id: str, facade: str = Facade.MERCHANT.name, sign_request: bool = True) -> Bill:
+    def get_bill(
+        self, bill_id: str, facade: Facade = Facade.MERCHANT, sign_request: bool = True
+    ) -> Bill:
         """
         Retrieve a BitPay bill by bill id using the specified facade.
 
@@ -529,7 +551,7 @@ class Client:
         :raises BillQueryException
         """
         client = self.create_bill_client()
-        return client.get(bill_id, Facade.from_str(facade), sign_request)
+        return client.get(bill_id, facade, sign_request)
 
     def update_bill(self, bill: Bill, bill_id: str) -> Bill:
         """
@@ -617,7 +639,7 @@ class Client:
         return client.get(recipient_id)
 
     def get_payout_recipients(
-        self, status: str = None, limit: int = 100, offset: int = 0
+        self, status: Optional[str] = None, limit: int = 100, offset: int = 0
     ) -> List[PayoutRecipient]:
         """
         Retrieve a collection of BitPay Payout Recipients.
@@ -701,12 +723,12 @@ class Client:
 
     def get_payouts(
         self,
-        start_date: str = None,
-        end_date: str = None,
-        status: str = None,
-        reference: str = None,
-        limit: int = None,
-        offset: int = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        status: Optional[str] = None,
+        reference: Optional[str] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
     ) -> List[Payout]:
         """
         Retrieve a collection of BitPay payouts.
@@ -760,10 +782,10 @@ class Client:
 
     def get_settlements(
         self,
-        currency: str = None,
-        date_start: str = None,
-        date_end: str = None,
-        status: str = None,
+        currency: Optional[str] = None,
+        date_start: Optional[str] = None,
+        date_end: Optional[str] = None,
+        status: Optional[str] = None,
         limit: int = 100,
         offset: int = 0,
     ) -> List[Settlement]:
@@ -874,38 +896,41 @@ class Client:
         client = self.create_rate_client()
         return client.get_currency_pair_rate(base_currency, currency)
 
-    def create_bill_client(self):
+    def create_bill_client(self) -> BillClient:
         return BillClient(self.__bitpay_client, self.__token_container)
 
-    def create_currency_client(self):
+    def create_currency_client(self) -> CurrencyClient:
         return CurrencyClient(self.__bitpay_client)
 
-    def create_invoice_client(self):
+    def create_invoice_client(self) -> InvoiceClient:
         return InvoiceClient(
             self.__bitpay_client, self.__token_container, self.__guid_generator
         )
 
-    def create_ledger_client(self):
+    def create_ledger_client(self) -> LedgerClient:
         return LedgerClient(self.__bitpay_client, self.__token_container)
 
-    def create_payout_client(self):
+    def create_payout_client(self) -> PayoutClient:
         return PayoutClient(self.__bitpay_client, self.__token_container)
 
-    def create_payout_recipient_client(self):
+    def create_payout_recipient_client(self) -> PayoutRecipientClient:
         return PayoutRecipientClient(
             self.__bitpay_client, self.__token_container, self.__guid_generator
         )
 
-    def create_rate_client(self):
+    def create_rate_client(self) -> RateClient:
         return RateClient(self.__bitpay_client)
 
-    def create_refund_client(self):
+    def create_refund_client(self) -> RefundClient:
+        """
+        :return: RateClient
+        """
         return RefundClient(
             self.__bitpay_client, self.__token_container, self.__guid_generator
         )
 
-    def create_settlement_client(self):
+    def create_settlement_client(self) -> SettlementClient:
         return SettlementClient(self.__bitpay_client, self.__token_container)
 
-    def create_wallet_client(self):
+    def create_wallet_client(self) -> WalletClient:
         return WalletClient(self.__bitpay_client)

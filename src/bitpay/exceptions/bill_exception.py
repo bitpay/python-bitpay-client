@@ -14,7 +14,7 @@ class BillException(BitPayException):
     __bitpay_code = "BITPAY-BILL-GENERIC"
     __api_code = ""
 
-    def __init__(self, message="", code=111, api_code="000000"):
+    def __init__(self, message: str = "", code: int = 111, api_code: str = "000000"):
         """
         Construct the BillException.
 

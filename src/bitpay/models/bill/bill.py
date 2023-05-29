@@ -20,7 +20,7 @@ class Bill:
     __currency = None
     __token = None
     __email = None
-    __items = []
+    __items: Optional[List[Item]] = None
     __number = None
     __name = None
     __address1 = None
@@ -29,7 +29,7 @@ class Bill:
     __state = None
     __zip = None
     __country = None
-    __cc = []
+    __cc: Optional[List[str]] = None
     __phone = None
     __due_date = None
     __pass_processing_fee = False
@@ -40,10 +40,17 @@ class Bill:
     __id = None
     __merchant = None
 
-    def __init__(self, number=None, currency=None, email=None, **kwargs):
+    def __init__(
+        self,
+        number: Optional[str] = None,
+        currency: Optional[str] = None,
+        email: Optional[str] = None,
+        **kwargs: dict
+    ) -> None:
         self.set_number(number)
-        self.set_currency(currency)
         self.set_email(email)
+        if currency is not None:
+            self.set_currency(currency)
 
         for key, value in kwargs.items():
             try:
@@ -59,7 +66,7 @@ class Bill:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: str) -> None:
         """
         Set method for to currency
         :param currency: currency
@@ -75,7 +82,7 @@ class Bill:
         """
         return self.__token
 
-    def set_token(self, token: Optional[str]):
+    def set_token(self, token: Optional[str]) -> None:
         """
         Set method for to token
         :param token: token
@@ -89,7 +96,7 @@ class Bill:
         """
         return self.__email
 
-    def set_email(self, email: Optional[str]):
+    def set_email(self, email: Optional[str]) -> None:
         """
         Set method for to email
         :param email: email
@@ -103,7 +110,7 @@ class Bill:
         """
         return self.__number
 
-    def set_number(self, number: Optional[str]):
+    def set_number(self, number: Optional[str]) -> None:
         """
         Set method for to number
         :param number: number
@@ -117,7 +124,7 @@ class Bill:
         """
         return self.__name
 
-    def set_name(self, name: Optional[str]):
+    def set_name(self, name: Optional[str]) -> None:
         """
         Set method for to name
         :param name: name
@@ -131,7 +138,7 @@ class Bill:
         """
         return self.__address1
 
-    def set_address1(self, address1: Optional[str]):
+    def set_address1(self, address1: Optional[str]) -> None:
         """
         Set method for to address1
         :param address1: address1
@@ -145,7 +152,7 @@ class Bill:
         """
         return self.__address2
 
-    def set_address2(self, address2: Optional[str]):
+    def set_address2(self, address2: Optional[str]) -> None:
         """
         Set method for to address2
         :param address2: address2
@@ -159,7 +166,7 @@ class Bill:
         """
         return self.__city
 
-    def set_city(self, city: Optional[str]):
+    def set_city(self, city: Optional[str]) -> None:
         """
         Set method for to city
         :param city: city
@@ -173,7 +180,7 @@ class Bill:
         """
         return self.__state
 
-    def set_state(self, state: Optional[str]):
+    def set_state(self, state: Optional[str]) -> None:
         """
         Set method for to state
         :param state: state
@@ -187,7 +194,7 @@ class Bill:
         """
         return self.__zip
 
-    def set_zip(self, zip: Optional[str]):
+    def set_zip(self, zip: Optional[str]) -> None:
         """
         Set method for to zip
         :param zip: zip
@@ -201,7 +208,7 @@ class Bill:
         """
         return self.__country
 
-    def set_country(self, country: Optional[str]):
+    def set_country(self, country: Optional[str]) -> None:
         """
         Set method for to country
         :param country: country
@@ -215,7 +222,7 @@ class Bill:
         """
         return self.__cc
 
-    def set_cc(self, cc: List[str]):
+    def set_cc(self, cc: Optional[List[str]]) -> None:
         """
         Set method for to cc
         :param cc: cc
@@ -229,7 +236,7 @@ class Bill:
         """
         return self.__phone
 
-    def set_phone(self, phone: Optional[str]):
+    def set_phone(self, phone: Optional[str]) -> None:
         """
         Set method for to phone
         :param phone: phone
@@ -243,21 +250,21 @@ class Bill:
         """
         return self.__due_date
 
-    def set_due_date(self, due_date: Optional[str]):
+    def set_due_date(self, due_date: Optional[str]) -> None:
         """
         Set method for to due_date
         :param due_date: due_date
         """
         self.__due_date = due_date
 
-    def get_pass_processing_fee(self):
+    def get_pass_processing_fee(self) -> bool:
         """
         Get method for to pass_processing_fee
         :return: pass_processing_fee
         """
         return self.__pass_processing_fee
 
-    def set_pass_processing_fee(self, pass_processing_fee: bool):
+    def set_pass_processing_fee(self, pass_processing_fee: bool) -> None:
         """
         Set method for to pass_processing_fee
         :param pass_processing_fee: pass_processing_fee
@@ -271,7 +278,7 @@ class Bill:
         """
         return self.__status
 
-    def set_status(self, status: Optional[str]):
+    def set_status(self, status: Optional[str]) -> None:
         """
         Set method for to status
         :param status: status
@@ -285,7 +292,7 @@ class Bill:
         """
         return self.__url
 
-    def set_url(self, url: Optional[str]):
+    def set_url(self, url: Optional[str]) -> None:
         """
         Set method for to url
         :param url: url
@@ -299,7 +306,7 @@ class Bill:
         """
         return self.__created_date
 
-    def set_created_date(self, created_date: Optional[str]):
+    def set_created_date(self, created_date: Optional[str]) -> None:
         """
         Set method for to created_date
         :param created_date: created_date
@@ -313,7 +320,7 @@ class Bill:
         """
         return self.__email_bill
 
-    def set_email_bill(self, email_bill: Optional[str]):
+    def set_email_bill(self, email_bill: Optional[str]) -> None:
         """
         Set method for to email_bill
         :param email_bill: email_bill
@@ -327,7 +334,7 @@ class Bill:
         """
         return self.__id
 
-    def set_id(self, value: Optional[str]):
+    def set_id(self, value: Optional[str]) -> None:
         """
         Set method for to id
         :param value: id
@@ -341,7 +348,7 @@ class Bill:
         """
         return self.__merchant
 
-    def set_merchant(self, merchant: Optional[str]):
+    def set_merchant(self, merchant: Optional[str]) -> None:
         """
         Set method for to merchant
         :param merchant: merchant
@@ -355,7 +362,7 @@ class Bill:
         """
         return self.__items
 
-    def set_items(self, item: List[Item]):
+    def set_items(self, item: Optional[List[Item]]) -> None:
         """
         Set method for to item
         :param item: item

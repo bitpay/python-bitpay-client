@@ -40,8 +40,8 @@ class Refund:
         amount: float = 0.0,
         currency: str = "",
         token: str = "",
-        **kwargs
-    ):
+        **kwargs: dict
+    ) -> None:
         self.set_invoice(invoice_id)
         self.set_amount(amount)
         self.set_currency(currency)
@@ -51,10 +51,17 @@ class Refund:
             try:
                 value = ModelUtil.get_field_value(
                     key,
-                    value, 
-                    {"amount": "float", "preview": "bool", "immediate": "bool", "buyerPaysRefundFee": "bool",
-                     "refundFee": "float", "transactionAmount": "float", "transactionRefundFee": "float"},
-                    {}
+                    value,
+                    {
+                        "amount": "float",
+                        "preview": "bool",
+                        "immediate": "bool",
+                        "buyerPaysRefundFee": "bool",
+                        "refundFee": "float",
+                        "transactionAmount": "float",
+                        "transactionRefundFee": "float",
+                    },
+                    {},
                 )
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
@@ -69,7 +76,7 @@ class Refund:
         """
         return self.__guid
 
-    def set_guid(self, guid: Optional[str]):
+    def set_guid(self, guid: Optional[str]) -> None:
         """
         Set method for the guid
         :param guid: guid
@@ -83,7 +90,7 @@ class Refund:
         """
         return self.__preview
 
-    def set_preview(self, preview: bool):
+    def set_preview(self, preview: bool) -> None:
         """
         Set method for the preview
         :param preview: preview
@@ -97,7 +104,7 @@ class Refund:
         """
         return self.__immediate
 
-    def set_immediate(self, immediate: bool):
+    def set_immediate(self, immediate: bool) -> None:
         """
         Set method for the immediate
         :param immediate: immediate
@@ -111,7 +118,7 @@ class Refund:
         """
         return self.__reference
 
-    def set_reference(self, reference: Optional[str]):
+    def set_reference(self, reference: Optional[str]) -> None:
         """
         Set method for the reference
         :param reference: reference
@@ -125,7 +132,7 @@ class Refund:
         """
         return self.__buyer_pays_refund_fee
 
-    def set_buyer_pays_refund_fee(self, buyer_pays_refund_fee: bool):
+    def set_buyer_pays_refund_fee(self, buyer_pays_refund_fee: bool) -> None:
         """
         Set method for the buyer_pays_refund_fee
         :param buyer_pays_refund_fee: buyer_pays_refund_fee
@@ -139,7 +146,7 @@ class Refund:
         """
         return self.__refund_fee
 
-    def set_refund_fee(self, refund_fee: Optional[float]):
+    def set_refund_fee(self, refund_fee: Optional[float]) -> None:
         """
         Set method for the refund_fee
         :param refund_fee: refund_fee
@@ -153,7 +160,9 @@ class Refund:
         """
         return self.__last_refund_notification
 
-    def set_last_refund_notification(self, last_refund_notification: Optional[str]):
+    def set_last_refund_notification(
+        self, last_refund_notification: Optional[str]
+    ) -> None:
         """
         Set method for the last_refund_notification
         :param last_refund_notification: last_refund_notification
@@ -167,7 +176,7 @@ class Refund:
         """
         return self.__invoice
 
-    def set_invoice(self, invoice: Optional[str]):
+    def set_invoice(self, invoice: Optional[str]) -> None:
         """
         Set method for the invoice
         :param invoice: invoice
@@ -181,7 +190,7 @@ class Refund:
         """
         return self.__amount
 
-    def set_amount(self, amount: Optional[float]):
+    def set_amount(self, amount: Optional[float]) -> None:
         """
         Set method for the amount
         :param amount: amount
@@ -195,7 +204,7 @@ class Refund:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: Optional[str]) -> None:
         """
         Set method for the currency
         :param currency: currency
@@ -209,7 +218,7 @@ class Refund:
         """
         return self.__token
 
-    def set_token(self, token: Optional[str]):
+    def set_token(self, token: Optional[str]) -> None:
         """
         Set method for the token
         :param token: token
@@ -223,7 +232,7 @@ class Refund:
         """
         return self.__id
 
-    def set_id(self, id: Optional[str]):
+    def set_id(self, id: Optional[str]) -> None:
         """
         Set method for the id
         :param id: id
@@ -237,7 +246,7 @@ class Refund:
         """
         return self.__request_date
 
-    def set_request_date(self, request_date: Optional[str]):
+    def set_request_date(self, request_date: Optional[str]) -> None:
         """
         Set method for the request_date
         :param request_date: request_date
@@ -251,7 +260,7 @@ class Refund:
         """
         return self.__status
 
-    def set_status(self, status: Optional[str]):
+    def set_status(self, status: Optional[str]) -> None:
         """
         Set method for the status
         :param status: status
@@ -265,7 +274,7 @@ class Refund:
         """
         return self.__notification_url
 
-    def set_notification_url(self, value: Optional[str]):
+    def set_notification_url(self, value: Optional[str]) -> None:
         """
         Sets URL to which BitPay sends webhook notifications. HTTPS is mandatory.
         :param value: notification url
@@ -279,7 +288,7 @@ class Refund:
         """
         return self.__refund_address
 
-    def set_refund_address(self, value: Optional[str]):
+    def set_refund_address(self, value: Optional[str]) -> None:
         """
         Sets the wallet address that the refund will return the funds to, added by the customer.
         :param value: refund address
@@ -293,7 +302,7 @@ class Refund:
         """
         return self.__support_request
 
-    def set_support_request(self, value: Optional[str]):
+    def set_support_request(self, value: Optional[str]) -> None:
         """
         Sets the ID of the associated support request for the refund.
         :param value: support request
@@ -307,7 +316,7 @@ class Refund:
         """
         return self.__transaction_currency
 
-    def set_transaction_currency(self, value: Optional[str]):
+    def set_transaction_currency(self, value: Optional[str]) -> None:
         """
         Sets the currency used for the invoice transaction.
         :param value: the transaction currency of the Refund
@@ -321,7 +330,7 @@ class Refund:
         """
         return self.__transaction_amount
 
-    def set_transaction_amount(self, value: Optional[float]):
+    def set_transaction_amount(self, value: Optional[float]) -> None:
         """
         Sets amount to be refunded in terms of the transaction currency.
         :param value: the transaction amount of the Refund
@@ -335,7 +344,7 @@ class Refund:
         """
         return self.__transaction_refund_fee
 
-    def set_transaction_refund_fee(self, value: Optional[float]):
+    def set_transaction_refund_fee(self, value: Optional[float]) -> None:
         """
         Sets the refund fee expressed in terms of transaction currency.
         :param value: the transaction amount of the Refund

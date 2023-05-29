@@ -17,10 +17,12 @@ class Item:
     __price = None
     __quantity = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
-                value = ModelUtil.get_field_value(key, value, {"price": "float", "quantity": "int"}, {})
+                value = ModelUtil.get_field_value(
+                    key, value, {"price": "float", "quantity": "int"}, {}
+                )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
                 pass
@@ -32,7 +34,7 @@ class Item:
         """
         return self.__id
 
-    def set_id(self, id: Optional[str]):
+    def set_id(self, id: Optional[str]) -> None:
         """
         Set method for to id
         :param id: id
@@ -46,7 +48,7 @@ class Item:
         """
         return self.__description
 
-    def set_description(self, description: Optional[str]):
+    def set_description(self, description: Optional[str]) -> None:
         """
         Set method for to description
         :param description: description
@@ -60,7 +62,7 @@ class Item:
         """
         return self.__price
 
-    def set_price(self, price: Optional[float]):
+    def set_price(self, price: Optional[float]) -> None:
         """
         Set method for to price
         :param price: price
@@ -74,7 +76,7 @@ class Item:
         """
         return self.__quantity
 
-    def set_quantity(self, quantity: Optional[int]):
+    def set_quantity(self, quantity: Optional[int]) -> None:
         """
         Set method for to quantity
         :param quantity: quantity

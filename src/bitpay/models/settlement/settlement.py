@@ -32,11 +32,11 @@ class Settlement:
     __withholdings = None
     __withholdings_sum = None
     __total_amount = None
-    __ledger_entries = []
+    __ledger_entries: Optional[List[SettlementLedgerEntry]] = None
     __token = None
     __amount_usd_unlocked = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil().get_field_value(
@@ -51,8 +51,8 @@ class Settlement:
                     },
                     {
                         "withholdings": WithHoldings,
-                        "ledgerEntries": SettlementLedgerEntry
-                    }
+                        "ledgerEntries": SettlementLedgerEntry,
+                    },
                 )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
@@ -65,7 +65,7 @@ class Settlement:
         """
         return self.__id
 
-    def set_id(self, id: Optional[str]):
+    def set_id(self, id: Optional[str]) -> None:
         """
         Set method for to id
         :param id: id
@@ -79,7 +79,7 @@ class Settlement:
         """
         return self.__account_id
 
-    def set_account_id(self, account_id: Optional[str]):
+    def set_account_id(self, account_id: Optional[str]) -> None:
         """
         Set method for to account_id
         :param account_id: account_id
@@ -93,7 +93,7 @@ class Settlement:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: Optional[str]) -> None:
         """
         Set method for to currency
         :param currency: currency
@@ -107,7 +107,7 @@ class Settlement:
         """
         return self.__payout_info
 
-    def set_payout_info(self, payout_info: Optional[PayoutInfo]):
+    def set_payout_info(self, payout_info: Optional[PayoutInfo]) -> None:
         """
         Set method for to payout_info
         :param payout_info: payout_info
@@ -121,7 +121,7 @@ class Settlement:
         """
         return self.__status
 
-    def set_status(self, status: Optional[str]):
+    def set_status(self, status: Optional[str]) -> None:
         """
         Set method for to status
         :param status: status
@@ -135,7 +135,7 @@ class Settlement:
         """
         return self.__date_created
 
-    def set_date_created(self, date_created: Optional[str]):
+    def set_date_created(self, date_created: Optional[str]) -> None:
         """
         Set method for to date_created
         :param date_created: date_created
@@ -149,7 +149,7 @@ class Settlement:
         """
         return self.__date_executed
 
-    def set_date_executed(self, date_executed: Optional[str]):
+    def set_date_executed(self, date_executed: Optional[str]) -> None:
         """
         Set method for to date_executed
         :param date_executed: date_executed
@@ -163,7 +163,7 @@ class Settlement:
         """
         return self.__date_completed
 
-    def set_date_completed(self, date_completed: Optional[str]):
+    def set_date_completed(self, date_completed: Optional[str]) -> None:
         """
         Set method for to date_completed
         :param date_completed: date_completed
@@ -177,7 +177,7 @@ class Settlement:
         """
         return self.__opening_date
 
-    def set_opening_date(self, opening_date: Optional[str]):
+    def set_opening_date(self, opening_date: Optional[str]) -> None:
         """
         Set method for to opening_date
         :param opening_date: opening_date
@@ -191,7 +191,7 @@ class Settlement:
         """
         return self.__closing_date
 
-    def set_closing_date(self, closing_date: Optional[str]):
+    def set_closing_date(self, closing_date: Optional[str]) -> None:
         """
         Set method for to closing_date
         :param closing_date: closing_date
@@ -205,7 +205,7 @@ class Settlement:
         """
         return self.__opening_balance
 
-    def set_opening_balance(self, opening_balance: Optional[float]):
+    def set_opening_balance(self, opening_balance: Optional[float]) -> None:
         """
         Set method for to opening_balance
         :param opening_balance: opening_balance
@@ -219,7 +219,7 @@ class Settlement:
         """
         return self.__ledger_entries_sum
 
-    def set_ledger_entries_sum(self, ledger_entries_sum: Optional[float]):
+    def set_ledger_entries_sum(self, ledger_entries_sum: Optional[float]) -> None:
         """
         Set method for to ledger_entries_sum
         :param ledger_entries_sum: ledger_entries_sum
@@ -233,7 +233,7 @@ class Settlement:
         """
         return self.__withholdings
 
-    def set_withholdings(self, withholdings: List[WithHoldings]):
+    def set_withholdings(self, withholdings: List[WithHoldings]) -> None:
         """
         Set method for to withholdings
         :param withholdings: withholdings
@@ -247,7 +247,7 @@ class Settlement:
         """
         return self.__withholdings_sum
 
-    def set_withholdings_sum(self, withholdings_sum: Optional[float]):
+    def set_withholdings_sum(self, withholdings_sum: Optional[float]) -> None:
         """
         Set method for to withholdings_sum
         :param withholdings_sum: withholdings_sum
@@ -261,7 +261,7 @@ class Settlement:
         """
         return self.__total_amount
 
-    def set_total_amount(self, total_amount: Optional[float]):
+    def set_total_amount(self, total_amount: Optional[float]) -> None:
         """
         Set method for to total_amount
         :param total_amount: total_amount
@@ -275,7 +275,9 @@ class Settlement:
         """
         return self.__ledger_entries
 
-    def set_ledger_entries(self, ledger_entries: Optional[List[SettlementLedgerEntry]]):
+    def set_ledger_entries(
+        self, ledger_entries: Optional[List[SettlementLedgerEntry]]
+    ) -> None:
         """
         Set method for to ledger_entries
         :param ledger_entries: ledger_entries
@@ -289,7 +291,7 @@ class Settlement:
         """
         return self.__token
 
-    def set_token(self, token: Optional[str]):
+    def set_token(self, token: Optional[str]) -> None:
         """
         Set method for to token
         :param token: token

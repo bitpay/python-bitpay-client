@@ -4,7 +4,7 @@ Rates
 from .rate import Rate
 from ..currency import Currency
 from ...exceptions.bitpay_exception import BitPayException
-from typing import List
+from typing import List, Optional
 
 
 class Rates:
@@ -13,19 +13,19 @@ class Rates:
     currency units equivalent to one BTC.
     """
 
-    __rates = List[Rate]
+    __rates: List[Rate] = []
 
     def __init__(self, rates: List[Rate]):
         self.__rates = rates
 
-    def get_rates(self):
+    def get_rates(self) -> List[Rate]:
         return self.__rates
 
-    def update(self, rate_client):
+    def update(self, rate_client) -> None:  # type: ignore
         rates = rate_client.get_rates()
         self.__rates = rates.get_rates()
 
-    def get_rate(self, currency_code: str):
+    def get_rate(self, currency_code: str) -> Optional[float]:
         if not Currency.is_valid(currency_code):
             raise BitPayException("currency code must be a type of Model.Currency")
 
@@ -35,7 +35,7 @@ class Rates:
                 val = rate_obj.get_rate()
         return val
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

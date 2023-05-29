@@ -1,7 +1,9 @@
 import json
 import urllib
+from typing import Dict, Any, Optional
 
 import requests
+from requests import Response
 
 from bitpay.exceptions.bitpay_exception import BitPayException
 from bitpay.utils.key_utils import sign, get_compressed_public_key_from_pem
@@ -9,18 +11,20 @@ from build.lib.bitpay import env
 
 
 class BitPayClient:
-    __headers = {}
-    __base_url = None
-    __ec_key = None
-    __proxy = None
+    __headers: Dict[str, str] = {}
+    __base_url: str
+    __ec_key: Optional[str] = None
+    __proxy: Optional[str] = None
 
-    def __init__(self, base_url, ec_key=None, proxy=None):
+    def __init__(
+        self, base_url: str, ec_key: Optional[str] = None, proxy: Optional[str] = None
+    ):
         self.__base_url = base_url
         self.__ec_key = ec_key
         self.__proxy = proxy
         self.init()
 
-    def init(self):
+    def init(self) -> None:
         try:
             self.__headers = {
                 "x-accept-version": env.BITPAYAPIVERSION,
@@ -30,13 +34,15 @@ class BitPayClient:
                 "content-type": "application/json",
                 "X-accept-version": "2.0.0",
             }
-            if self.__proxy != "":
+            if self.__proxy is not None:
                 self.__headers["proxy"] = self.__proxy
 
         except BitPayException as e:
             print(e)
 
-    def post(self, uri, form_data, signature_required=True):
+    def post(
+        self, uri: str, form_data: Any = {}, signature_required: bool = True
+    ) -> dict:
         """
         :param uri: Url at which user wants to post the data
         :param form_data: the data to be posted
@@ -56,7 +62,12 @@ class BitPayClient:
         json_response = self.response_to_json_string(response)
         return json_response
 
-    def get(self, uri, parameters=None, signature_required=True):
+    def get(
+        self,
+        uri: str,
+        parameters: Optional[dict] = None,
+        signature_required: bool = True,
+    ) -> dict:
         """
 
         :param uri: Url from which user wants to get the data
@@ -78,7 +89,7 @@ class BitPayClient:
         json_response = self.response_to_json_string(response)
         return json_response
 
-    def delete(self, uri, parameters=None):
+    def delete(self, uri: str, parameters: Optional[dict] = None) -> dict:
         """
 
         :param uri: Url from which user wants to delete the data
@@ -97,12 +108,13 @@ class BitPayClient:
         json_response = self.response_to_json_string(response)
         return json_response
 
-    def update(self, uri, form_data):
+    def update(self, uri: str, form_data: Any = {}) -> dict:
         """
         :param uri: Url from which user wants to delete the data
         :param form_data: the data to be updated
         :return: json response
         """
+
         full_url = self.__base_url + uri
         form_data = json.dumps(form_data)
 
@@ -113,7 +125,7 @@ class BitPayClient:
         json_response = self.response_to_json_string(response)
         return json_response
 
-    def response_to_json_string(self, response):
+    def response_to_json_string(self, response: Response) -> Any:
         if not response.json():
             raise BitPayException("Error: HTTP response is null")
 

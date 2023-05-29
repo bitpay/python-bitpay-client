@@ -23,14 +23,20 @@ class Currencies(object):
     __withdrawal_fee = None
     __wallet_connect = False
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(
                     key,
                     value,
-                    {"p2p": "bool", "dappBrowser": "bool", "payPro": "bool", "qr": CurrencyQr, "walletConnect": "bool"},
-                    {}
+                    {
+                        "p2p": "bool",
+                        "dappBrowser": "bool",
+                        "payPro": "bool",
+                        "qr": CurrencyQr,
+                        "walletConnect": "bool",
+                    },
+                    {},
                 )
                 getattr(
                     self, "set_%s" % key_utils.change_camel_case_to_snake_case(key)
@@ -45,49 +51,49 @@ class Currencies(object):
         """
         return self.__code
 
-    def set_code(self, code: Optional[str]):
+    def set_code(self, code: Optional[str]) -> None:
         """
         Set method for to code
         :param code: code
         """
         self.__code = code
 
-    def get_p2p(self) -> Optional[bool]:
+    def get_p2p(self) -> bool:
         """
         Get method for to p2p
         :return: p2p
         """
         return self.__p2p
 
-    def set_p2p(self, p2p: Optional[bool]):
+    def set_p2p(self, p2p: bool) -> None:
         """
         Set method for to p2p
         :param p2p: p2p
         """
         self.__p2p = p2p
 
-    def get_dapp_browser(self) -> Optional[bool]:
+    def get_dapp_browser(self) -> bool:
         """
         Get method for to dapp_browser
         :return: dapp_browser
         """
         return self.__dapp_browser
 
-    def set_dapp_browser(self, dapp_browser: Optional[bool]):
+    def set_dapp_browser(self, dapp_browser: bool) -> None:
         """
         Set method for to dapp_browser
         :param dapp_browser: dapp_browser
         """
         self.__dapp_browser = dapp_browser
 
-    def get_pay_pro(self) -> Optional[bool]:
+    def get_pay_pro(self) -> bool:
         """
         Get method for to pay_pro
         :return: pay_pro
         """
         return self.__pay_pro
 
-    def set_pay_pro(self, pay_pro: Optional[bool]):
+    def set_pay_pro(self, pay_pro: bool) -> None:
         """
         Set method for to pay_pro
         :param pay_pro: pay_pro
@@ -101,7 +107,7 @@ class Currencies(object):
         """
         return self.__qr
 
-    def set_qr(self, qr: Optional[CurrencyQr]):
+    def set_qr(self, qr: Optional[CurrencyQr]) -> None:
         """
         Set method for to qr
         :param qr: qr
@@ -115,7 +121,7 @@ class Currencies(object):
         """
         return self.__withdrawal_fee
 
-    def set_withdrawal_fee(self, withdrawal_fee: Optional[str]):
+    def set_withdrawal_fee(self, withdrawal_fee: Optional[str]) -> None:
         """
         Set method for to withdrawal_fee
         :param withdrawal_fee: withdrawal_fee
@@ -129,7 +135,7 @@ class Currencies(object):
         """
         return self.__wallet_connect
 
-    def set_wallet_connect(self, wallet_connect: Optional[bool]):
+    def set_wallet_connect(self, wallet_connect: bool) -> None:
         """
         Set method for to wallet_connect
         :param wallet_connect: wallet_connect
@@ -143,14 +149,14 @@ class Currencies(object):
         """
         return self.__image
 
-    def set_image(self, value: Optional[str]):
+    def set_image(self, value: Optional[str]) -> None:
         """
         Set URL that displays currency image
         :param value: image
         """
         self.__image = value
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

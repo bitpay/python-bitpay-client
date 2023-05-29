@@ -26,14 +26,19 @@ class InvoiceData:
     """
     __refund_info = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(
                     key,
                     value,
-                    {"refundInfo": RefundInfo, "date": "str", "price": "float", "overPaidAmount": "float"},
-                    {"payoutPercentage": "dict"}
+                    {
+                        "refundInfo": RefundInfo,
+                        "date": "str",
+                        "price": "float",
+                        "overPaidAmount": "float",
+                    },
+                    {"payoutPercentage": "dict"},
                 )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
@@ -46,7 +51,7 @@ class InvoiceData:
         """
         return self.__order_id
 
-    def set_order_id(self, order_id: Optional[str]):
+    def set_order_id(self, order_id: Optional[str]) -> None:
         """
         Set method for to order_id
         :param order_id: order_id
@@ -60,7 +65,7 @@ class InvoiceData:
         """
         return self.__buyer_email_address
 
-    def set_buyer_email_address(self, buyer_email_address: Optional[str]):
+    def set_buyer_email_address(self, buyer_email_address: Optional[str]) -> None:
         """
         Set method for to buyer_email_address
         :param buyer_email_address: buyer_email_address
@@ -74,7 +79,7 @@ class InvoiceData:
         """
         return self.__date
 
-    def set_date(self, date: Optional[str]):
+    def set_date(self, date: Optional[str]) -> None:
         """
         Set method for to date
         :param date: date
@@ -88,7 +93,7 @@ class InvoiceData:
         """
         return self.__price
 
-    def set_price(self, price: Optional[float]):
+    def set_price(self, price: Optional[float]) -> None:
         """
         Set method for to price
         :param price: price
@@ -102,7 +107,7 @@ class InvoiceData:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: Optional[str]) -> None:
         """
         Set method for to currency
         :param currency: currency
@@ -116,7 +121,7 @@ class InvoiceData:
         """
         return self.__transaction_currency
 
-    def set_transaction_currency(self, transaction_currency: Optional[str]):
+    def set_transaction_currency(self, transaction_currency: Optional[str]) -> None:
         """
         Set method for to transaction_currency
         :param transaction_currency: transaction_currency
@@ -130,7 +135,7 @@ class InvoiceData:
         """
         return self.__over_paid_amount
 
-    def set_over_paid_amount(self, over_paid_amount: Optional[float]):
+    def set_over_paid_amount(self, over_paid_amount: Optional[float]) -> None:
         """
         Set method for to over_paid_amount
         :param over_paid_amount: over_paid_amount
@@ -144,7 +149,7 @@ class InvoiceData:
         """
         return self.__payout_percentage
 
-    def set_payout_percentage(self, payout_percentage: Optional[List[dict]]):
+    def set_payout_percentage(self, payout_percentage: Optional[List[dict]]) -> None:
         """
         Set method for to payout_percentage
         :param payout_percentage: transaction_currency
@@ -158,7 +163,7 @@ class InvoiceData:
         """
         return self.__refund_info
 
-    def set_refund_info(self, refund_info: Optional[RefundInfo]):
+    def set_refund_info(self, refund_info: Optional[RefundInfo]) -> None:
         """
         Set method for to refund_info
         :param refund_info: refund_info

@@ -1,7 +1,10 @@
 """
 Currency
 """
+from typing import Optional
+
 from ..utils.key_utils import change_camel_case_to_snake_case
+from ..utils.model_util import ModelUtil
 
 
 class Currency:
@@ -197,259 +200,181 @@ class Currency:
     __code = None
     __symbol = None
     __precision = None
-    __currently_settled = None
     __name = None
     __plural = None
     __alts = None
     __minimum = None
-    __sanctioned = None
+    __sanctioned = False
     __decimals = None
-    __payout_fields = None
-    __settlement_minimum = None
     __chain = None
-    __tranche_decimals = None
-    __max_supply = None
 
     @classmethod
-    def is_valid(cls, value):
+    def is_valid(cls, value: str) -> bool:
         try:
             return hasattr(Currency(), value)
         except Exception:
             return False
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
+                value = ModelUtil.get_field_value(
+                    key,
+                    value,
+                    {
+                        "precision": "int",
+                        "minimum": "float",
+                        "sanctioned": "bool",
+                        "decimals": "int",
+                    },
+                    {},
+                )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
                 pass
 
-    def get_code(self):
+    def get_code(self) -> Optional[str]:
         """
         Get method for to code
         :return: code
         """
         return self.__code
 
-    def set_code(self, code):
+    def set_code(self, code: Optional[str]) -> None:
         """
         Set method for to code
         :param code: code
         """
         self.__code = code
 
-    def get_symbol(self):
+    def get_symbol(self) -> Optional[str]:
         """
         Get method for to symbol
         :return: symbol
         """
         return self.__symbol
 
-    def set_symbol(self, symbol):
+    def set_symbol(self, symbol: Optional[str]) -> None:
         """
         Set method for to symbol
         :param symbol: symbol
         """
         self.__symbol = symbol
 
-    def get_chain(self):
+    def get_chain(self) -> Optional[str]:
         """
         Get method for to chain
         :return: chain
         """
         return self.__chain
 
-    def set_chain(self, chain):
+    def set_chain(self, chain: Optional[str]) -> None:
         """
         Set method for to chain
         :param chain: chain
         """
         self.__chain = chain
 
-    def get_tranche_decimals(self):
-        """
-        Get method for to tranche_decimals
-        :return: tranche_decimals
-        """
-        return self.__tranche_decimals
-
-    def set_tranche_decimals(self, tranche_decimals):
-        """
-        Set method for to tranche_decimals
-        :param tranche_decimals: tranche_decimals
-        """
-        self.__tranche_decimals = tranche_decimals
-
-    def get_max_supply(self):
-        """
-        Get method for to max_supply
-        :return: max_supply
-        """
-        return self.__max_supply
-
-    def set_max_supply(self, max_supply):
-        """
-        Set method for to max_supply
-        :param max_supply: max_supply
-        """
-        self.__max_supply = max_supply
-
-    def get_precision(self):
+    def get_precision(self) -> Optional[int]:
         """
         Get method for to precision
         :return: precision
         """
         return self.__precision
 
-    def set_precision(self, precision):
+    def set_precision(self, precision: Optional[int]) -> None:
         """
         Set method for to precision
         :param precision: precision
         """
         self.__precision = precision
 
-    def get_currently_settled(self):
-        """
-        Get method for to currently_settled
-        :return: currently_settled
-        """
-        return self.__currently_settled
-
-    def set_currently_settled(self, currently_settled):
-        """
-        Set method for to currently_settled
-        :param currently_settled: currently_settled
-        """
-        self.__currently_settled = currently_settled
-
-    def get_name(self):
+    def get_name(self) -> Optional[str]:
         """
         Get method for to name
         :return: name
         """
         return self.__name
 
-    def set_name(self, name):
+    def set_name(self, name: Optional[str]) -> None:
         """
         Set method for to name
         :param name: name
         """
         self.__name = name
 
-    def get_plural(self):
+    def get_plural(self) -> Optional[str]:
         """
         Get method for to plural
         :return: plural
         """
         return self.__plural
 
-    def set_plural(self, plural):
+    def set_plural(self, plural: Optional[str]) -> None:
         """
         Set method for to plural
         :param plural: plural
         """
         self.__plural = plural
 
-    def get_alts(self):
+    def get_alts(self) -> Optional[str]:
         """
         Get method for to alts
         :return: alts
         """
         return self.__alts
 
-    def set_alts(self, alts):
+    def set_alts(self, alts: Optional[str]) -> None:
         """
         Set method for to alts
         :param alts: alts
         """
         self.__alts = alts
 
-    def get_minimum(self):
+    def get_minimum(self) -> Optional[float]:
         """
         Get method for to minimum
         :return: minimum
         """
         return self.__minimum
 
-    def set_minimum(self, minimum):
+    def set_minimum(self, minimum: Optional[float]) -> None:
         """
         Set method for to minimum
         :param minimum: minimum
         """
         self.__minimum = minimum
 
-    def get_sanctioned(self):
+    def get_sanctioned(self) -> bool:
         """
         Get method for to sanctioned
         :return: sanctioned
         """
         return self.__sanctioned
 
-    def set_sanctioned(self, sanctioned):
+    def set_sanctioned(self, sanctioned: bool) -> None:
         """
         Set method for to sanctioned
         :param sanctioned: sanctioned
         """
         self.__sanctioned = sanctioned
 
-    def get_decimals(self):
+    def get_decimals(self) -> Optional[int]:
         """
         Get method for to decimals
         :return: decimals
         """
         return self.__decimals
 
-    def set_decimals(self, decimals):
+    def set_decimals(self, decimals: Optional[int]) -> None:
         """
         Set method for to decimals
         :param decimals: decimals
         """
         self.__decimals = decimals
 
-    def get_payout_fields(self):
-        """
-        Get method for to payout_fields
-        :return: payout_fields
-        """
-        return self.__payout_fields
-
-    def set_payout_fields(self, payout_fields):
-        """
-        Set method for to payout_fields
-        :param payout_fields: payout_fields
-        """
-        self.__payout_fields = payout_fields
-
-    def get_settlement_minimum(self):
-        """
-        Get method for to settlement_minimum
-        :return: settlement_minimum
-        """
-        return self.__settlement_minimum
-
-    def set_settlement_minimum(self, settlement_minimum):
-        """
-        Set method for to code
-        :param settlement_minimum: settlement_minimum
-        """
-        self.__settlement_minimum = settlement_minimum
-
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """
-        data = {
-            "code": self.get_code(),
-            "symbol": self.get_symbol(),
-            "precision": self.get_precision(),
-            "currentlySettled": self.get_currently_settled(),
-            "name": self.get_name(),
-            "plural": self.get_plural(),
-            "alts": self.get_alts(),
-            "minimum": self.get_minimum(),
-            "sanctioned": self.get_sanctioned(),
-            "decimals": self.get_decimals(),
-            "payoutFields": self.get_payout_fields(),
-            "settlementMinimum": self.get_settlement_minimum(),
-        }
-        return data
+        return ModelUtil.to_json(self)

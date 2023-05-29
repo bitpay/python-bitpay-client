@@ -13,7 +13,7 @@ class WalletQueryException(WalletException):
     __bitpay_code = "BITPAY-WALLET-GET"
     __api_code = ""
 
-    def __init__(self, message, code=183, api_code="000000"):
+    def __init__(self, message: str, code: int = 183, api_code: str = "000000"):
         """
         Construct the WalletQueryException.
 

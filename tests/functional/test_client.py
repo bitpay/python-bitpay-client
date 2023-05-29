@@ -236,7 +236,7 @@ class TestClient:
                "phone": "555-123-456", "dueDate": "2021-5-31", "passProcessingFee": True,
                "items": [item1]}
         )
-        create_bill = self.__client.create_bill(requested_bill, Facade.MERCHANT.name)
+        create_bill = self.__client.create_bill(requested_bill, Facade.MERCHANT)
         bill_id = create_bill.get_id()
 
         get_bill = self.__client.get_bill(bill_id)

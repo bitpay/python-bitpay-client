@@ -17,10 +17,12 @@ class PayoutTransaction:
     __date = None
     __confirmations = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
-                value = ModelUtil.get_field_value(key, value, {"amount": "float", "date": "str"}, {})
+                value = ModelUtil.get_field_value(
+                    key, value, {"amount": "float", "date": "str"}, {}
+                )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
                 pass
@@ -32,7 +34,7 @@ class PayoutTransaction:
         """
         return self.__txid
 
-    def set_txid(self, txid: Optional[str]):
+    def set_txid(self, txid: Optional[str]) -> None:
         """
         Set method for to txid
         :param txid: txid
@@ -46,7 +48,7 @@ class PayoutTransaction:
         """
         return self.__amount
 
-    def set_amount(self, amount: Optional[float]):
+    def set_amount(self, amount: Optional[float]) -> None:
         """
         Set method for to amount
         :param amount: amount
@@ -60,7 +62,7 @@ class PayoutTransaction:
         """
         return self.__confirmations
 
-    def set_confirmations(self, confirmations: Optional[str]):
+    def set_confirmations(self, confirmations: Optional[str]) -> None:
         """
         Set method for to confirmations
         :param confirmations: confirmations
@@ -74,7 +76,7 @@ class PayoutTransaction:
         """
         return self.__date
 
-    def set_date(self, date: Optional[str]):
+    def set_date(self, date: Optional[str]) -> None:
         """
         Set method for to date
         :param date: date

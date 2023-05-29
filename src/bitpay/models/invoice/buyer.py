@@ -24,7 +24,7 @@ class Buyer:
     __notify = False
     __buyer_email = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(key, value, {"notify": "bool"}, {})
@@ -39,7 +39,7 @@ class Buyer:
         """
         return self.__name
 
-    def set_name(self, name: Optional[str]):
+    def set_name(self, name: Optional[str]) -> None:
         """
         Set method for the name
         :param name: name
@@ -53,7 +53,7 @@ class Buyer:
         """
         return self.__buyer_email
 
-    def set_buyer_email(self, buyer_email: Optional[str]):
+    def set_buyer_email(self, buyer_email: Optional[str]) -> None:
         """
         Set method for the buyer_email
         :param buyer_email: buyer_email
@@ -67,7 +67,7 @@ class Buyer:
         """
         return self.__address1
 
-    def set_address1(self, address1: Optional[str]):
+    def set_address1(self, address1: Optional[str]) -> None:
         """
         Set method for the address1
         :param address1: address1
@@ -81,7 +81,7 @@ class Buyer:
         """
         return self.__address2
 
-    def set_address2(self, address2: Optional[str]):
+    def set_address2(self, address2: Optional[str]) -> None:
         """
         Set method for the address2
         :param address2: address2
@@ -95,7 +95,7 @@ class Buyer:
         """
         return self.__locality
 
-    def set_locality(self, locality: Optional[str]):
+    def set_locality(self, locality: Optional[str]) -> None:
         """
         Set method for the locality
         :param locality: locality
@@ -109,7 +109,7 @@ class Buyer:
         """
         return self.__region
 
-    def set_region(self, region: Optional[str]):
+    def set_region(self, region: Optional[str]) -> None:
         """
         Set method for the region
         :param region: region
@@ -123,7 +123,7 @@ class Buyer:
         """
         return self.__postal_code
 
-    def set_postal_code(self, postal_code: Optional[str]):
+    def set_postal_code(self, postal_code: Optional[str]) -> None:
         """
         Set method for the postal_code
         :param postal_code: postal_code
@@ -137,7 +137,7 @@ class Buyer:
         """
         return self.__country
 
-    def set_country(self, country: Optional[str]):
+    def set_country(self, country: Optional[str]) -> None:
         """
         Set method for the country
         :param country: country
@@ -151,7 +151,7 @@ class Buyer:
         """
         return self.__email
 
-    def set_email(self, email: Optional[str]):
+    def set_email(self, email: Optional[str]) -> None:
         """
         Set method for the email
         :param email: email
@@ -165,7 +165,7 @@ class Buyer:
         """
         return self.__phone
 
-    def set_phone(self, phone: Optional[str]):
+    def set_phone(self, phone: Optional[str]) -> None:
         """
         Set method for the phone
         :param phone: phone
@@ -179,7 +179,7 @@ class Buyer:
         """
         return self.__notify
 
-    def set_notify(self, notify: bool = False):
+    def set_notify(self, notify: bool = False) -> None:
         """
         Set method for to notify
         :param notify: notify

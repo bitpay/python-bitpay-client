@@ -15,7 +15,7 @@ class CurrencyQr:
     __type = None
     __collapsed = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(key, value, {"collapsed": "bool"}, {})
@@ -30,7 +30,7 @@ class CurrencyQr:
         """
         return self.__type
 
-    def set_type(self, type: Optional[str]):
+    def set_type(self, type: Optional[str]) -> None:
         """
         Set method for to type
         :param type: type
@@ -44,7 +44,7 @@ class CurrencyQr:
         """
         return self.__collapsed
 
-    def set_collapsed(self, collapsed: Optional[bool]):
+    def set_collapsed(self, collapsed: Optional[bool]) -> None:
         """
         Set method for to collapsed
         :param collapsed: collapsed

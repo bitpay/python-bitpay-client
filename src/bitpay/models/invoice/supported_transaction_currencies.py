@@ -1,7 +1,7 @@
 """
 SupportedTransactionCurrencies
 """
-from typing import Optional
+from typing import Optional, Dict, Any
 
 from .supported_transaction_currency import SupportedTransactionCurrency
 from ...utils.model_util import ModelUtil
@@ -23,7 +23,7 @@ class SupportedTransactionCurrencies:
     __doge = SupportedTransactionCurrency()
     __ltc = SupportedTransactionCurrency()
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Dict[str, Any]) -> None:
         for key, value in kwargs.items():
             try:
                 if key in [
@@ -39,7 +39,8 @@ class SupportedTransactionCurrencies:
                     "LTC",
                 ]:
                     if not isinstance(value, SupportedTransactionCurrency):
-                        value = SupportedTransactionCurrency(**value)
+                        value = dict(value)
+                        value = SupportedTransactionCurrency(**value)  # type: ignore
                 getattr(self, "set_%s" % key.lower())(value)
             except AttributeError:
                 pass
@@ -51,7 +52,7 @@ class SupportedTransactionCurrencies:
         """
         return self.__btc
 
-    def set_btc(self, btc: SupportedTransactionCurrency):
+    def set_btc(self, btc: SupportedTransactionCurrency) -> None:
         """
         Set method for to btc
         :param btc: btc
@@ -65,7 +66,7 @@ class SupportedTransactionCurrencies:
         """
         return self.__bch
 
-    def set_bch(self, bch: SupportedTransactionCurrency):
+    def set_bch(self, bch: SupportedTransactionCurrency) -> None:
         """
         Set method for to bch
         :param bch: bch
@@ -79,7 +80,7 @@ class SupportedTransactionCurrencies:
         """
         return self.__eth
 
-    def set_eth(self, eth: SupportedTransactionCurrency):
+    def set_eth(self, eth: SupportedTransactionCurrency) -> None:
         """
         Set method for to eth
         :param eth: eth
@@ -93,7 +94,7 @@ class SupportedTransactionCurrencies:
         """
         return self.__usdc
 
-    def set_usdc(self, usdc: SupportedTransactionCurrency):
+    def set_usdc(self, usdc: SupportedTransactionCurrency) -> None:
         """
         Set method for to usdc
         :param usdc: usdc
@@ -107,7 +108,7 @@ class SupportedTransactionCurrencies:
         """
         return self.__gusd
 
-    def set_gusd(self, gusd: SupportedTransactionCurrency):
+    def set_gusd(self, gusd: SupportedTransactionCurrency) -> None:
         """
         Set method for to gusd
         :param gusd: gusd
@@ -121,10 +122,10 @@ class SupportedTransactionCurrencies:
         """
         return self.__busd
 
-    def set_busd(self, busd: SupportedTransactionCurrency):
+    def set_busd(self, busd: SupportedTransactionCurrency) -> None:
         """
         Set method for to busd
-        :param user: busd
+        :param busd: busd
         """
         self.__busd = busd
 
@@ -135,7 +136,7 @@ class SupportedTransactionCurrencies:
         """
         return self.__pax
 
-    def set_pax(self, pax: SupportedTransactionCurrency):
+    def set_pax(self, pax: SupportedTransactionCurrency) -> None:
         """
         Set method for to pax
         :param pax: pax
@@ -149,7 +150,7 @@ class SupportedTransactionCurrencies:
         """
         return self.__xrp
 
-    def set_xrp(self, xrp: SupportedTransactionCurrency):
+    def set_xrp(self, xrp: SupportedTransactionCurrency) -> None:
         """
         Set method for to xrp
         :param xrp: xrp
@@ -163,7 +164,7 @@ class SupportedTransactionCurrencies:
         """
         return self.__doge
 
-    def set_doge(self, doge: SupportedTransactionCurrency):
+    def set_doge(self, doge: SupportedTransactionCurrency) -> None:
         """
         Set method for to doge
         :param doge: doge
@@ -177,14 +178,14 @@ class SupportedTransactionCurrencies:
         """
         return self.__ltc
 
-    def set_ltc(self, ltc: SupportedTransactionCurrency):
+    def set_ltc(self, ltc: SupportedTransactionCurrency) -> None:
         """
         Set method for to ltc
         :param ltc: ltc
         """
         self.__ltc = ltc
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

@@ -5,25 +5,22 @@ from bitpay.models.facade import Facade
 
 
 class TokenContainer:
-    __data__: Dict[Facade, str] = {}
+    __data: Dict[Facade, str] = {}
 
-    def get_access_token(self, facade):
-        if not isinstance(facade, Facade):
-            raise BitPayException("Wrong facade")
-
+    def get_access_token(self, facade: Facade) -> str:
         try:
-            return self.__data__[facade]
+            return self.__data[facade]
         except Exception as exe:
             raise BitPayException("There is no token for the specified key: ", str(exe))
 
-    def put(self, key, value):
-        self.__data__[key] = value
+    def put(self, key: Facade, value: str) -> None:
+        self.__data[key] = value
 
-    def add_pos(self, token):
-        self.__data__[Facade.POS] = token
+    def add_pos(self, token: str) -> None:
+        self.__data[Facade.POS] = token
 
-    def add_merchant(self, token):
-        self.__data__[Facade.MERCHANT] = token
+    def add_merchant(self, token: str) -> None:
+        self.__data[Facade.MERCHANT] = token
 
-    def add_payout(self, token):
-        self.__data__[Facade.PAYOUT] = token
+    def add_payout(self, token: str) -> None:
+        self.__data[Facade.PAYOUT] = token

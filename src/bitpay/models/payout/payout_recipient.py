@@ -23,11 +23,11 @@ class PayoutRecipient:
     __token = None
     __guid = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 if key == "notificationURL":
-                    self.set_notification_url(value)
+                    self.set_notification_url(str(value))
                 else:
                     getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(
                         value
@@ -42,7 +42,7 @@ class PayoutRecipient:
         """
         return self.__email
 
-    def set_email(self, email: Optional[str]):
+    def set_email(self, email: Optional[str]) -> None:
         """
         Set method for to email
         :param email: email
@@ -56,7 +56,7 @@ class PayoutRecipient:
         """
         return self.__data
 
-    def set_data(self, data: Optional[str]):
+    def set_data(self, data: Optional[str]) -> None:
         """
         Set method for to data
         :param data: data
@@ -70,7 +70,7 @@ class PayoutRecipient:
         """
         return self.__label
 
-    def set_label(self, label: Optional[str]):
+    def set_label(self, label: Optional[str]) -> None:
         """
         Set method for to label
         :param label: label
@@ -84,7 +84,7 @@ class PayoutRecipient:
         """
         return self.__notification_url
 
-    def set_notification_url(self, notification_url: Optional[str]):
+    def set_notification_url(self, notification_url: Optional[str]) -> None:
         """
         Set method for to notification_url
         :param notification_url: notification_url
@@ -98,7 +98,7 @@ class PayoutRecipient:
         """
         return self.__status
 
-    def set_status(self, status: Optional[str]):
+    def set_status(self, status: Optional[str]) -> None:
         """
         Set method for status
         :param status: status
@@ -112,7 +112,7 @@ class PayoutRecipient:
         """
         return self.__id
 
-    def set_id(self, id: Optional[str]):
+    def set_id(self, id: Optional[str]) -> None:
         """
         Set method for id
         :param id: id
@@ -126,7 +126,7 @@ class PayoutRecipient:
         """
         return self.__shopper_id
 
-    def set_shopper_id(self, shopper_id: Optional[str]):
+    def set_shopper_id(self, shopper_id: Optional[str]) -> None:
         """
         Set method for to shopper_id
         :param shopper_id: shopper_id
@@ -140,7 +140,7 @@ class PayoutRecipient:
         """
         return self.__token
 
-    def set_token(self, token: Optional[str]):
+    def set_token(self, token: Optional[str]) -> None:
         """
         Set method for to token
         :param token: token
@@ -154,7 +154,7 @@ class PayoutRecipient:
         """
         return self.__guid
 
-    def set_guid(self, value: Optional[str]):
+    def set_guid(self, value: Optional[str]) -> None:
         """
         Sets guid.
         :param value: guid

@@ -164,7 +164,7 @@ def test_create_invoice_by_merchant(mocker):
     client = init_client(mocker, bitpay_client)
 
     # act
-    result = client.create_invoice(get_example_invoice(), Facade.MERCHANT.value, True)
+    result = client.create_invoice(get_example_invoice(), Facade.MERCHANT, True)
 
     # assert
     assert result.get_order_id() == "026184kc-d001-41j9-9732d-bb249u7b0c24"
@@ -200,7 +200,7 @@ def test_create_invoice_by_pos(mocker):
     client = Client(bitpay_client, token_container, get_guid_generator(mocker))
 
     # act
-    result = client.create_invoice(get_example_invoice(), Facade.POS.value, False)
+    result = client.create_invoice(get_example_invoice(), Facade.POS, False)
 
     # assert
     assert result.get_order_id() == "026184kc-d001-41j9-9732d-bb249u7b0c24"
@@ -221,7 +221,7 @@ def test_get_invoice_by_merchant(mocker):
     client = init_client(mocker, bitpay_client)
 
     # act
-    result = client.get_invoice(invoice_id, Facade.MERCHANT.name)
+    result = client.get_invoice(invoice_id, Facade.MERCHANT)
 
     # assert
     assert result.get_guid() == guid_token
@@ -245,7 +245,7 @@ def test_get_invoice_by_pos(mocker):
     client = Client(bitpay_client, token_container, get_guid_generator(mocker))
 
     # act
-    result = client.get_invoice(invoice_id, Facade.POS.name, False)
+    result = client.get_invoice(invoice_id, Facade.POS, False)
 
     # assert
     assert result.get_guid() == guid_token
@@ -266,7 +266,7 @@ def test_get_invoice_by_guid(mocker):
     client = init_client(mocker, bitpay_client)
 
     # act
-    result = client.get_invoice_by_guid(guid_token, Facade.MERCHANT.name)
+    result = client.get_invoice_by_guid(guid_token, Facade.MERCHANT)
 
     # assert
     assert result.get_guid() == guid_token
@@ -684,7 +684,7 @@ def test_create_bill_by_pos_facade(mocker):
     client = Client(bitpay_client, token_container, get_guid_generator(mocker))
 
     # act
-    result = client.create_bill(bill, Facade.POS.name, False)
+    result = client.create_bill(bill, Facade.POS, False)
 
     # assert
     assert result.get_status() == "draft"
@@ -732,7 +732,7 @@ def test_get_bill_by_pos_facade(mocker):
     client = Client(bitpay_client, token_container, get_guid_generator(mocker))
 
     # act
-    result = client.get_bill(bill_id, Facade.POS.name, False)
+    result = client.get_bill(bill_id, Facade.POS, False)
 
     # assert
     assert result.get_status() == "draft"

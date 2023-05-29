@@ -13,7 +13,7 @@ class PayoutCancellationException(PayoutException):
     __bitpay_code = "BITPAY-PAYOUT-CANCEL"
     __api_code = ""
 
-    def __init__(self, message, code=124, api_code="000000"):
+    def __init__(self, message: str, code: int = 124, api_code: str = "000000"):
         """
         Construct the PayoutCancellationException.
 

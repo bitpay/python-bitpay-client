@@ -14,7 +14,7 @@ class LedgerException(BitPayException):
     __bitpay_code = "BITPAY-LEDGER-GENERIC"
     __api_code = ""
 
-    def __init__(self, message="", code=131, api_code="000000"):
+    def __init__(self, message: str = "", code: int = 131, api_code: str = "000000"):
         """
         Construct the LedgerException.
 

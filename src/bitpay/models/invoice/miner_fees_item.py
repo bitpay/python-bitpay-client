@@ -19,11 +19,18 @@ class MinerFeesItem:
     __total_fee = None
     __fiat_amount = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(
-                    key, value, {"satoshisPerByte": "float", "totalFee": "float", "fiatAmount": "float"}, {}
+                    key,
+                    value,
+                    {
+                        "satoshisPerByte": "float",
+                        "totalFee": "float",
+                        "fiatAmount": "float",
+                    },
+                    {},
                 )
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
             except AttributeError:
@@ -36,7 +43,7 @@ class MinerFeesItem:
         """
         return self.__satoshis_per_byte
 
-    def set_satoshis_per_byte(self, satoshis_per_byte: Optional[float]):
+    def set_satoshis_per_byte(self, satoshis_per_byte: Optional[float]) -> None:
         """
         Set method for the satoshis_per_byte
         :param satoshis_per_byte: satoshis_per_byte
@@ -50,7 +57,7 @@ class MinerFeesItem:
         """
         return self.__total_fee
 
-    def set_total_fee(self, total_fee: Optional[float]):
+    def set_total_fee(self, total_fee: Optional[float]) -> None:
         """
         Set method for the total_fee
         :param total_fee: total_fee
@@ -64,14 +71,14 @@ class MinerFeesItem:
         """
         return self.__fiat_amount
 
-    def set_fiat_amount(self, fiat_amount: Optional[float]):
+    def set_fiat_amount(self, fiat_amount: Optional[float]) -> None:
         """
         Set method for the fiat_amount
         :param fiat_amount: fiat_amount
         """
         self.__fiat_amount = fiat_amount
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from bitpay.clients.bitpay_client import BitPayClient
 from bitpay.exceptions.bitpay_exception import BitPayException
@@ -76,12 +76,12 @@ class PayoutClient:
 
     def get_payouts(
         self,
-        start_date: str = None,
-        end_date: str = None,
-        status: str = None,
-        reference: str = None,
-        limit: int = None,
-        offset: int = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        status: Optional[str] = None,
+        reference: Optional[str] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
     ) -> List[Payout]:
         """
         Retrieve a collection of BitPay payouts.

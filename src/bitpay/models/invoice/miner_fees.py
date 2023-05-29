@@ -1,7 +1,7 @@
 """
 MinerFees
 """
-from typing import Optional
+from typing import Optional, Any
 
 from .miner_fees_item import MinerFeesItem
 from ...utils.model_util import ModelUtil
@@ -26,7 +26,7 @@ class MinerFees:
     __busd = MinerFeesItem()
     __xrp = MinerFeesItem()
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         for key, value in kwargs.items():
             try:
                 if not isinstance(value, MinerFeesItem):
@@ -42,7 +42,7 @@ class MinerFees:
         """
         return self.__btc
 
-    def set_btc(self, btc: MinerFeesItem):
+    def set_btc(self, btc: MinerFeesItem) -> None:
         """
         Set method for the btc
         :param btc: btc
@@ -56,7 +56,7 @@ class MinerFees:
         """
         return self.__bch
 
-    def set_bch(self, bch: MinerFeesItem):
+    def set_bch(self, bch: MinerFeesItem) -> None:
         """
         Set method for the bch
         :param bch: bch
@@ -70,7 +70,7 @@ class MinerFees:
         """
         return self.__eth
 
-    def set_eth(self, eth: MinerFeesItem):
+    def set_eth(self, eth: MinerFeesItem) -> None:
         """
         Set method for the eth
         :param eth: eth
@@ -84,7 +84,7 @@ class MinerFees:
         """
         return self.__usdc
 
-    def set_usdc(self, usdc: MinerFeesItem):
+    def set_usdc(self, usdc: MinerFeesItem) -> None:
         """
         Set method for the usdc
         :param usdc: usdc
@@ -98,7 +98,7 @@ class MinerFees:
         """
         return self.__gusd
 
-    def set_gusd(self, gusd: MinerFeesItem):
+    def set_gusd(self, gusd: MinerFeesItem) -> None:
         """
         Set method for the gusd
         :param gusd: gusd
@@ -112,7 +112,7 @@ class MinerFees:
         """
         return self.__doge
 
-    def set_doge(self, doge: MinerFeesItem):
+    def set_doge(self, doge: MinerFeesItem) -> None:
         """
         Set method for the doge
         :param doge: doge
@@ -126,7 +126,7 @@ class MinerFees:
         """
         return self.__ltc
 
-    def set_ltc(self, ltc: MinerFeesItem):
+    def set_ltc(self, ltc: MinerFeesItem) -> None:
         """
         Set method for the ltc
         :param ltc: ltc
@@ -140,7 +140,7 @@ class MinerFees:
         """
         return self.__pax
 
-    def set_pax(self, pax: MinerFeesItem):
+    def set_pax(self, pax: MinerFeesItem) -> None:
         """
         Set method for the pax
         :param pax: pax
@@ -154,7 +154,7 @@ class MinerFees:
         """
         return self.__busd
 
-    def set_busd(self, busd: MinerFeesItem):
+    def set_busd(self, busd: MinerFeesItem) -> None:
         """
         Set method for the busd
         :param busd: busd
@@ -168,7 +168,7 @@ class MinerFees:
         """
         return self.__xrp
 
-    def set_xrp(self, xrp: MinerFeesItem):
+    def set_xrp(self, xrp: MinerFeesItem) -> None:
         """
         Set method for the xrp
         :param xrp: xrp

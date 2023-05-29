@@ -15,7 +15,7 @@ class Ledger:
     __currency = None
     __balance = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict):
         for key, value in kwargs.items():
             try:
                 value = ModelUtil.get_field_value(key, value, {"balance": "float"}, {})
@@ -30,7 +30,7 @@ class Ledger:
         """
         return self.__currency
 
-    def set_currency(self, currency: Optional[str]):
+    def set_currency(self, currency: Optional[str]) -> None:
         """
         Set method for to currency
         :param currency: currency
@@ -44,14 +44,14 @@ class Ledger:
         """
         return self.__balance
 
-    def set_balance(self, balance: Optional[float]):
+    def set_balance(self, balance: Optional[float]) -> None:
         """
         Set method for to balance
         :param balance: balance
         """
         self.__balance = balance
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """

@@ -23,7 +23,7 @@ class Buyer:
     __phone = None
     __notify = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
             try:
                 getattr(self, "set_%s" % change_camel_case_to_snake_case(key))(value)
@@ -37,7 +37,7 @@ class Buyer:
         """
         return self.__name
 
-    def set_name(self, name: Optional[str]):
+    def set_name(self, name: Optional[str]) -> None:
         """
         Set method for to name
         :param name: name
@@ -51,7 +51,7 @@ class Buyer:
         """
         return self.__address1
 
-    def set_address1(self, address1: Optional[str]):
+    def set_address1(self, address1: Optional[str]) -> None:
         """
         Set method for to address1
         :param address1: address1
@@ -65,7 +65,7 @@ class Buyer:
         """
         return self.__address2
 
-    def set_address2(self, address2: Optional[str]):
+    def set_address2(self, address2: Optional[str]) -> None:
         """
         Set method for to address2
         :param address2: address2
@@ -79,7 +79,7 @@ class Buyer:
         """
         return self.__city
 
-    def set_city(self, city: Optional[str]):
+    def set_city(self, city: Optional[str]) -> None:
         """
         Set method for to city
         :param city: city
@@ -93,7 +93,7 @@ class Buyer:
         """
         return self.__state
 
-    def set_state(self, state: Optional[str]):
+    def set_state(self, state: Optional[str]) -> None:
         """
         Set method for to state
         :param state: state
@@ -107,7 +107,7 @@ class Buyer:
         """
         return self.__zip
 
-    def set_zip(self, zip: Optional[str]):
+    def set_zip(self, zip: Optional[str]) -> None:
         """
         Set method for to zip
         :param zip: zip
@@ -121,7 +121,7 @@ class Buyer:
         """
         return self.__country
 
-    def set_country(self, country: Optional[str]):
+    def set_country(self, country: Optional[str]) -> None:
         """
         Set method for to country
         :param country: country
@@ -135,7 +135,7 @@ class Buyer:
         """
         return self.__email
 
-    def set_email(self, email: Optional[str]):
+    def set_email(self, email: Optional[str]) -> None:
         """
         Set method for to email
         :param email: email
@@ -149,7 +149,7 @@ class Buyer:
         """
         return self.__phone
 
-    def set_phone(self, phone: Optional[str]):
+    def set_phone(self, phone: Optional[str]) -> None:
         """
         Set method for to phone
         :param phone: phone
@@ -163,7 +163,7 @@ class Buyer:
         """
         return self.__notify
 
-    def set_notify(self, notify: Optional[str]):
+    def set_notify(self, notify: Optional[str]) -> None:
         """
         Set method for to notify
         :param notify: notify
