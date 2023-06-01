@@ -29,6 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           pipenv install --dev
+          pipenv run pip3 install typing-extensions
       - name: Run code formatter
         run: pipenv run black src/
       - name: Run static analysis
@@ -37,4 +38,3 @@ jobs:
           pipenv run mypy -p src
       - name: Run unit tests
         run: pipenv run pytest -vv -s -m unit
-
