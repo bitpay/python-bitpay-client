@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+  push:
+    branches-ignore:
+      - 'master'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+        matrix:
+          python-version: [3.7, 3.8, 3.9, 3.10.11, 3.11]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pipenv
+        run: |
+          pip3 install pipenv
+          pip3 install --upgrade pip
+      - name: Install dependencies
+        run: |
+          pipenv install --dev
+      - name: Run code formatter
+        run: pipenv run black src/
+      - name: Run static analysis
+        run: |
+          pipenv run mypy --install-types --non-interactive src/
+          pipenv run mypy -p src
+      - name: Run unit tests
+        run: pipenv run pytest -vv -s -m unit
+
