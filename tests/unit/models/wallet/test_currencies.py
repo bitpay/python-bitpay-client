@@ -10,7 +10,9 @@ def test_constructor():
     pay_pro = True
     qr = CurrencyQr()
     wallet_connect = True
-    currencies = Currencies(**{"code": code, "payPro": pay_pro, "qr": qr, "walletConnect": wallet_connect})
+    currencies = Currencies(
+        **{"code": code, "payPro": pay_pro, "qr": qr, "walletConnect": wallet_connect}
+    )
 
     assert code == currencies.get_code()
     assert pay_pro == currencies.get_pay_pro()

@@ -7,8 +7,12 @@ from bitpay.models.invoice.buyer import Buyer
 from bitpay.models.invoice.buyer_provided_info import BuyerProvidedInfo
 from bitpay.models.invoice.invoice import Invoice
 from bitpay.models.invoice.itemized_details import ItemizedDetails
-from bitpay.models.invoice.supported_transaction_currencies import SupportedTransactionCurrencies
-from bitpay.models.invoice.supported_transaction_currency import SupportedTransactionCurrency
+from bitpay.models.invoice.supported_transaction_currencies import (
+    SupportedTransactionCurrencies,
+)
+from bitpay.models.invoice.supported_transaction_currency import (
+    SupportedTransactionCurrency,
+)
 from bitpay.utils.model_util import ModelUtil
 
 
@@ -30,7 +34,9 @@ def test_from_model():
     invoice.set_supported_transaction_currencies(supported_transaction_currencies)
 
     result = ModelUtil.to_json(invoice)
-    with open(os.path.abspath(os.path.dirname(__file__)) + '/invoice_model.json', 'r') as file:
+    with open(
+        os.path.abspath(os.path.dirname(__file__)) + "/invoice_model.json", "r"
+    ) as file:
         expected_result = json.load(file)
 
     assert result == expected_result
@@ -50,10 +56,19 @@ def test_get_field_value():
     dict_value = {"name": "Marcin"}
     object_value = BuyerProvidedInfo()
 
-    args = {"underpaidAmount": float_value, "amountPaid": to_convert_float, "acceptanceWindow": int_value,
-            "targetConfirmations": to_convert_int, "physical": bool_value, "isCancelled": to_convert_bool,
-            "buyer": dict_value, "buyerProvidedInfo": object_value, "paymentCurrencies": to_convert_list_strings,
-            "paymentSubtotals": list_dict_values, "itemizedDetails": to_convert_list_objects}
+    args = {
+        "underpaidAmount": float_value,
+        "amountPaid": to_convert_float,
+        "acceptanceWindow": int_value,
+        "targetConfirmations": to_convert_int,
+        "physical": bool_value,
+        "isCancelled": to_convert_bool,
+        "buyer": dict_value,
+        "buyerProvidedInfo": object_value,
+        "paymentCurrencies": to_convert_list_strings,
+        "paymentSubtotals": list_dict_values,
+        "itemizedDetails": to_convert_list_objects,
+    }
 
     invoice = Invoice(11.12, "USD", **args)
 

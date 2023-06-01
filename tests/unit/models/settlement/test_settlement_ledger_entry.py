@@ -10,8 +10,14 @@ def test_constructor():
     amount = 12.34
     description = "someDescription"
     invoice_data = InvoiceData()
-    settlement_ledger_entry = SettlementLedgerEntry(**{"invoice_id": invoice_id, "amount": amount,
-                                                       "description": description, "invoiceData": invoice_data})
+    settlement_ledger_entry = SettlementLedgerEntry(
+        **{
+            "invoice_id": invoice_id,
+            "amount": amount,
+            "description": description,
+            "invoiceData": invoice_data,
+        }
+    )
 
     assert invoice_id == settlement_ledger_entry.get_invoice_id()
     assert amount == settlement_ledger_entry.get_amount()
@@ -83,4 +89,3 @@ def test_modify_invoice_data():
     settlement_ledger_entry.set_invoice_data(value)
 
     assert value == settlement_ledger_entry.get_invoice_data()
-

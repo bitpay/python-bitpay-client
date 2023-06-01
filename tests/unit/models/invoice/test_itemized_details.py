@@ -8,7 +8,9 @@ def test_constructor():
     amount = 12.45
     description = "someDescription"
     is_fee = True
-    itemized_details = ItemizedDetails(**{"amount": amount, "description": description, "isFee": is_fee})
+    itemized_details = ItemizedDetails(
+        **{"amount": amount, "description": description, "isFee": is_fee}
+    )
 
     assert amount == itemized_details.get_amount()
     assert description == itemized_details.get_description()

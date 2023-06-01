@@ -67,5 +67,3 @@ def test_modify_bank_country():
     withholdings.set_bank_country(value)
 
     assert withholdings.get_bank_country() == value
-
-

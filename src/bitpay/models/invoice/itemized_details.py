@@ -3,8 +3,8 @@ ItemizedDetails
 """
 from typing import Optional
 
-from ...utils import key_utils
-from ...utils.model_util import ModelUtil
+from bitpay.utils import key_utils
+from bitpay.utils.model_util import ModelUtil
 
 
 class ItemizedDetails:

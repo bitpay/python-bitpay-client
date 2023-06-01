@@ -13,8 +13,14 @@ def test_constructor():
     payout_info = PayoutInfo()
     withholdings = [WithHoldings()]
 
-    settlement = Settlement(**{"accountId": account_id, "currency": currency, "payoutInfo": payout_info,
-                               "withholdings": withholdings})
+    settlement = Settlement(
+        **{
+            "accountId": account_id,
+            "currency": currency,
+            "payoutInfo": payout_info,
+            "withholdings": withholdings,
+        }
+    )
 
     assert settlement.get_account_id() == account_id
     assert settlement.get_currency() == currency
@@ -179,6 +185,3 @@ def test_modify_token():
     settlement.set_token(value)
 
     assert settlement.get_token()
-
-
-

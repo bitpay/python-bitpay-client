@@ -4,10 +4,10 @@ Bill
 from typing import List, Optional
 
 from .item import Item
-from ..currency import Currency
-from ...exceptions.bitpay_exception import BitPayException
-from ...utils.key_utils import change_camel_case_to_snake_case
-from ...utils.model_util import ModelUtil
+from bitpay.models.currency import Currency
+from bitpay.exceptions.bitpay_exception import BitPayException
+from bitpay.utils.key_utils import change_camel_case_to_snake_case
+from bitpay.utils.model_util import ModelUtil
 
 
 class Bill:

@@ -4,8 +4,8 @@ PayoutRecipients
 from typing import Optional, List
 
 from .payout_recipient import PayoutRecipient
-from ...utils.key_utils import change_camel_case_to_snake_case
-from ...utils.model_util import ModelUtil
+from bitpay.utils.key_utils import change_camel_case_to_snake_case
+from bitpay.utils.model_util import ModelUtil
 
 
 class PayoutRecipients:

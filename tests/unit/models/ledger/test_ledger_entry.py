@@ -10,7 +10,9 @@ def test_constructor():
     currency = "USD"
     buyer_city = "Rzeszow"
     buyer_fields = Buyer(**{"city": buyer_city})
-    ledger_entry = LedgerEntry(**{"type": type, "currency": currency, "buyerFields": buyer_fields})
+    ledger_entry = LedgerEntry(
+        **{"type": type, "currency": currency, "buyerFields": buyer_fields}
+    )
 
     assert type == ledger_entry.get_type()
     assert currency == ledger_entry.get_currency()
@@ -150,5 +152,3 @@ def test_modify_transaction_currency():
     ledger_entry.set_transaction_currency(value)
 
     assert value == ledger_entry.get_transaction_currency()
-
-

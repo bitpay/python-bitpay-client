@@ -4,7 +4,7 @@ SupportedTransactionCurrencies
 from typing import Optional, Dict, Any
 
 from .supported_transaction_currency import SupportedTransactionCurrency
-from ...utils.model_util import ModelUtil
+from bitpay.utils.model_util import ModelUtil
 
 
 class SupportedTransactionCurrencies:

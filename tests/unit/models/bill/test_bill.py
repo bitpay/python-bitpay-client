@@ -9,7 +9,12 @@ def test_constructor():
     city = "Rzeszow"
     country = "PL"
     items = [Item()]
-    bill = Bill("bill1234-ABCD", "USD", "some@email.com", **{"city": city, "country": country, "items": items})
+    bill = Bill(
+        "bill1234-ABCD",
+        "USD",
+        "some@email.com",
+        **{"city": city, "country": country, "items": items}
+    )
 
     assert city == bill.get_city()
     assert country == bill.get_country()
@@ -21,7 +26,12 @@ def test_to_json():
     city = "Rzeszow"
     country = "PL"
     items = [Item()]
-    bill = Bill("bill1234-ABCD", "USD", "some@email.com", **{"city": city, "country": country, "items": items})
+    bill = Bill(
+        "bill1234-ABCD",
+        "USD",
+        "some@email.com",
+        **{"city": city, "country": country, "items": items}
+    )
     to_json = bill.to_json()
 
     assert city == to_json.get("city")
@@ -34,7 +44,7 @@ def test_modify_address1():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_address1(value)
-    
+
     assert value == bill.get_address1()
 
 
@@ -43,7 +53,7 @@ def test_modify_address2():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_address2(value)
-    
+
     assert value == bill.get_address2()
 
 
@@ -52,7 +62,7 @@ def test_modify_cc():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = ["someValue"]
     bill.set_cc(value)
-    
+
     assert value == bill.get_cc()
 
 
@@ -61,7 +71,7 @@ def test_modify_city():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_city(value)
-    
+
     assert value == bill.get_city()
 
 
@@ -70,7 +80,7 @@ def test_modify_country():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_country(value)
-    
+
     assert value == bill.get_country()
 
 
@@ -79,7 +89,7 @@ def test_modify_created_date():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_created_date(value)
-    
+
     assert value == bill.get_created_date()
 
 
@@ -88,7 +98,7 @@ def test_modify_currency():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "BCH"
     bill.set_currency(value)
-    
+
     assert value == bill.get_currency()
 
 
@@ -97,7 +107,7 @@ def test_modify_due_date():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_due_date(value)
-    
+
     assert value == bill.get_due_date()
 
 
@@ -106,7 +116,7 @@ def test_modify_email():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_email(value)
-    
+
     assert value == bill.get_email()
 
 
@@ -115,7 +125,7 @@ def test_modify_email():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "some@email.com"
     bill.set_email_bill(value)
-    
+
     assert value == bill.get_email()
 
 
@@ -124,7 +134,7 @@ def test_modify_id():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_id(value)
-    
+
     assert value == bill.get_id()
 
 
@@ -133,7 +143,7 @@ def test_modify_items():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = [Item()]
     bill.set_items(value)
-    
+
     assert value == bill.get_items()
 
 
@@ -142,7 +152,7 @@ def test_modify_merchant():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_merchant(value)
-    
+
     assert value == bill.get_merchant()
 
 
@@ -151,7 +161,7 @@ def test_modify_name():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_name(value)
-    
+
     assert value == bill.get_name()
 
 
@@ -160,7 +170,7 @@ def test_modify_number():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_number(value)
-    
+
     assert value == bill.get_number()
 
 
@@ -169,7 +179,7 @@ def test_modify_pass_processing_fee():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = False
     bill.set_pass_processing_fee(value)
-    
+
     assert value == bill.get_pass_processing_fee()
 
 
@@ -178,7 +188,7 @@ def test_modify_phone():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_phone(value)
-    
+
     assert value == bill.get_phone()
 
 
@@ -187,7 +197,7 @@ def test_modify_state():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_state(value)
-    
+
     assert value == bill.get_state()
 
 
@@ -196,7 +206,7 @@ def test_modify_status():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_status(value)
-    
+
     assert value == bill.get_status()
 
 
@@ -205,7 +215,7 @@ def test_modify_token():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_token(value)
-    
+
     assert value == bill.get_token()
 
 
@@ -214,7 +224,7 @@ def test_modify_url():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_url(value)
-    
+
     assert value == bill.get_url()
 
 
@@ -223,5 +233,5 @@ def test_modify_zip():
     bill = Bill("bill1234-ABCD", "USD", "some@email.com")
     value = "someValue"
     bill.set_zip(value)
-    
+
     assert value == bill.get_zip()

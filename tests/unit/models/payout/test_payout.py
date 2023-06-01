@@ -12,8 +12,16 @@ def test_constructor():
     account = "1234"
     notification_url = "https://url.com"
     transactions = [PayoutTransaction()]
-    payout = Payout(amount, currency, ledger_currency, **{"notificationURL": notification_url, "account": account,
-                                                          "transactions": transactions})
+    payout = Payout(
+        amount,
+        currency,
+        ledger_currency,
+        **{
+            "notificationURL": notification_url,
+            "account": account,
+            "transactions": transactions,
+        }
+    )
 
     assert amount == payout.get_amount()
     assert currency == payout.get_currency()
@@ -226,4 +234,3 @@ def test_modify_account_id():
     payout.set_account_id(value)
 
     assert value == payout.get_account_id()
-

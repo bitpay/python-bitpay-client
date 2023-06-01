@@ -29,4 +29,3 @@ def test_modify_balance():
     ledger.set_balance(value)
 
     assert value == ledger.get_balance()
-

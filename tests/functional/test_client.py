@@ -23,6 +23,7 @@ class TestClient:
     to "email.txt" file in this directory. It's required for submit requests.
     It's impossible to test settlements in test environment.
     """
+
     __client = None
     __email = None
 
@@ -31,16 +32,20 @@ class TestClient:
         current_directory = os.path.dirname(__file__)
         file_path = os.path.join(current_directory, "email.txt")
         try:
-            with open(file_path, 'r') as file:
+            with open(file_path, "r") as file:
                 cls.__email = file.read()
         except Exception as exe:
-            raise Exception("Please create in this directory email.txt according with class description")
+            raise Exception(
+                "Please create in this directory email.txt according with class description"
+            )
         if cls.__email == "":
             raise Exception("Please fill correct email")
 
         config_path = os.path.join(current_directory, "bitpay.config.json")
         if not os.path.exists(config_path):
-            raise Exception("Please create in this directory bitpay.config.json for functional tests")
+            raise Exception(
+                "Please create in this directory bitpay.config.json for functional tests"
+            )
         cls.__client = Client.create_client_by_config_file_path(config_path)
 
     def example_invoice(self) -> Invoice:
@@ -103,8 +108,7 @@ class TestClient:
         assert invoice_token == invoice_get_by_guid.get_token()
 
         invoices = self.__client.get_invoices(
-            TestClient.yesterday_date(),
-            TestClient.tomorrow_date()
+            TestClient.yesterday_date(), TestClient.tomorrow_date()
         )
         assert len(invoices) > 0
         assert any(i.get_token() == invoice_token for i in invoices) is True
@@ -123,7 +127,9 @@ class TestClient:
         assert cancel_invoice.get_is_cancelled() is True
 
         invoice_to_cancel_by_guid = self.__client.create_invoice(self.example_invoice())
-        cancel_invoice_by_guid = self.__client.cancel_invoice_by_guid(invoice_to_cancel_by_guid.get_guid())
+        cancel_invoice_by_guid = self.__client.cancel_invoice_by_guid(
+            invoice_to_cancel_by_guid.get_guid()
+        )
         assert cancel_invoice_by_guid.get_is_cancelled() is True
 
     @pytest.mark.functional
@@ -132,7 +138,7 @@ class TestClient:
         invoice_id = invoice.get_id()
         self.__client.pay_invoice(invoice_id)
 
-        refund = self.__client.create_refund(invoice_id,10.0)
+        refund = self.__client.create_refund(invoice_id, 10.0)
         refund_id = refund.get_id()
 
         retrieve_refund = self.__client.get_refund(refund_id)
@@ -154,8 +160,12 @@ class TestClient:
         assert "canceled" == retrieve_refund_after_canceled.get_status()
 
         refund_to_cancel_by_guid = self.__client.create_refund(invoice_id, 10.0)
-        cancel_by_guid = self.__client.cancel_refund_by_guid(refund_to_cancel_by_guid.get_guid())
-        retrieve_refund_after_canceled_by_guid = self.__client.get_refund(cancel_by_guid.get_id())
+        cancel_by_guid = self.__client.cancel_refund_by_guid(
+            refund_to_cancel_by_guid.get_guid()
+        )
+        retrieve_refund_after_canceled_by_guid = self.__client.get_refund(
+            cancel_by_guid.get_id()
+        )
         assert "canceled" == retrieve_refund_after_canceled_by_guid.get_status()
 
     @pytest.mark.functional
@@ -164,21 +174,29 @@ class TestClient:
         payout_recipient = PayoutRecipient(**{"email": email, "label": "Bob"})
         requested_recipients = [payout_recipient]
 
-        recipients = self.__client.submit_payout_recipients(PayoutRecipients(**{"recipients": requested_recipients}))
+        recipients = self.__client.submit_payout_recipients(
+            PayoutRecipients(**{"recipients": requested_recipients})
+        )
         recipient_id = recipients[0].get_id()
 
         retrieve_recipient = self.__client.get_payout_recipient(recipient_id)
         assert email == retrieve_recipient.get_email()
 
-        retrieve_recipients_by_status = self.__client.get_payout_recipients("invited", 1, 0)
+        retrieve_recipients_by_status = self.__client.get_payout_recipients(
+            "invited", 1, 0
+        )
         assert len(retrieve_recipients_by_status) > 0
 
         updated_label = "updatedLabel"
         update_recipient_request = PayoutRecipient(**{"label": updated_label})
-        update_recipient = self.__client.update_payout_recipient(recipient_id, update_recipient_request)
+        update_recipient = self.__client.update_payout_recipient(
+            recipient_id, update_recipient_request
+        )
         assert updated_label == update_recipient.get_label()
 
-        request_payout_recipient_notification = self.__client.request_payout_recipient_notification(recipient_id)
+        request_payout_recipient_notification = (
+            self.__client.request_payout_recipient_notification(recipient_id)
+        )
         assert request_payout_recipient_notification is True
 
         remove_recipient = self.__client.delete_payout_recipient(recipient_id)
@@ -189,13 +207,22 @@ class TestClient:
         payout_recipient = PayoutRecipient(**{"email": self.__email, "label": "Bob"})
         requested_recipients = [payout_recipient]
 
-        recipients = self.__client.submit_payout_recipients(PayoutRecipients(**{"recipients": requested_recipients}))
+        recipients = self.__client.submit_payout_recipients(
+            PayoutRecipients(**{"recipients": requested_recipients})
+        )
         recipient_id = recipients[0].get_id()
 
-        payout = Payout(10.00, "USD", "USD", **{
-            "recipientId": recipient_id, "notificationEmail": self.__email, "reference": "Python Functional Test",
-            "notificationURL": "https://somenotificationURL.com"}
-                        )
+        payout = Payout(
+            10.00,
+            "USD",
+            "USD",
+            **{
+                "recipientId": recipient_id,
+                "notificationEmail": self.__email,
+                "reference": "Python Functional Test",
+                "notificationURL": "https://somenotificationURL.com",
+            }
+        )
         submit_payout = self.__client.submit_payout(payout)
         payout_id = submit_payout.get_id()
         assert self.__email == submit_payout.get_notification_email()
@@ -204,11 +231,15 @@ class TestClient:
         get_payout_by_id = self.__client.get_payout(payout_id)
         assert self.__email == get_payout_by_id.get_notification_email()
 
-        payouts = self.__client.get_payouts(TestClient.yesterday_date(), TestClient.tomorrow_date())
+        payouts = self.__client.get_payouts(
+            TestClient.yesterday_date(), TestClient.tomorrow_date()
+        )
         assert len(payouts) > 0
         assert any(p.get_notification_email() == self.__email for p in payouts) is True
 
-        request_payout_notification = self.__client.request_payout_notification(payout_id)
+        request_payout_notification = self.__client.request_payout_notification(
+            payout_id
+        )
         assert request_payout_notification is True
 
         cancel_payout = self.__client.cancel_payout(payout_id)
@@ -219,8 +250,9 @@ class TestClient:
         ledgers = self.__client.get_ledgers()
         assert len(ledgers) > 0
 
-        ledger_entries = self.__client.get_ledger_entries("USD", TestClient.yesterday_date(),
-                                                          TestClient.tomorrow_date())
+        ledger_entries = self.__client.get_ledger_entries(
+            "USD", TestClient.yesterday_date(), TestClient.tomorrow_date()
+        )
         assert len(ledger_entries) > 0
 
     @pytest.mark.functional
@@ -231,10 +263,19 @@ class TestClient:
             "bill1234-ABCD",
             "USD",
             "john@doe.com",
-            **{"name": "John Doe", "address1": "2630 Hegal Place", "address2": "Apt 42",
-               "city": "Alexandria", "state": "VA", "zip": "23242", "country": "US",
-               "phone": "555-123-456", "dueDate": "2021-5-31", "passProcessingFee": True,
-               "items": [item1]}
+            **{
+                "name": "John Doe",
+                "address1": "2630 Hegal Place",
+                "address2": "Apt 42",
+                "city": "Alexandria",
+                "state": "VA",
+                "zip": "23242",
+                "country": "US",
+                "phone": "555-123-456",
+                "dueDate": "2021-5-31",
+                "passProcessingFee": True,
+                "items": [item1],
+            }
         )
         create_bill = self.__client.create_bill(requested_bill, Facade.MERCHANT)
         bill_id = create_bill.get_id()
@@ -245,7 +286,9 @@ class TestClient:
         bills = self.__client.get_bills()
         assert len(bills) > 0
 
-        item_updated = Item(**{"quantity": 1, "description": "Test Item Updated", "price": 9.00})
+        item_updated = Item(
+            **{"quantity": 1, "description": "Test Item Updated", "price": 9.00}
+        )
         updated_bill_request = Bill(
             "bill1234-EFGH",
             "USD",

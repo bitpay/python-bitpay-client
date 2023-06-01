@@ -29,4 +29,3 @@ def test_modify_collapsed():
     qr.set_collapsed(value)
 
     assert value == qr.get_collapsed()
-

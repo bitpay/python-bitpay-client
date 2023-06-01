@@ -8,7 +8,9 @@ def test_constructor():
     payment_string = "someString"
     verification_link = "https://url.com"
 
-    universal_codes = UniversalCodes(**{"paymentString": payment_string, "verificationLink": verification_link})
+    universal_codes = UniversalCodes(
+        **{"paymentString": payment_string, "verificationLink": verification_link}
+    )
 
     assert payment_string == universal_codes.get_payment_string()
     assert verification_link == universal_codes.get_verification_link()

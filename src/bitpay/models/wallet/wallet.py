@@ -1,9 +1,9 @@
 from typing import List, Optional
 
 from .currencies import Currencies
-from ...utils import key_utils
-from ...utils.model_util import ModelUtil
-from ...utils.model_util import ModelUtil
+from bitpay.utils import key_utils
+from bitpay.utils.model_util import ModelUtil
+from bitpay.utils.model_util import ModelUtil
 
 
 class Wallet(object):

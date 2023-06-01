@@ -3,10 +3,10 @@ Currencies
 """
 from typing import Optional
 
-from ...utils import key_utils
-from ...models.wallet.currency_qr import CurrencyQr
-from ...utils.model_util import ModelUtil
-from ...utils.model_util import ModelUtil
+from bitpay.utils import key_utils
+from bitpay.models.wallet.currency_qr import CurrencyQr
+from bitpay.utils.model_util import ModelUtil
+from bitpay.utils.model_util import ModelUtil
 
 
 class Currencies(object):

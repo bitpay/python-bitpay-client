@@ -5,9 +5,10 @@ from typing import Dict, Any, Optional
 import requests
 from requests import Response
 
+from bitpay.config import Config
 from bitpay.exceptions.bitpay_exception import BitPayException
 from bitpay.utils.key_utils import sign, get_compressed_public_key_from_pem
-from build.lib.bitpay import env
+from urllib.parse import urlparse
 
 
 class BitPayClient:
@@ -27,10 +28,10 @@ class BitPayClient:
     def init(self) -> None:
         try:
             self.__headers = {
-                "x-accept-version": env.BITPAYAPIVERSION,
-                "x-bitpay-plugin-info": env.BITPAYPLUGININFO,
-                "x-bitpay-api-frame": env.BITPAYAPIFRAME,
-                "x-bitpay-api-frame-version": env.BITPAYAPIFRAMEVERSION,
+                "x-accept-version": Config.BITPAYAPIVERSION,
+                "x-bitpay-plugin-info": Config.BITPAYPLUGININFO,
+                "x-bitpay-api-frame": Config.BITPAYAPIFRAME,
+                "x-bitpay-api-frame-version": Config.BITPAYAPIFRAMEVERSION,
                 "content-type": "application/json",
                 "X-accept-version": "2.0.0",
             }

@@ -1,9 +1,9 @@
 """
 Rates
 """
-from .rate import Rate
-from ..currency import Currency
-from ...exceptions.bitpay_exception import BitPayException
+from bitpay.models.rate.rate import Rate
+from bitpay.models.currency import Currency
+from bitpay.exceptions.bitpay_exception import BitPayException
 from typing import List, Optional
 
 

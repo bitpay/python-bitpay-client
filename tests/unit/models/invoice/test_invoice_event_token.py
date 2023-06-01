@@ -7,7 +7,9 @@ def test_constructor():
     actions = ["someActions"]
     events = ["someEvents"]
     token = "someToken"
-    invoice_event_token = InvoiceEventToken(**{"actions": actions, "events": events, "token": token})
+    invoice_event_token = InvoiceEventToken(
+        **{"actions": actions, "events": events, "token": token}
+    )
 
     assert actions == invoice_event_token.get_actions()
     assert events == invoice_event_token.get_events()

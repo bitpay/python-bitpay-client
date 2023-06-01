@@ -1,14 +1,20 @@
 import pytest
 
-from bitpay.models.invoice.supported_transaction_currencies import SupportedTransactionCurrencies
-from bitpay.models.invoice.supported_transaction_currency import SupportedTransactionCurrency
+from bitpay.models.invoice.supported_transaction_currencies import (
+    SupportedTransactionCurrencies,
+)
+from bitpay.models.invoice.supported_transaction_currency import (
+    SupportedTransactionCurrency,
+)
 
 
 @pytest.mark.unit
 def test_constructor():
     btc = SupportedTransactionCurrency(**{"enabled": True})
     pax = {"enabled": False}
-    supported_transaction_currencies = SupportedTransactionCurrencies(**{"BTC": btc, "PAX": pax})
+    supported_transaction_currencies = SupportedTransactionCurrencies(
+        **{"BTC": btc, "PAX": pax}
+    )
 
     assert True is supported_transaction_currencies.get_btc().get_enabled()
     assert False is supported_transaction_currencies.get_pax().get_enabled()

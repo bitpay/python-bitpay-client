@@ -4,7 +4,7 @@ MinerFees
 from typing import Optional, Any
 
 from .miner_fees_item import MinerFeesItem
-from ...utils.model_util import ModelUtil
+from bitpay.utils.model_util import ModelUtil
 
 
 class MinerFees:

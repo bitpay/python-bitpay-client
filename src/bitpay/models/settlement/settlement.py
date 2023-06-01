@@ -8,8 +8,8 @@ from typing import List, Optional
 from .payout_info import PayoutInfo
 from .with_holdings import WithHoldings
 from .settlement_ledger_entry import SettlementLedgerEntry
-from ...utils.key_utils import change_camel_case_to_snake_case
-from ...utils.model_util import ModelUtil
+from bitpay.utils.key_utils import change_camel_case_to_snake_case
+from bitpay.utils.model_util import ModelUtil
 
 
 class Settlement:

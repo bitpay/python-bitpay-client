@@ -92,6 +92,3 @@ def test_modify_guid():
     payout_recipient.set_guid(value)
 
     assert value == payout_recipient.get_guid()
-
-
-

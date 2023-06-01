@@ -9,8 +9,11 @@ from bitpay.models.invoice.itemized_details import ItemizedDetails
 from bitpay.models.invoice.miner_fees import MinerFees
 from bitpay.models.invoice.refund_info import RefundInfo
 from bitpay.models.invoice.shopper import Shopper
-from bitpay.models.invoice.supported_transaction_currencies import SupportedTransactionCurrencies
+from bitpay.models.invoice.supported_transaction_currencies import (
+    SupportedTransactionCurrencies,
+)
 from bitpay.models.invoice.universal_codes import UniversalCodes
+
 
 @pytest.mark.unit
 def test_constructor():
@@ -21,8 +24,16 @@ def test_constructor():
     buyer_name = "someName"
     itemized_details = [ItemizedDetails(), ItemizedDetails()]
 
-    invoice = Invoice(price, currency, **{"shopper": shopper, "guid": guid, "buyer": {"name": buyer_name},
-                                          "itemizedDetails": itemized_details})
+    invoice = Invoice(
+        price,
+        currency,
+        **{
+            "shopper": shopper,
+            "guid": guid,
+            "buyer": {"name": buyer_name},
+            "itemizedDetails": itemized_details,
+        }
+    )
 
     assert price == invoice.get_price()
     assert currency == invoice.get_currency()
@@ -571,4 +582,3 @@ def test_modify_payment_codes():
     invoice.set_payment_codes(value)
 
     assert value == invoice.get_payment_codes()
-

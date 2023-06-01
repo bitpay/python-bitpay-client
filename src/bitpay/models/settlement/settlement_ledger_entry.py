@@ -4,8 +4,8 @@ SettlementLedgerEntry: ledger entries in the settlement,
 from typing import Optional
 
 from .invoice_data import InvoiceData
-from ...utils.key_utils import change_camel_case_to_snake_case
-from ...utils.model_util import ModelUtil
+from bitpay.utils.key_utils import change_camel_case_to_snake_case
+from bitpay.utils.model_util import ModelUtil
 
 
 class SettlementLedgerEntry:

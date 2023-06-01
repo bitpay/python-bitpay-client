@@ -11,9 +11,9 @@ from .transaction import Transaction
 from .universal_codes import UniversalCodes
 from .itemized_details import ItemizedDetails
 from .buyer_provided_info import BuyerProvidedInfo
-from ...utils.key_utils import change_camel_case_to_snake_case
+from bitpay.utils.key_utils import change_camel_case_to_snake_case
 from .supported_transaction_currencies import SupportedTransactionCurrencies
-from ...utils.model_util import ModelUtil
+from bitpay.utils.model_util import ModelUtil
 
 
 class Invoice:

@@ -101,5 +101,3 @@ def test_modify_notify():
     buyer.set_notify(value)
 
     assert value == buyer.get_notify()
-
-

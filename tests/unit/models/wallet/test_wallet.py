@@ -72,6 +72,3 @@ def test_modify_image():
     wallet.set_image(value)
 
     assert wallet.get_image() == value
-
-
-

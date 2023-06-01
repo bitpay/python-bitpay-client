@@ -13,6 +13,7 @@ def test_constructor():
     assert guid == payout_recipients.get_guid()
     assert recipients == payout_recipients.get_recipients()
 
+
 @pytest.mark.unit
 def test_modify_guid():
     payout_recipients = PayoutRecipients()
@@ -38,4 +39,3 @@ def test_modify_token():
     payout_recipients.set_token(value)
 
     assert payout_recipients.get_token() == value
-

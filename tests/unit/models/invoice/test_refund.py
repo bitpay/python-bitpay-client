@@ -8,7 +8,7 @@ def test_construct():
     invoice_id = "123"
     amount = 12.34
     currency = "BCH"
-    token = 'someToken'
+    token = "someToken"
     refund_fee = 12.10
 
     refund = Refund(invoice_id, amount, currency, token, **{"refundFee": refund_fee})
@@ -198,4 +198,3 @@ def test_transaction_refund_fee():
     refund.set_transaction_refund_fee(value)
 
     assert value == refund.get_transaction_refund_fee()
-

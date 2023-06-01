@@ -10,8 +10,13 @@ def test_constructor():
     transaction_currency = "BCH"
     refund_info = RefundInfo()
 
-    invoice_data = InvoiceData(**{"price": price, "transactionCurrency": transaction_currency,
-                                  "refundInfo": refund_info})
+    invoice_data = InvoiceData(
+        **{
+            "price": price,
+            "transactionCurrency": transaction_currency,
+            "refundInfo": refund_info,
+        }
+    )
 
     assert price == invoice_data.get_price()
     assert transaction_currency == invoice_data.get_transaction_currency()

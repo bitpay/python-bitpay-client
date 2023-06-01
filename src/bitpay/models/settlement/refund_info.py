@@ -3,8 +3,8 @@ RefundInfo: Object containing information about the refund executed for the invo
 """
 from typing import Optional
 
-from ...utils.key_utils import change_camel_case_to_snake_case
-from ...utils.model_util import ModelUtil
+from bitpay.utils.key_utils import change_camel_case_to_snake_case
+from bitpay.utils.model_util import ModelUtil
 
 
 class RefundInfo:

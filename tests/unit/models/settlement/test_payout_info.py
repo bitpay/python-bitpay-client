@@ -8,7 +8,13 @@ def test_constructor():
     routing = "someRouting"
     bank_name = "someBankName"
     account_holder_name = "someAccountHolderName"
-    payout_info = PayoutInfo(**{"routing": routing, "bankName": bank_name, "accountHolderName": account_holder_name})
+    payout_info = PayoutInfo(
+        **{
+            "routing": routing,
+            "bankName": bank_name,
+            "accountHolderName": account_holder_name,
+        }
+    )
 
     assert payout_info.get_routing() == routing
     assert payout_info.get_bank_name() == bank_name
