@@ -11,7 +11,9 @@ class TokenContainer:
         try:
             return self.__data[facade]
         except Exception as exe:
-            raise BitPayException("There is no token for the specified key: ", str(exe))
+            raise BitPayException(
+                "There is no token for the specified key: " + facade.value
+            )
 
     def put(self, key: Facade, value: str) -> None:
         self.__data[key] = value

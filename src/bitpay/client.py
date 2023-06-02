@@ -25,6 +25,7 @@ from .environment import Environment
 from .models.facade import Facade
 from .models.bill.bill import Bill
 from .models.invoice.invoice_event_token import InvoiceEventToken
+from .models.payout.payout_group import PayoutGroup
 from .models.rate.rate import Rate
 from .utils.guid_generator import GuidGenerator
 from .models.rate.rates import Rates
@@ -779,6 +780,28 @@ class Client:
         """
         client = self.create_payout_client()
         return client.request_notification(payout_id)
+
+    def create_payout_group(self, payouts: List[Payout]) -> PayoutGroup:
+        """
+        Submit a BitPay Payouts. See https://developer.bitpay.com/reference/create-payout-group
+
+        :param List[Payout] payouts: Payouts to create
+        :return: PayoutGroup
+        :raises BitPayException
+        """
+        client = self.create_payout_client()
+        return client.create_group(payouts)
+
+    def cancel_payout_group(self, group_id: str) -> PayoutGroup:
+        """
+        Cancel a BitPay Payouts. See https://developer.bitpay.com/reference/cancel-a-payout-group
+
+        :param group_id The the groupId of the collection of payouts you want to cancel.
+        :return: PayoutGroup
+        :raises BitPayException
+        """
+        client = self.create_payout_client()
+        return client.cancel_group(group_id)
 
     def get_settlements(
         self,

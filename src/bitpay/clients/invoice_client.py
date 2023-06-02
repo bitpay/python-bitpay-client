@@ -207,7 +207,7 @@ class InvoiceClient:
             response_json = self.__bitpay_client.get("invoices/", params, True)
         except BitPayException as exe:
             raise InvoiceQueryException(
-                "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
+                "failed to serialize Invoice object : %s" % str(exe), api_code=exe.get_api_code()
             )
         except Exception as exe:
             raise InvoiceQueryException(
@@ -302,7 +302,7 @@ class InvoiceClient:
             )
         except BitPayException as exe:
             raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
+                "failed to serialize Invoice object : %s" % str(exe), api_code=exe.get_api_code()
             )
         except Exception as exe:
             raise InvoiceCancellationException(
@@ -340,7 +340,7 @@ class InvoiceClient:
             )
         except BitPayException as exe:
             raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
+                "failed to serialize Invoice object : %s" % str(exe), api_code=exe.get_api_code()
             )
         except Exception as exe:
             raise InvoiceCancellationException(
@@ -375,7 +375,7 @@ class InvoiceClient:
             )
         except BitPayException as exe:
             raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
+                "failed to serialize Invoice object : %s" % str(exe), api_code=exe.get_api_code()
             )
         except Exception as exe:
             raise InvoiceCancellationException(
@@ -411,7 +411,7 @@ class InvoiceClient:
             )
         except BitPayException as exe:
             raise InvoicePaymentException(
-                "failed to serialize Invoice object : %s" % str(exe), exe.get_api_code()
+                "failed to serialize Invoice object : %s" % str(exe), api_code=exe.get_api_code()
             )
         except Exception as exe:
             raise InvoicePaymentException(

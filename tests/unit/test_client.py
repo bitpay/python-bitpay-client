@@ -1477,6 +1477,78 @@ def test_get_payouts(mocker):
 
 
 @pytest.mark.unit
+def test_create_payout_group(mocker):
+    # arrange
+    bitpay_client = get_bitpay_client(mocker)
+    with open(
+        os.path.abspath(os.path.dirname(__file__))
+        + "/json/create_payout_group_request.json",
+        "r",
+    ) as file:
+        request_dict = json.load(file)
+    with open(
+        os.path.abspath(os.path.dirname(__file__))
+        + "/json/create_payout_group_response.json",
+        "r",
+    ) as file:
+        response = json.load(file)
+    shopper_id = "7qohDf2zZnQK5Qanj8oyC2"
+    payout = Payout(
+        10,
+        "USD",
+        "USD",
+        **{
+            "reference": "payout_20210527",
+            "notificationEmail": "merchant@email.com",
+            "notificationURL": "https://yournotiticationURL.com/wed3sa0wx1rz5bg0bv97851eqx",
+            "email": "john@doe.com",
+            "recipientId": "LDxRZCGq174SF8AnQpdBPB",
+            "shopperId": shopper_id,
+        }
+    )
+
+    params = {"token": payout_token_value}
+    bitpay_client.post.side_effect = mock_response(
+        response, "payouts/group", request_dict, True
+    )
+    client = init_client(mocker, bitpay_client)
+
+    # act
+    result = client.create_payout_group([payout])
+
+    # assert
+    assert result.get_payouts()[0].get_shopper_id() == shopper_id
+    assert result.get_failed()[0].get_err_message() == "Ledger currency is required"
+
+
+@pytest.mark.uni
+def test_cancel_payout_group(mocker):
+    # arrange
+    group_id = "12345"
+    bitpay_client = get_bitpay_client(mocker)
+    with open(
+        os.path.abspath(os.path.dirname(__file__))
+        + "/json/cancel_payout_group_response.json",
+        "r",
+    ) as file:
+        response = json.load(file)
+
+    params = {"token": payout_token_value}
+    bitpay_client.delete.side_effect = mock_response(
+        response, "payouts/group/" + group_id, params, True
+    )
+    client = init_client(mocker, bitpay_client)
+
+    # act
+    result = client.cancel_payout_group(group_id)
+
+    # assert
+    assert result.get_payouts()[1].get_shopper_id() == "7qohDf2zZnQK5Qanj8oyC2"
+    assert result.get_failed()[0].get_err_message() == "PayoutId is missing or invalid"
+    assert result.get_failed()[0].get_payout_id() == "D8tgWzn1psUua4NYWW1vYo"
+
+
+@pytest.mark.unit
 def test_request_payout_notification(mocker):
     # arrange
     payout_id = "1234"

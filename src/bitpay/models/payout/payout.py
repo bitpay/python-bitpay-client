@@ -41,6 +41,7 @@ class Payout:
     __date_executed = None
     __transactions: Optional[List[PayoutTransaction]]
     __account_id = None
+    __group_id: Optional[str] = None
 
     def __init__(
         self,
@@ -401,6 +402,20 @@ class Payout:
         :param transactions: transactions
         """
         self.__transactions = transactions
+
+    def get_group_id(self) -> Optional[str]:
+        """
+        Added to the payouts made at the same time through the `Create Payout Group` request.
+        Can be used for querying or deleting.
+        """
+        return self.__group_id
+
+    def set_group_id(self, value: str) -> None:
+        """
+        Added to the payouts made at the same time through the `Create Payout Group` request.
+        Can be used for querying or deleting.
+        """
+        self.__group_id = value
 
     def to_json(self) -> dict:
         """

@@ -13,6 +13,7 @@ from bitpay.models.invoice.refund import Refund
 from bitpay.models.payout.payout import Payout
 from bitpay.models.payout.payout_recipient import PayoutRecipient
 from bitpay.models.payout.payout_recipients import PayoutRecipients
+from bitpay.models.payout.payout_status import PayoutStatus
 
 
 class TestClient:
@@ -212,6 +213,7 @@ class TestClient:
         )
         recipient_id = recipients[0].get_id()
 
+        notification_url = "https://somenotificationURL.com"
         payout = Payout(
             10.00,
             "USD",
@@ -220,7 +222,7 @@ class TestClient:
                 "recipientId": recipient_id,
                 "notificationEmail": self.__email,
                 "reference": "Python Functional Test",
-                "notificationURL": "https://somenotificationURL.com",
+                "notificationURL": notification_url,
             }
         )
         submit_payout = self.__client.submit_payout(payout)
@@ -244,6 +246,14 @@ class TestClient:
 
         cancel_payout = self.__client.cancel_payout(payout_id)
         assert cancel_payout is True
+
+        payout_group = self.__client.create_payout_group([payout])
+        payout_group_id = payout_group.get_payouts()[0].get_group_id()
+        assert payout_group.get_payouts()[0].get_notification_url() == notification_url
+        assert len(payout_group.get_payouts()) == 1
+
+        cancel_payout_group = self.__client.cancel_payout_group(payout_group_id)
+        assert cancel_payout_group.get_payouts()[0].get_status() == PayoutStatus.Cancelled
 
     @pytest.mark.functional
     def test_ledgers_requests(self):
