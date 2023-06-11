@@ -13,7 +13,7 @@ class CurrencyQueryException(InvoiceException):
     __bitpay_code = "BITPAY-CURRENCY-GET"
     __api_code = ""
 
-    def __init__(self, message, code=182, api_code="000000"):
+    def __init__(self, message: str, code: int = 182, api_code: str = "000000"):
         """
         Construct the CurrencyQueryException.
 

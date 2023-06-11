@@ -13,7 +13,7 @@ class BillDeliveryException(BillException):
     __bitpay_code = "BITPAY-BILL-DELIVERY"
     __api_code = ""
 
-    def __init__(self, message, code=115, api_code="000000"):
+    def __init__(self, message: str, code: int = 115, api_code: str = "000000"):
         """
         Construct the BillDeliveryException.
 

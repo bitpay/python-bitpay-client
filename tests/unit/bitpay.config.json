@@ -1,0 +1,16 @@
+{
+  "BitPayConfiguration": {
+    "Environment": "Test",
+    "EnvConfig": {
+      "Test": {
+        "PrivateKeyPath": null,
+        "PrivateKey": "-----BEGIN EC PRIVATE KEY-----\nMHQCAQEEIOxJU5ZaTATE35wP1eyOCLm5OuBRH60/jbb3u5UBJmFcoAcGBSuBBAAK\noUQDQgAE3aKZq/x/RQdBCL6eeXiF3XkJWul0I8RAjNxuuvDk0Fi69Ojnfwz3z0WA\najNGenn4Hn4NLw483gjpqTzlto9IiQ==\n-----END EC PRIVATE KEY-----\n",
+        "ApiTokens": {
+          "merchant": "someMerchantToken",
+          "payout": "somePayoutToken"
+        },
+        "proxy": null
+      }
+    }
+  }
+}

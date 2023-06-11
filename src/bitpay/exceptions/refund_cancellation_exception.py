@@ -13,7 +13,7 @@ class RefundCancellationException(RefundException):
     __bitpay_code = "BITPAY-REFUND-CANCEL"
     __api_code = ""
 
-    def __init__(self, message, code=165, api_code="000000"):
+    def __init__(self, message: str, code: int = 165, api_code: str = "000000"):
         """
         Construct the RefundCancellationException.
 

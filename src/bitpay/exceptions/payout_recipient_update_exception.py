@@ -13,7 +13,7 @@ class PayoutRecipientUpdateException(PayoutRecipientException):
     __bitpay_code = "BITPAY-PAYOUT-RECIPIENT-UPDATE"
     __api_code = ""
 
-    def __init__(self, message, code=195, api_code="000000"):
+    def __init__(self, message: str, code: int = 195, api_code: str = "000000"):
         """
         Construct the PayoutRecipientUpdateException.
 
