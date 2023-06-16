@@ -218,7 +218,7 @@ class PayoutClient:
             params["instructions"] = instructions
 
             response_json = self.__bitpay_client.post("payouts/group", params)
-            return self.get_payout_group_response(response_json, "completed")
+            return self.get_payout_group_response(response_json, "created")
         except BitPayException as exe:
             raise PayoutCreationException(
                 "failed to serialize Payout object :  %s" % str(exe),
