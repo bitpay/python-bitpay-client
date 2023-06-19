@@ -63,7 +63,7 @@ class SettlementClient:
         except BitPayException as exe:
             raise SettlementQueryException(
                 "failed to serialize Settlement object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -95,7 +95,7 @@ class SettlementClient:
         except BitPayException as exe:
             raise SettlementQueryException(
                 "failed to serialize Settlement object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -128,7 +128,7 @@ class SettlementClient:
         except BitPayException as exe:
             raise SettlementQueryException(
                 "failed to serialize Settlement object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code(),
             )
 
         try:

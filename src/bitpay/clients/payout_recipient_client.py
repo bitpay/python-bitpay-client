@@ -61,7 +61,7 @@ class PayoutRecipientClient:
         except BitPayException as exe:
             raise PayoutRecipientCreationException(
                 "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code()
             )
 
         try:
@@ -94,7 +94,7 @@ class PayoutRecipientClient:
         except BitPayException as exe:
             raise PayoutRecipientQueryException(
                 "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -132,7 +132,7 @@ class PayoutRecipientClient:
         except BitPayException as exe:
             raise PayoutRecipientQueryException(
                 "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -166,7 +166,7 @@ class PayoutRecipientClient:
         except BitPayException as exe:
             raise PayoutRecipientUpdateException(
                 "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -190,7 +190,7 @@ class PayoutRecipientClient:
         except BitPayException as exe:
             raise PayoutRecipientCancellationException(
                 "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code(),
             )
         try:
             response_json = self.__bitpay_client.delete(
@@ -218,7 +218,7 @@ class PayoutRecipientClient:
         except BitPayException as exe:
             raise PayoutRecipientNotificationException(
                 "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                exe.get_api_code(),
+                api_code=exe.get_api_code(),
             )
 
         try:

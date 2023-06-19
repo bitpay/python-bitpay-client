@@ -28,10 +28,10 @@ class BitPayClient:
     def init(self) -> None:
         try:
             self.__headers = {
-                "x-accept-version": Config.BITPAYAPIVERSION,
-                "x-bitpay-plugin-info": Config.BITPAYPLUGININFO,
-                "x-bitpay-api-frame": Config.BITPAYAPIFRAME,
-                "x-bitpay-api-frame-version": Config.BITPAYAPIFRAMEVERSION,
+                "x-accept-version": Config.BITPAY_API_VERSION.value,
+                "x-bitpay-plugin-info": Config.BITPAY_PLUGIN_INFO.value,
+                "x-bitpay-api-frame": Config.BITPAY_API_FRAME.value,
+                "x-bitpay-api-frame-version": Config.BITPAY_API_FRAME_VERSION.value,
                 "content-type": "application/json",
                 "X-accept-version": "2.0.0",
             }

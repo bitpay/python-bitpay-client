@@ -25,7 +25,7 @@ class WalletClient:
             response_json = self.__bitpay_client.get("supportedWallets/", None, False)
         except BitPayException as exe:
             raise WalletQueryException(
-                "failed to serialize wallet object :  %s" % str(exe), exe.get_api_code()
+                "failed to serialize wallet object :  %s" % str(exe), api_code=exe.get_api_code()
             )
         except Exception as exe:
             raise WalletQueryException(
