@@ -1521,7 +1521,7 @@ def test_create_payout_group(mocker):
     assert result.get_failed()[0].get_err_message() == "Ledger currency is required"
 
 
-@pytest.mark.uni
+@pytest.mark.unit
 def test_cancel_payout_group(mocker):
     # arrange
     group_id = "12345"
