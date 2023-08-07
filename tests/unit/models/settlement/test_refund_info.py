@@ -42,3 +42,12 @@ def test_modify_amounts():
     refund_info.set_amounts(value)
 
     assert refund_info.get_amounts() == value
+
+
+@pytest.mark.unit
+def test_refund_request_eid():
+    refund_info = RefundInfo()
+    value = "someValue"
+    refund_info.set_refund_request_eid(value)
+
+    assert refund_info.get_refund_request_eid() == value
