@@ -3,7 +3,7 @@ Class Client
 package Bitpay
 author  Antonio Buedo
 version 4.0.0
-See bitpay.com/api for more information.
+See https://developer.bitpay.com/reference/concepts for more information.
 """
 import os
 import json
@@ -48,8 +48,8 @@ class Client:
     * Class Client
     * @package Bitpay
     * @author  Antonio Buedo
-    * @version 3.4.2203
-    * See bitpay.com/api for more information.
+    * @version 4.0.0
+    * See https://developer.bitpay.com/reference/concepts for more information.
     """
 
     __bitpay_client: BitPayClient

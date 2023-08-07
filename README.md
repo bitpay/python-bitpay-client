@@ -4,13 +4,7 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/bitpay/python-bitpay-client/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/bitpay.svg?style=flat-square)](https://pypi.org/project/bitpay)
 
-Full implementation of the BitPay Payment Gateway. This library implements BitPay's [Cryptographically Secure RESTful API](https://bitpay.com/api).
-
-Our Lite version will most likely be all you need to integrate to your site, available [here](https://github.com/bitpay/python-bitpay-light-client)
-
-## Getting Started
-
-To get up and running with our Python library quickly, follow [The GUIDE](https://github.com/bitpay/python-bitpay-client/blob/master/GUIDE.md)
+Full implementation of the BitPay Payment Gateway. This library implements BitPay's [Cryptographically Secure RESTful API](https://developer.bitpay.com/reference/concepts).
 
 ## Support
 
