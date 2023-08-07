@@ -14,10 +14,9 @@ setuptools.setup(
     url="https://github.com/bitpay/python-bitpay-client",
     download_url="https://github.com/bitpay/python-bitpay-client/tarball/v3.4.2203",
     keywords=["bitcoin", "payments", "crypto", "cash", "ethereum", "online payments"],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     install_requires=["requests", "ecdsa"],
     classifiers=[
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -42,7 +41,7 @@ setuptools.setup(
         all of the tools you need to use the BitPay API for other
         purposes.
         
-        This version requires only Python 3.8.
+        This version requires Python 3.8 or higher.
         """,
     long_description_content_type="text/markdown",
 )
