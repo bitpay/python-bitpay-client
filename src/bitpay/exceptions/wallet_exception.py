@@ -14,7 +14,7 @@ class WalletException(BitPayException):
     __bitpay_code = "BITPAY-WALLET-GENERIC"
     __api_code = ""
 
-    def __init__(self, message="", code=181, api_code="000000"):
+    def __init__(self, message: str = "", code: int = 181, api_code: str = "000000"):
         """
         Construct the WalletException.
 

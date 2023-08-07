@@ -1,7 +1,10 @@
 """
 MinerFees
 """
+from typing import Optional, Any
+
 from .miner_fees_item import MinerFeesItem
+from bitpay.utils.model_util import ModelUtil
 
 
 class MinerFees:
@@ -23,171 +26,157 @@ class MinerFees:
     __busd = MinerFeesItem()
     __xrp = MinerFeesItem()
 
-    def __init__(self, **kwargs):
-
+    def __init__(self, **kwargs: Any) -> None:
         for key, value in kwargs.items():
             try:
-                if key in ["BTC", "BCH", "ETH", "USDC", "GUSD", "PAX", "BUSD", "XRP"]:
+                if not isinstance(value, MinerFeesItem):
                     value = MinerFeesItem(**value)
                 getattr(self, "set_%s" % key.lower())(value)
             except AttributeError:
                 pass
 
-    def get_btc(self):
+    def get_btc(self) -> Optional[MinerFeesItem]:
         """
         Get method for the btc
         :return: btc
         """
         return self.__btc
 
-    def set_btc(self, btc: MinerFeesItem):
+    def set_btc(self, btc: MinerFeesItem) -> None:
         """
         Set method for the btc
         :param btc: btc
         """
         self.__btc = btc
 
-    def get_bch(self):
+    def get_bch(self) -> Optional[MinerFeesItem]:
         """
         Get method for the bch
         :return: bch
         """
         return self.__bch
 
-    def set_bch(self, bch: MinerFeesItem):
+    def set_bch(self, bch: MinerFeesItem) -> None:
         """
         Set method for the bch
         :param bch: bch
         """
         self.__bch = bch
 
-    def get_eth(self):
+    def get_eth(self) -> Optional[MinerFeesItem]:
         """
         Get method for the eth
         :return: eth
         """
         return self.__eth
 
-    def set_eth(self, eth: MinerFeesItem):
+    def set_eth(self, eth: MinerFeesItem) -> None:
         """
         Set method for the eth
         :param eth: eth
         """
         self.__eth = eth
 
-    def get_usdc(self):
+    def get_usdc(self) -> Optional[MinerFeesItem]:
         """
         Get method for the usdc
         :return: usdc
         """
         return self.__usdc
 
-    def set_usdc(self, usdc: MinerFeesItem):
+    def set_usdc(self, usdc: MinerFeesItem) -> None:
         """
         Set method for the usdc
         :param usdc: usdc
         """
         self.__usdc = usdc
 
-    def get_gusd(self):
+    def get_gusd(self) -> Optional[MinerFeesItem]:
         """
         Get method for the gusd
         :return: gusd
         """
         return self.__gusd
 
-    def set_gusd(self, gusd: MinerFeesItem):
+    def set_gusd(self, gusd: MinerFeesItem) -> None:
         """
         Set method for the gusd
         :param gusd: gusd
         """
         self.__gusd = gusd
 
-    def get_doge(self):
+    def get_doge(self) -> Optional[MinerFeesItem]:
         """
         Get method for the doge
         :return: doge
         """
         return self.__doge
 
-    def set_doge(self, doge: MinerFeesItem):
+    def set_doge(self, doge: MinerFeesItem) -> None:
         """
         Set method for the doge
         :param doge: doge
         """
         self.__doge = doge
 
-    def get_ltc(self):
+    def get_ltc(self) -> Optional[MinerFeesItem]:
         """
         Get method for the ltc
         :return: ltc
         """
         return self.__ltc
 
-    def set_ltc(self, ltc: MinerFeesItem):
+    def set_ltc(self, ltc: MinerFeesItem) -> None:
         """
         Set method for the ltc
         :param ltc: ltc
         """
         self.__ltc = ltc
 
-    def get_pax(self):
+    def get_pax(self) -> Optional[MinerFeesItem]:
         """
         Get method for the pax
         :return: pax
         """
         return self.__pax
 
-    def set_pax(self, pax: MinerFeesItem):
+    def set_pax(self, pax: MinerFeesItem) -> None:
         """
         Set method for the pax
         :param pax: pax
         """
         self.__pax = pax
 
-    def get_busd(self):
+    def get_busd(self) -> Optional[MinerFeesItem]:
         """
         Get method for the busd
         :return: busd
         """
         return self.__busd
 
-    def set_busd(self, busd: MinerFeesItem):
+    def set_busd(self, busd: MinerFeesItem) -> None:
         """
         Set method for the busd
         :param busd: busd
         """
         self.__busd = busd
 
-    def get_xrp(self):
+    def get_xrp(self) -> Optional[MinerFeesItem]:
         """
         Get method for the xrp
         :return: xrp
         """
         return self.__xrp
 
-    def set_xrp(self, xrp: MinerFeesItem):
+    def set_xrp(self, xrp: MinerFeesItem) -> None:
         """
         Set method for the xrp
         :param xrp: xrp
         """
         self.__xrp = xrp
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """
         :return: data in json
         """
-        data = {
-            "btc": self.get_btc(),
-            "bch": self.get_bch(),
-            "eth": self.get_eth(),
-            "usdc": self.get_usdc(),
-            "gusd": self.get_gusd(),
-            "pax": self.get_pax(),
-            "doge": self.get_doge(),
-            "ltc": self.get_ltc(),
-            "xrp": self.get_xrp(),
-            "busd": self.get_busd(),
-        }
-        data = {key: value for key, value in data.items() if value}
-        return data
+        return ModelUtil.to_json(self)

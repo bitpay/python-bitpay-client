@@ -13,7 +13,7 @@ class BillUpdateException(BillException):
     __bitpay_code = "BITPAY-BILL-UPDATE"
     __api_code = ""
 
-    def __init__(self, message, code=114, api_code="000000"):
+    def __init__(self, message: str, code: int = 114, api_code: str = "000000"):
         """
         Construct the BillUpdateException.
 

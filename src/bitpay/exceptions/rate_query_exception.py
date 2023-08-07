@@ -1,5 +1,5 @@
 """
-Rate Query Exception gets raised when request for rate retrieval gets failed .
+rate Query Exception gets raised when request for rate retrieval gets failed .
 """
 from .rates_exception import RateException
 
@@ -13,7 +13,7 @@ class RateQueryException(RateException):
     __bitpay_code = "BITPAY-RATES-GET"
     __api_code = ""
 
-    def __init__(self, message, code=142, api_code="000000"):
+    def __init__(self, message: str, code: int = 142, api_code: str = "000000"):
         """
         Construct the RateQueryException.
 

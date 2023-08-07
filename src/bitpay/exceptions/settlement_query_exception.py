@@ -13,7 +13,7 @@ class SettlementQueryException(SettlementException):
     __bitpay_code = "BITPAY-SETTLEMENTS-GET"
     __api_code = ""
 
-    def __init__(self, message, code=152, api_code="000000"):
+    def __init__(self, message: str, code: int = 152, api_code: str = "000000"):
         """
         Construct the SettlementQueryException.
 

@@ -1,12 +1,16 @@
 """
 Facade
 """
+from enum import Enum
+
+from bitpay.exceptions.bitpay_exception import BitPayException
 
 
-class Facade:
+class Facade(Enum):
     """
     Facade
     """
 
-    Merchant = "merchant"
-    Payout = "payout"
+    MERCHANT = "merchant"
+    PAYOUT = "payout"
+    POS = "pos"

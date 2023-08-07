@@ -13,7 +13,7 @@ class RefundNotificationException(RefundException):
     __bitpay_code = "BITPAY-REFUND-NOTIFICATION"
     __api_code = ""
 
-    def __init__(self, message, code=166, api_code="000000"):
+    def __init__(self, message: str, code: int = 166, api_code: str = "000000"):
         """
         Construct the RefundNotificationException.
 

@@ -1,5 +1,7 @@
 import os
 import json
+from typing import Optional
+
 import requests
 
 from bitpay.utils.key_utils import *
@@ -7,7 +9,9 @@ from bitpay.exceptions.bitpay_exception import BitPayException
 
 # Will be set to Test otherwise
 private_key_name = "private_key.pem"  # Add here the name for your Private key
-private_key_path = os.path.join(os.path.abspath(os.curdir), private_key_name)
+private_key_path: Optional[str] = os.path.join(
+    os.path.abspath(os.curdir), private_key_name
+)
 plain_private_key = None
 proxy = None
 api_url = None
@@ -16,7 +20,7 @@ merchant_token = None
 payout_token = None
 
 
-def select_env():
+def select_env() -> None:
     global environment
     try:
         print("Select target environment: ")
@@ -29,13 +33,13 @@ def select_env():
         else:
             select_env()
 
-        set_environment(environment)
+        set_environment(environment)  # type: ignore
         select_create_key()
     except BitPayException as exe:
         print(exe)
 
 
-def set_environment(env):
+def set_environment(env: str) -> None:
     global api_url
     if env == "Test":
         api_url = "https://test.bitpay.com"
@@ -43,7 +47,7 @@ def set_environment(env):
         api_url = "https://bitpay.com"
 
 
-def select_create_key():
+def select_create_key() -> None:
     try:
         input_value = input(
             "Press enter to generate a brand new key or enter your private key location:"
@@ -56,15 +60,15 @@ def select_create_key():
         print(exe)
 
 
-def create_new_key():
+def create_new_key() -> None:
     try:
-        private_key = generate_pem()
+        private_key = generate_pem()  # type: ignore
         store_key(private_key)
     except BitPayException as exe:
         print(exe)
 
 
-def store_key(private_key):
+def store_key(private_key: str) -> None:
     global plain_private_key, private_key_path
     try:
         print("Select the way you want to store your private key:")
@@ -89,7 +93,7 @@ def store_key(private_key):
         print(exe)
 
 
-def select_tokens(private_key):
+def select_tokens(private_key: str) -> None:
     try:
         print("Select the tokens that you would like to request:")
         input_value = input("Press M for merchant, P for payout, or B for both: \n")
@@ -102,12 +106,12 @@ def select_tokens(private_key):
         print(exe)
 
 
-def request_tokens(token_type, private_key):
+def request_tokens(token_type: str, private_key: str) -> None:
     global merchant_token
     global payout_token
 
     try:
-        sin = get_sin_from_pem(private_key)
+        sin = get_sin_from_pem(private_key)  # type: ignore
         url = "%s/tokens" % api_url
         headers = {"content-type": "application/json", "X-accept-version": "2.0.0"}
 
@@ -148,7 +152,7 @@ def request_tokens(token_type, private_key):
         print(exe)
 
 
-def update_config_file():
+def update_config_file() -> None:
     try:
         config = {
             "BitPayConfiguration": {
@@ -187,7 +191,7 @@ def update_config_file():
         print(exe)
 
 
-def load_key():
+def load_key() -> None:
     # TODO: Need to implement this function
     pass
 

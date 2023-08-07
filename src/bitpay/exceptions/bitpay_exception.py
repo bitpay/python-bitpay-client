@@ -12,7 +12,7 @@ class BitPayException(Exception):
     __bitpay_code = "BITPAY-GENERIC"
     __api_code = ""
 
-    def __init__(self, message, code=100, api_code="000000"):
+    def __init__(self, message: str, code: int = 100, api_code: str = "000000"):
         """
         Construct the BillUpdateException.
 
@@ -24,7 +24,7 @@ class BitPayException(Exception):
         self.__api_code = api_code
         super().__init__(message, code)
 
-    def get_api_code(self):
+    def get_api_code(self) -> str:
         """
         :return: Error code provided by the BitPay REST API
         """
