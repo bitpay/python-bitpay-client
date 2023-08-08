@@ -15,6 +15,7 @@ class RefundInfo:
     __support_request = None
     __currency = None
     __amounts = None
+    __refund_request_eid = None
 
     def __init__(self, **kwargs: dict) -> None:
         for key, value in kwargs.items():
@@ -65,6 +66,20 @@ class RefundInfo:
         :param amounts: amounts
         """
         self.__amounts = amounts
+
+    def get_refund_request_eid(self) -> Optional[str]:
+        """
+        Get refund request eid
+        :return: refund request eid
+        """
+        return self.__refund_request_eid
+
+    def set_refund_request_eid(self, value: Optional[str]) -> None:
+        """
+        Set refund request eid
+        :return: refund request eid
+        """
+        self.__refund_request_eid = value
 
     def to_json(self) -> dict:
         """
