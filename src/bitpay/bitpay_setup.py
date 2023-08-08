@@ -4,8 +4,8 @@ from typing import Optional
 
 import requests
 
-from bitpay.utils.key_utils import *
-from bitpay.exceptions.bitpay_exception import BitPayException
+from utils.key_utils import *
+from exceptions.bitpay_exception import BitPayException
 
 # Will be set to Test otherwise
 private_key_name = "private_key.pem"  # Add here the name for your Private key
