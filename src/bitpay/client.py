@@ -81,15 +81,15 @@ class Client:
         return Client(bitpay_client, token_container, GuidGenerator())
 
     @staticmethod
-    def create_client_by_private_key(  # type: ignore
-        private_key: str,
+    def create_client(  # type: ignore
+        private_key_or_private_key_path: str,
         token_container: TokenContainer,
         environment: Environment = Environment.PROD,
         proxy: Optional[str] = None,
     ):
         try:
             base_url = Client.get_base_url(environment)
-            ec_key = Client.get_ec_key(private_key)
+            ec_key = Client.get_ec_key(private_key_or_private_key_path)
             bitpay_client = BitPayClient(base_url, ec_key, proxy)
             guid_generator = GuidGenerator()
 
@@ -103,42 +103,44 @@ class Client:
             raise BitPayException("Configuration file not found")
 
         try:
-            read_file = open(config_file_path, "r")
-            json_data = json.loads(read_file.read())
+            with open(config_file_path, "r") as read_file:
+                json_data = json.loads(read_file.read())
 
             environment = json_data["BitPayConfiguration"]["Environment"]
             config = json_data["BitPayConfiguration"]["EnvConfig"][environment]
             proxy = config["proxy"]
-            ec_key = config["PrivateKey"]
+            private_key_path = config["PrivateKeyPath"]
+            if private_key_path is None:
+                private_key_or_private_key_path = config["PrivateKey"]
+            else:
+                private_key_or_private_key_path = private_key_path
+
             token_container = TokenContainer()
             token_container.add_pos(config["ApiTokens"].get("pos", None))
             token_container.add_merchant(config["ApiTokens"].get("merchant", None))
             token_container.add_payout(config["ApiTokens"].get("payout", None))
-            read_file.close()
 
             if "test" == environment.lower():
                 environment = Environment.TEST
             else:
                 environment = Environment.PROD
 
-            return Client.create_client_by_private_key(
-                ec_key, token_container, environment, proxy
+            return Client.create_client(
+                private_key_or_private_key_path, token_container, environment, proxy
             )
         except Exception as exe:
             raise BitPayException("Error when reading configuration file. " + str(exe))
 
     @staticmethod
-    def get_ec_key(private_key: Optional[str]) -> str:
-        if private_key is None:
+    def get_ec_key(private_key_or_private_key_path: Optional[str]) -> str:
+        if private_key_or_private_key_path is None:
             raise BitPayException("Private Key file not found")
 
-        if os.path.exists(private_key):
-            read_file = open(private_key, "r")
-            plain_private_key = read_file.read()
-            read_file.close()
-            return plain_private_key
+        if os.path.exists(private_key_or_private_key_path):
+            with open(private_key_or_private_key_path, "r") as read_file:
+                return read_file.read()
 
-        return private_key
+        return private_key_or_private_key_path
 
     @staticmethod
     def get_base_url(environment: Environment) -> str:
