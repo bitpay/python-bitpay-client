@@ -55,7 +55,7 @@ def select_create_key() -> None:
         if input_value == "":
             create_new_key()
         else:
-            load_key()
+            load_key(input_value)
     except BitPayException as exe:
         print(exe)
 
@@ -191,9 +191,16 @@ def update_config_file() -> None:
         print(exe)
 
 
-def load_key() -> None:
-    # TODO: Need to implement this function
-    pass
+def load_key(path: str) -> None:
+    global private_key_path
+
+    private_key_path = path
+    if not os.path.exists(private_key_path):
+        print("Please set correct private key path! \n")
+        pass
+
+    with open(os.path.abspath(private_key_path), "r") as private_key:
+        select_tokens(private_key.read())
 
 
 if __name__ == "__main__":
