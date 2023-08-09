@@ -172,7 +172,7 @@ def update_config_file() -> None:
         }
 
         with open(os.path.abspath("bitpay.config.json"), "w") as outfile:
-            json.dump(config, outfile)
+            json.dump(config, outfile, indent=2)
             print(
                 "Generated configuration file at path: ",
                 os.path.abspath("bitpay.config.json"),
