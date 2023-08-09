@@ -2,7 +2,7 @@
 Class Client
 package Bitpay
 author  Antonio Buedo
-version 4.0.0
+version 4.0.1
 See https://developer.bitpay.com/reference/concepts for more information.
 """
 import os
