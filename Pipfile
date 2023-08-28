@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 ecdsa = "==0.18.0"
-requests = "==2.28.2"
+requests = "==2.31.0"
 
 [dev-packages]
 black = "==23.7.0"
