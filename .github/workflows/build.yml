@@ -23,8 +23,8 @@ jobs:
         run: |
           pipenv install --dev
           pipenv run pip3 install typing-extensions
-      - name: Run code formatter
-        run: pipenv run black src/
+      - name: Check code format
+        run: pipenv run black --check src/
       - name: Run static analysis
         run: |
           pipenv run mypy --install-types --non-interactive src/

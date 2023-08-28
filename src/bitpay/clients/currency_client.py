@@ -26,7 +26,7 @@ class CurrencyClient:
         except BitPayException as exe:
             raise CurrencyQueryException(
                 "failed to serialize Currency object :  %s" % str(exe),
-                api_code=exe.get_api_code()
+                api_code=exe.get_api_code(),
             )
 
         try:

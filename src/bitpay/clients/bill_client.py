@@ -42,7 +42,8 @@ class BillClient:
             )
         except BitPayException as exe:
             raise BillCreationException(
-                "failed to serialize bill object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize bill object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -73,7 +74,8 @@ class BillClient:
             )
         except BitPayException as exe:
             raise BillQueryException(
-                "failed to serialize bill object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize bill object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -100,7 +102,8 @@ class BillClient:
             response_json = self.__bitpay_client.get("bills", params, True)
         except BitPayException as exe:
             raise BillQueryException(
-                "failed to serialize bill object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize bill object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -134,7 +137,8 @@ class BillClient:
             )
         except BitPayException as exe:
             raise BillUpdateException(
-                "failed to serialize bill object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize bill object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -162,7 +166,8 @@ class BillClient:
             )
         except BitPayException as exe:
             raise BillDeliveryException(
-                "failed to serialize bill object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize bill object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:

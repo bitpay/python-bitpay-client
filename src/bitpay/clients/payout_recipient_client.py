@@ -61,7 +61,7 @@ class PayoutRecipientClient:
         except BitPayException as exe:
             raise PayoutRecipientCreationException(
                 "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                api_code=exe.get_api_code()
+                api_code=exe.get_api_code(),
             )
 
         try:
