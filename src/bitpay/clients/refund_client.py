@@ -79,7 +79,8 @@ class RefundClient:
             response_json = self.__bitpay_client.post("refunds", params, True)
         except BitPayException as exe:
             raise RefundCreationException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundCreationException(
@@ -100,7 +101,8 @@ class RefundClient:
             response_json = self.__bitpay_client.get("refunds/%s" % refund_id, params)
         except BitPayException as exe:
             raise RefundQueryException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundQueryException("failed to serialize refund object : %s" % exe)
@@ -127,7 +129,8 @@ class RefundClient:
             response_json = self.__bitpay_client.get("refunds/guid/%s" % guid, params)
         except BitPayException as exe:
             raise RefundQueryException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundQueryException("failed to serialize refund object : %s" % exe)
@@ -157,7 +160,8 @@ class RefundClient:
             response_json = self.__bitpay_client.get("refunds", params)
         except BitPayException as exe:
             raise RefundQueryException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundQueryException(
@@ -198,7 +202,8 @@ class RefundClient:
             )
         except BitPayException as exe:
             raise RefundUpdateException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundUpdateException(
@@ -235,7 +240,8 @@ class RefundClient:
             )
         except BitPayException as exe:
             raise RefundUpdateException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundUpdateException(
@@ -267,7 +273,8 @@ class RefundClient:
             )
         except BitPayException as exe:
             raise RefundCancellationException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundCancellationException(
@@ -299,7 +306,8 @@ class RefundClient:
             )
         except BitPayException as exe:
             raise RefundCancellationException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundCancellationException(
@@ -331,7 +339,8 @@ class RefundClient:
             )
         except BitPayException as exe:
             raise RefundNotificationException(
-                "failed to serialize refund object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize refund object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
         except Exception as exe:
             raise RefundNotificationException(

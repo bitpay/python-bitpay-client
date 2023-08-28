@@ -37,7 +37,8 @@ class PayoutClient:
             response_json = self.__bitpay_client.post("payouts", payout.to_json(), True)
         except BitPayException as exe:
             raise PayoutCreationException(
-                "failed to serialize Payout object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize Payout object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -65,7 +66,8 @@ class PayoutClient:
             response_json = self.__bitpay_client.get("payouts/%s" % payout_id, params)
         except BitPayException as exe:
             raise PayoutQueryException(
-                "failed to serialize Payout object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize Payout object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -118,7 +120,8 @@ class PayoutClient:
             response_json = self.__bitpay_client.get("payouts", params)
         except BitPayException as exe:
             raise PayoutQueryException(
-                "failed to serialize Payout object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize Payout object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -228,7 +231,9 @@ class PayoutClient:
     def cancel_group(self, group_id: str) -> PayoutGroup:
         params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
         try:
-            response_json = self.__bitpay_client.delete("payouts/group/" + group_id, params)
+            response_json = self.__bitpay_client.delete(
+                "payouts/group/" + group_id, params
+            )
             return self.get_payout_group_response(response_json, "cancelled")
         except BitPayException as exe:
             raise PayoutCancellationException(

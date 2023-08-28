@@ -39,7 +39,8 @@ class LedgerClient:
             response_json = self.__bitpay_client.get("ledgers/%s" % currency, params)
         except BitPayException as exe:
             raise LedgerQueryException(
-                "failed to serialize Ledger object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize Ledger object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -68,7 +69,8 @@ class LedgerClient:
             response_json = self.__bitpay_client.get("ledgers", params)
         except BitPayException as exe:
             raise LedgerQueryException(
-                "failed to serialize Ledger object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize Ledger object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:

@@ -26,7 +26,8 @@ class RateClient:
             response_json = self.__bitpay_client.get("rates", None, False)
         except BitPayException as exe:
             raise RateQueryException(
-                "failed to serialize Rates object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize Rates object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -57,7 +58,8 @@ class RateClient:
             )
         except BitPayException as exe:
             raise RateQueryException(
-                "failed to serialize Rates object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize Rates object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
@@ -92,7 +94,8 @@ class RateClient:
             )
         except BitPayException as exe:
             raise RateQueryException(
-                "failed to serialize Rates object :  %s" % str(exe), api_code=exe.get_api_code()
+                "failed to serialize Rates object :  %s" % str(exe),
+                api_code=exe.get_api_code(),
             )
 
         try:
