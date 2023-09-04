@@ -33,7 +33,7 @@ class PayoutClient:
         :raises PayoutCreationException
         """
         try:
-            payout.set_token(self.__token_container.get_access_token(Facade.PAYOUT))
+            payout.token = self.__token_container.get_access_token(Facade.PAYOUT)
             response_json = self.__bitpay_client.post("payouts", payout.to_json(), True)
         except BitPayException as exe:
             raise PayoutCreationException(
@@ -206,8 +206,8 @@ class PayoutClient:
             for fail in response_json["failed"]:
                 failed.append(PayoutGroupFailed(**fail))
 
-            return PayoutGroup(payouts, failed)
-        except:
+            return PayoutGroup(payouts=payouts, failed=failed)
+        except Exception:
             raise PayoutException("Unable to parse payouts")
 
     def create_group(self, payouts: List[Payout]) -> PayoutGroup:

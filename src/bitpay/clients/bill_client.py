@@ -36,7 +36,7 @@ class BillClient:
         :raises BillCreationException
         """
         try:
-            bill.set_token(self.__token_container.get_access_token(facade))
+            bill.token = self.__token_container.get_access_token(facade)
             response_json = self.__bitpay_client.post(
                 "bills", bill.to_json(), sign_request
             )
@@ -129,7 +129,7 @@ class BillClient:
         :raises BillUpdateException
         """
         try:
-            if bill.get_token() is None:
+            if bill.token is None:
                 raise BillUpdateException("missing Bill token")
 
             response_json = self.__bitpay_client.update(
