@@ -48,7 +48,7 @@ class Payout:
         amount: float = 0.0,
         currency: Optional[str] = None,
         ledger_currency: Optional[str] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> None:
         self.set_amount(amount)
         if currency:

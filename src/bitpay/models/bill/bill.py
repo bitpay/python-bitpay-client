@@ -45,7 +45,7 @@ class Bill:
         number: Optional[str] = None,
         currency: Optional[str] = None,
         email: Optional[str] = None,
-        **kwargs: dict
+        **kwargs: dict,
     ) -> None:
         self.set_number(number)
         self.set_email(email)

@@ -40,7 +40,7 @@ class Refund:
         amount: float = 0.0,
         currency: str = "",
         token: str = "",
-        **kwargs: dict
+        **kwargs: dict,
     ) -> None:
         self.set_invoice(invoice_id)
         self.set_amount(amount)

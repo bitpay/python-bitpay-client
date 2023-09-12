@@ -99,7 +99,7 @@ class Invoice:
         self,
         price: Optional[float] = None,
         currency: Optional[str] = None,
-        **kwargs: dict
+        **kwargs: dict,
     ) -> None:
         self.set_price(price)
         self.set_currency(currency)
