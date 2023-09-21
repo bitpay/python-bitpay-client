@@ -50,10 +50,10 @@ class PayoutRecipientClient:
         :raises PayoutRecipientCreationException
         """
         try:
-            if recipients.get_guid() is None:
-                recipients.set_guid(self.__guid_generator.execute())
+            if recipients.guid is None:
+                recipients.guid = self.__guid_generator.execute()
 
-            recipients.set_token(self.__token_container.get_access_token(Facade.PAYOUT))
+            recipients.token = self.__token_container.get_access_token(Facade.PAYOUT)
 
             response_json = self.__bitpay_client.post(
                 "recipients", recipients.to_json(), True
@@ -158,8 +158,8 @@ class PayoutRecipientClient:
         :raises PayoutRecipientUpdateException
         """
         try:
-            recipient.set_token(self.__token_container.get_access_token(Facade.PAYOUT))
-            recipient.set_guid(self.__guid_generator.execute())
+            recipient.token = self.__token_container.get_access_token(Facade.PAYOUT)
+            recipient.guid = self.__guid_generator.execute()
             response_json = self.__bitpay_client.update(
                 "recipients/%s" % recipient_id, recipient.to_json()
             )

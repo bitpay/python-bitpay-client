@@ -4,27 +4,11 @@ from bitpay.models.invoice.refund_info import RefundInfo
 
 
 @pytest.mark.unit
-def test_modify_support_request():
-    refund_info = RefundInfo()
-    value = "someValue"
-    refund_info.set_support_request(value)
+def test_construct():
+    support_request = "someValue"
+    currency = "USD"
 
-    assert value == refund_info.get_support_request()
+    refund = RefundInfo(support_request=support_request, currency=currency)
 
-
-@pytest.mark.unit
-def test_modify_currency():
-    refund_info = RefundInfo()
-    value = "someValue"
-    refund_info.set_currency(value)
-
-    assert value == refund_info.get_currency()
-
-
-@pytest.mark.unit
-def test_modify_amounts():
-    refund_info = RefundInfo()
-    value = []
-    refund_info.set_amounts(value)
-
-    assert value == refund_info.get_amounts()
+    assert support_request == refund.support_request
+    assert currency == refund.currency
