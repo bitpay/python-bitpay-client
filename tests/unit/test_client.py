@@ -70,28 +70,28 @@ def mock_response(
 
 
 def get_example_invoice():
-    invoice = Invoice(2.16, "eur")
-    invoice.set_order_id("98e572ea-910e-415d-b6de-65f5090680f6")
-    invoice.set_full_notifications(True)
-    invoice.set_extended_notifications(True)
-    invoice.set_transaction_speed("medium")
-    invoice.set_notification_url("https://hookbin.com/lJnJg9WW7MtG9GZlPVdj")
-    invoice.set_redirect_u_r_l("https://hookbin.com/lJnJg9WW7MtG9GZlPVdj")
-    invoice.set_pos_data("98e572ea35hj356xft8y8cgh56h5090680f6")
-    invoice.set_item_desc("Ab tempora sed ut.")
+    invoice = Invoice(price=2.16, currency="eur")
+    invoice.order_id = "98e572ea-910e-415d-b6de-65f5090680f6"
+    invoice.full_notifications = True
+    invoice.extended_notifications = True
+    invoice.transaction_speed = "medium"
+    invoice.notification_url = "https://hookbin.com/lJnJg9WW7MtG9GZlPVdj"
+    invoice.redirect_url = "https://hookbin.com/lJnJg9WW7MtG9GZlPVdj"
+    invoice.pos_data = "98e572ea35hj356xft8y8cgh56h5090680f6"
+    invoice.item_desc = "Ab tempora sed ut."
     buyer = Buyer()
-    buyer.set_name("Bily Matthews")
-    buyer.set_email("sandbox@bitpay.com")
-    buyer.set_address1("168 General Grove")
-    buyer.set_address2("sandbox@bitpay.com")
-    buyer.set_country("AD")
-    buyer.set_locality("Port Horizon")
-    buyer.set_notify(True)
-    buyer.set_phone("+99477512690")
-    buyer.set_postal_code("KY7 1TH")
-    buyer.set_region("New Port")
-    buyer.set_buyer_email("sandbox1@bitpay.com")
-    invoice.set_buyer(buyer)
+    buyer.name = "Bily Matthews"
+    buyer.email = "sandbox@bitpay.com"
+    buyer.address1 = "168 General Grove"
+    buyer.address2 = "sandbox@bitpay.com"
+    buyer.country = "AD"
+    buyer.locality = "Port Horizon"
+    buyer.notify = True
+    buyer.phone = "+99477512690"
+    buyer.postal_code = "KY7 1TH"
+    buyer.region = "New Port"
+    buyer.buyer_email = "sandbox1@bitpay.com"
+    invoice.buyer = buyer
     return invoice
 
 
@@ -99,50 +99,48 @@ def get_example_bill():
     cc: List[str] = ["jane@doe.com"]
     item1 = Item()
     item2 = Item()
-    item1.set_description("Test Item 1")
-    item1.set_price(6.00)
-    item1.set_quantity(1)
-    item2.set_description("Test Item 2")
-    item2.set_price(4.00)
-    item2.set_quantity(1)
-    bill = Bill("bill1234-ABCD", "USD", "some@email.com")
-    bill.set_name("John Doe")
-    bill.set_address1("2630 Hegal Place")
-    bill.set_address2("Apt 42")
-    bill.set_city("Alexandria")
-    bill.set_state("VA")
-    bill.set_zip("23242")
-    bill.set_country("US")
-    bill.set_cc(cc)
-    bill.set_phone("555-123-456")
-    bill.set_due_date("2021-5-31")
-    bill.set_pass_processing_fee(True)
-    bill.set_items([item1, item2])
+    item1.description = "Test Item 1"
+    item1.price = 6.00
+    item1.quantity = 1
+    item2.description = "Test Item 2"
+    item2.price = 4.00
+    item2.quantity = 1
+    bill = Bill(number="bill1234-ABCD", currency="USD", email="some@email.com")
+    bill.name = "John Doe"
+    bill.address1 = "2630 Hegal Place"
+    bill.address2 = "Apt 42"
+    bill.city = "Alexandria"
+    bill.state = "VA"
+    bill.zip = "23242"
+    bill.country = "US"
+    bill.cc = cc
+    bill.phone = "555-123-456"
+    bill.due_date = "2021-5-31"
+    bill.pass_processing_fee = True
+    bill.items = [item1, item2]
     return bill
 
 
 def get_example_payout_recipients():
     recipient1 = PayoutRecipient()
     recipient2 = PayoutRecipient()
-    recipient1.set_email("alice@email.com")
-    recipient2.set_email("bob@email.com")
-    recipient1.set_label("Alice")
-    recipient2.set_label("Bob")
+    recipient1.email = "alice@email.com"
+    recipient2.email = "bob@email.com"
+    recipient1.label = "Alice"
+    recipient2.label = "Bob"
     recipients_list = [recipient1, recipient2]
     recipient = PayoutRecipients()
-    recipient.set_recipients(recipients_list)
+    recipient.recipients = recipients_list
     return recipient
 
 
 def get_example_payout():
-    payout = Payout(10.00, "USD", "GBP")
-    payout.set_reference("payout_20210527")
-    payout.set_notification_url(
-        "https://yournotiticationURL.com/wed3sa0wx1rz5bg0bv97851eqx"
-    )
-    payout.set_notification_email("merchant@email.com")
-    payout.set_email("john@doe.com")
-    payout.set_label("John Doe")
+    payout = Payout(amount=10.00, currency="USD", ledger_currency="GBP")
+    payout.reference = "payout_20210527"
+    payout.notification_url = "https://yournotiticationURL.com/wed3sa0wx1rz5bg0bv97851eqx"
+    payout.notification_email = "merchant@email.com"
+    payout.email = "john@doe.com"
+    payout.label = "John Doe"
     return payout
 
 
@@ -164,8 +162,8 @@ def test_get_currencies(mocker):
 
     # assert
     assert len(result) == 183
-    assert result.get("BTC").get_code() == "BTC"
-    assert result.get("BTC").get_name() == "Bitcoin"
+    assert result.get("BTC").code == "BTC"
+    assert result.get("BTC").name == "Bitcoin"
 
 
 @pytest.mark.unit
@@ -194,23 +192,23 @@ def test_create_invoice_by_merchant(mocker):
     result = client.create_invoice(get_example_invoice(), Facade.MERCHANT, True)
 
     # assert
-    assert result.get_order_id() == "026184kc-d001-41j9-9732d-bb249u7b0c24"
-    assert result.get_guid() == "chc9kj52-04g0-4b6f-941d-3a844e352758"
-    assert result.get_buyer_provided_info().get_name() == "Marcin"
-    assert result.get_payment_totals()["ETH"] == 9589000000000000
-    assert result.get_merchant_name() == "SUMO Heavy Industries LLC"
-    assert result.get_buyer().get_name() == "Marcin"
-    assert result.get_payment_totals().get("BTC") == 72100
-    assert result.get_payment_display_totals().get("ETH") == "0.009589"
-    assert result.get_exchange_rates().get("BTC").get("USD") == 16676.624268104035
-    assert result.get_miner_fees().get_btc().get_fiat_amount() == 0.02
-    assert result.get_supported_transaction_currencies().get_pax().get_enabled() is True
+    assert result.order_id == "026184kc-d001-41j9-9732d-bb249u7b0c24"
+    assert result.guid == "chc9kj52-04g0-4b6f-941d-3a844e352758"
+    assert result.buyer_provided_info.name == "Marcin"
+    assert result.payment_totals["ETH"] == 9589000000000000
+    assert result.merchant_name == "SUMO Heavy Industries LLC"
+    assert result.buyer.name == "Marcin"
+    assert result.payment_totals.get("BTC") == 72100
+    assert result.payment_display_totals.get("ETH") == "0.009589"
+    assert result.exchange_rates.get("BTC").get("USD") == 16676.624268104035
+    assert result.miner_fees.btc.fiat_amount == 0.02
+    assert result.supported_transaction_currencies.pax.enabled is True
     assert (
-        result.get_payment_codes().get("BTC").get("BIP73")
+        result.payment_codes.get("BTC").get("BIP73")
         == "https://test.bitpay.com/i/UZjwcYkWAKfTMn9J1yyfs4"
     )
     assert (
-        result.get_universal_codes().get_payment_string()
+        result.universal_codes.payment_string
         == "https://link.test.bitpay.com/i/UZjwcYkWAKfTMn9J1yyfs4"
     )
 
@@ -244,11 +242,11 @@ def test_create_invoice_by_pos(mocker):
     result = client.create_invoice(get_example_invoice(), Facade.POS, False)
 
     # assert
-    assert result.get_order_id() == "026184kc-d001-41j9-9732d-bb249u7b0c24"
-    assert result.get_guid() == "chc9kj52-04g0-4b6f-941d-3a844e352758"
-    assert result.get_buyer_provided_info().get_name() == "Marcin"
-    assert result.get_payment_totals()["ETH"] == 9589000000000000
-    assert result.get_merchant_name() == "SUMO Heavy Industries LLC"
+    assert result.order_id == "026184kc-d001-41j9-9732d-bb249u7b0c24"
+    assert result.guid == "chc9kj52-04g0-4b6f-941d-3a844e352758"
+    assert result.buyer_provided_info.name == "Marcin"
+    assert result.payment_totals["ETH"] == 9589000000000000
+    assert result.merchant_name == "SUMO Heavy Industries LLC"
 
 
 @pytest.mark.unit
@@ -270,10 +268,10 @@ def test_get_invoice_by_merchant(mocker):
     result = client.get_invoice(invoice_id, Facade.MERCHANT)
 
     # assert
-    assert result.get_guid() == guid_token
-    assert result.get_order_id() == "084a86b6-68aa-47bc-b435-e64d122391d1"
-    assert result.get_buyer_provided_info().get_name() == "Marcin"
-    assert result.get_merchant_name() == "SUMO Heavy Industries LLC"
+    assert result.guid == guid_token
+    assert result.order_id == "084a86b6-68aa-47bc-b435-e64d122391d1"
+    assert result.buyer_provided_info.name == "Marcin"
+    assert result.merchant_name == "SUMO Heavy Industries LLC"
 
 
 @pytest.mark.unit
@@ -299,10 +297,10 @@ def test_get_invoice_by_pos(mocker):
     result = client.get_invoice(invoice_id, Facade.POS, False)
 
     # assert
-    assert result.get_guid() == guid_token
-    assert result.get_order_id() == "084a86b6-68aa-47bc-b435-e64d122391d1"
-    assert result.get_buyer_provided_info().get_name() == "Marcin"
-    assert result.get_merchant_name() == "SUMO Heavy Industries LLC"
+    assert result.guid == guid_token
+    assert result.order_id == "084a86b6-68aa-47bc-b435-e64d122391d1"
+    assert result.buyer_provided_info.name == "Marcin"
+    assert result.merchant_name == "SUMO Heavy Industries LLC"
 
 
 @pytest.mark.unit
@@ -324,10 +322,10 @@ def test_get_invoice_by_guid(mocker):
     result = client.get_invoice_by_guid(guid_token, Facade.MERCHANT)
 
     # assert
-    assert result.get_guid() == guid_token
-    assert result.get_order_id() == "084a86b6-68aa-47bc-b435-e64d122391d1"
-    assert result.get_buyer_provided_info().get_name() == "Marcin"
-    assert result.get_merchant_name() == "SUMO Heavy Industries LLC"
+    assert result.guid == guid_token
+    assert result.order_id == "084a86b6-68aa-47bc-b435-e64d122391d1"
+    assert result.buyer_provided_info.name == "Marcin"
+    assert result.merchant_name == "SUMO Heavy Industries LLC"
 
 
 @pytest.mark.unit
@@ -363,9 +361,9 @@ def test_get_invoices(mocker):
 
     # assert
     assert len(result) == 1
-    assert result[0].get_order_id() == "084a86b6-68aa-47bc-b435-e64d122391d1"
-    assert result[0].get_buyer_provided_info().get_name() == "Marcin"
-    assert result[0].get_merchant_name() == "SUMO Heavy Industries LLC"
+    assert result[0].order_id == "084a86b6-68aa-47bc-b435-e64d122391d1"
+    assert result[0].buyer_provided_info.name == "Marcin"
+    assert result[0].merchant_name == "SUMO Heavy Industries LLC"
 
 
 @pytest.mark.unit
@@ -392,11 +390,11 @@ def test_get_invoice_event_token(mocker):
 
     # assert
     assert (
-        result.get_token()
+        result.token
         == "4MuqDPt93i9Xbf8SnAPniwbGeNLW8A3ScgAmukFMgFUFRqTLuuhVdAFfePPysVqL2P"
     )
-    assert result.get_events()[1] == "confirmation"
-    assert result.get_actions()[1] == "unsubscribe"
+    assert result.events[1] == "confirmation"
+    assert result.actions[1] == "unsubscribe"
 
 
 @pytest.mark.unit
@@ -422,7 +420,7 @@ def test_update_invoice(mocker):
     result = client.update_invoice(invoice_id, buyer_email)
 
     # assert
-    assert result.get_guid() == "chc9kj52-04g0-4b6f-941d-3a844e352758"
+    assert result.guid == "chc9kj52-04g0-4b6f-941d-3a844e352758"
 
 
 @pytest.mark.unit
@@ -445,7 +443,9 @@ def test_pay_invoice(mocker):
     result = client.pay_invoice(invoice_id, "complete")
 
     # assert
-    assert result.get_status() == "complete"
+    assert result.status == "complete"
+    assert result.transactions[0].ex_rates.get('USD') == 16678.62
+    assert result.transactions[1].ex_rates is None
 
 
 @pytest.mark.unit
@@ -468,8 +468,8 @@ def test_forced_cancel_invoice(mocker):
     result = client.cancel_invoice(invoice_id, True)
 
     # assert
-    assert result.get_guid() == "payment#1234"
-    assert result.get_is_cancelled() is True
+    assert result.guid == "payment#1234"
+    assert result.is_cancelled is True
 
 
 @pytest.mark.unit
@@ -492,8 +492,8 @@ def test_cancel_invoice(mocker):
     result = client.cancel_invoice(invoice_id, False)
 
     # assert
-    assert result.get_guid() == "payment#1234"
-    assert result.get_is_cancelled() is True
+    assert result.guid == "payment#1234"
+    assert result.is_cancelled is True
 
 
 @pytest.mark.unit
@@ -517,8 +517,8 @@ def test_cancel_invoice_by_guid(mocker):
     result = client.cancel_invoice_by_guid(guid, False)
 
     # assert
-    assert result.get_guid() == "payment#1234"
-    assert result.get_is_cancelled()
+    assert result.guid == "payment#1234"
+    assert result.is_cancelled
 
 
 @pytest.mark.unit
@@ -569,11 +569,11 @@ def test_create_refund(mocker):
     )
 
     # assert
-    assert result.get_guid() == guid
-    assert result.get_currency() == "USD"
-    assert result.get_transaction_currency() == "BTC"
-    assert result.get_refund_fee() == 0.03
-    assert result.get_buyer_pays_refund_fee() is False
+    assert result.guid == guid
+    assert result.currency == "USD"
+    assert result.transaction_currency == "BTC"
+    assert result.refund_fee == 0.03
+    assert result.buyer_pays_refund_fee is False
 
 
 @pytest.mark.unit
@@ -596,10 +596,10 @@ def test_get_refund_by_id(mocker):
     result = client.get_refund(refund_id)
 
     # assert
-    assert result.get_invoice() == "Hpqc63wvE1ZjzeeH4kEycF"
-    assert result.get_transaction_currency() == "BTC"
-    assert result.get_refund_fee() == 0.04
-    assert result.get_buyer_pays_refund_fee() is False
+    assert result.invoice == "Hpqc63wvE1ZjzeeH4kEycF"
+    assert result.transaction_currency == "BTC"
+    assert result.refund_fee == 0.04
+    assert result.buyer_pays_refund_fee is False
 
 
 @pytest.mark.unit
@@ -622,10 +622,10 @@ def test_get_refund_by_guid(mocker):
     result = client.get_refund_by_guid(guid)
 
     # assert
-    assert result.get_invoice() == "Hpqc63wvE1ZjzeeH4kEycF"
-    assert result.get_transaction_currency() == "BTC"
-    assert result.get_refund_fee() == 0.04
-    assert result.get_buyer_pays_refund_fee() is False
+    assert result.invoice == "Hpqc63wvE1ZjzeeH4kEycF"
+    assert result.transaction_currency == "BTC"
+    assert result.refund_fee == 0.04
+    assert result.buyer_pays_refund_fee is False
 
 
 @pytest.mark.unit
@@ -647,8 +647,8 @@ def test_get_refunds(mocker):
 
     # assert
     assert len(result) == 1
-    assert result[0].get_id() == "WoE46gSLkJQS48RJEiNw3L"
-    assert result[0].get_reference() == "Test refund"
+    assert result[0].id == "WoE46gSLkJQS48RJEiNw3L"
+    assert result[0].reference == "Test refund"
 
 
 @pytest.mark.unit
@@ -672,10 +672,10 @@ def update_refund_by_id(mocker):
     result = client.update_refund(refund_id, status)
 
     # assert
-    assert result.get_invoice() == "Hpqc63wvE1ZjzeeH4kEycF"
-    assert result.get_transaction_currency() == "BTC"
-    assert result.get_refund_fee() == 0.04
-    assert result.get_buyer_pays_refund_fee() is False
+    assert result.invoice == "Hpqc63wvE1ZjzeeH4kEycF"
+    assert result.transaction_currency == "BTC"
+    assert result.refund_fee == 0.04
+    assert result.buyer_pays_refund_fee is False
 
 
 @pytest.mark.unit
@@ -699,10 +699,10 @@ def update_refund_by_guid(mocker):
     result = client.update_refund_by_guid(guid_id, status)
 
     # assert
-    assert result.get_invoice() == "Hpqc63wvE1ZjzeeH4kEycF"
-    assert result.get_transaction_currency() == "BTC"
-    assert result.get_refund_fee() == 0.04
-    assert result.get_buyer_pays_refund_fee() is False
+    assert result.invoice == "Hpqc63wvE1ZjzeeH4kEycF"
+    assert result.transaction_currency == "BTC"
+    assert result.refund_fee == 0.04
+    assert result.buyer_pays_refund_fee is False
 
 
 @pytest.mark.unit
@@ -745,7 +745,7 @@ def test_cancel_refund_by_id(mocker):
     result = client.cancel_refund(refund_id)
 
     # assert
-    assert result.get_status() == "cancelled"
+    assert result.status == "cancelled"
 
 
 @pytest.mark.unit
@@ -769,7 +769,7 @@ def test_cancel_refund_by_guid(mocker):
     result = client.cancel_refund_by_guid(guid)
 
     # assert
-    assert result.get_status() == "cancelled"
+    assert result.status == "cancelled"
 
 
 @pytest.mark.unit
@@ -795,13 +795,13 @@ def test_create_bill_by_merchant_facade(mocker):
     result = client.create_bill(bill)
 
     # assert
-    assert result.get_status() == "draft"
-    assert result.get_number() == "bill1234-ABCD"
-    assert result.get_cc()[0] == "jane@doe.com"
-    assert result.get_id() == "X6KJbe9RxAGWNReCwd1xRw"
-    assert result.get_items()[1].get_description() == "Test Item 2"
+    assert result.status == "draft"
+    assert result.number == "bill1234-ABCD"
+    assert result.cc[0] == "jane@doe.com"
+    assert result.id == "X6KJbe9RxAGWNReCwd1xRw"
+    assert result.items[1].description == "Test Item 2"
     assert (
-        result.get_token()
+        result.token
         == "qVVgRARN6fKtNZ7Tcq6qpoPBBE3NxdrmdMD883RyMK4Pf8EHENKVxCXhRwyynWveo"
     )
 
@@ -834,13 +834,13 @@ def test_create_bill_by_pos_facade(mocker):
     result = client.create_bill(bill, Facade.POS, False)
 
     # assert
-    assert result.get_status() == "draft"
-    assert result.get_number() == "bill1234-ABCD"
-    assert result.get_cc()[0] == "jane@doe.com"
-    assert result.get_id() == "X6KJbe9RxAGWNReCwd1xRw"
-    assert result.get_items()[1].get_description() == "Test Item 2"
+    assert result.status == "draft"
+    assert result.number == "bill1234-ABCD"
+    assert result.cc[0] == "jane@doe.com"
+    assert result.id == "X6KJbe9RxAGWNReCwd1xRw"
+    assert result.items[1].description == "Test Item 2"
     assert (
-        result.get_token()
+        result.token
         == "qVVgRARN6fKtNZ7Tcq6qpoPBBE3NxdrmdMD883RyMK4Pf8EHENKVxCXhRwyynWveo"
     )
 
@@ -864,11 +864,12 @@ def test_get_bill_by_merchant_facade(mocker):
     result = client.get_bill(bill_id)
 
     # assert
-    assert result.get_status() == "draft"
-    assert result.get_merchant() == "7HyKWn3d4xdhAMQYAEVxVq"
-    assert result.get_items()[1].get_id() == "Apy3i2TpzHRYP8tJCkrZMT"
+    assert result.status == "draft"
+    assert result.due_date == "2021-05-31T00:00:00.000Z"
+    assert result.merchant == "7HyKWn3d4xdhAMQYAEVxVq"
+    assert result.items[1].id == "Apy3i2TpzHRYP8tJCkrZMT"
     assert (
-        result.get_token()
+        result.token
         == "6EBQR37MgDJPfEiLY3jtRq7eTP2aodR5V5wmXyyZhru5FM5yF4RCGKYQtnT7nhwHjA"
     )
 
@@ -896,11 +897,11 @@ def test_get_bill_by_pos_facade(mocker):
     result = client.get_bill(bill_id, Facade.POS, False)
 
     # assert
-    assert result.get_status() == "draft"
-    assert result.get_merchant() == "7HyKWn3d4xdhAMQYAEVxVq"
-    assert result.get_items()[1].get_id() == "Apy3i2TpzHRYP8tJCkrZMT"
+    assert result.status == "draft"
+    assert result.merchant == "7HyKWn3d4xdhAMQYAEVxVq"
+    assert result.items[1].id == "Apy3i2TpzHRYP8tJCkrZMT"
     assert (
-        result.get_token()
+        result.token
         == "6EBQR37MgDJPfEiLY3jtRq7eTP2aodR5V5wmXyyZhru5FM5yF4RCGKYQtnT7nhwHjA"
     )
 
@@ -924,16 +925,16 @@ def test_get_bills(mocker):
     # assert
     assert len(result) == 2
     assert (
-        result[0].get_token()
+        result[0].token
         == "6EBQR37MgDJPfEiLY3jtRqBMYLg8XSDqhp2kp7VSDqCMHGHnsw4bqnnwQmtehzCvSo"
     )
     assert (
-        result[1].get_token()
+        result[1].token
         == "6EBQR37MgDJPfEiLY3jtRq7eTP2aodR5V5wmXyyZhru5FM5yF4RCGKYQtnT7nhwHjA"
     )
-    assert result[0].get_id() == "X6KJbe9RxAGWNReCwd1xRw"
-    assert result[1].get_id() == "3Zpmji8bRKxWJo2NJbWX5H"
-    assert result[1].get_state() == "VA"
+    assert result[0].id == "X6KJbe9RxAGWNReCwd1xRw"
+    assert result[1].id == "3Zpmji8bRKxWJo2NJbWX5H"
+    assert result[1].state == "VA"
 
 
 @pytest.mark.unit
@@ -956,16 +957,16 @@ def test_get_bills_by_status(mocker):
     # assert
     assert len(result) == 2
     assert (
-        result[0].get_token()
+        result[0].token
         == "6EBQR37MgDJPfEiLY3jtRqBMYLg8XSDqhp2kp7VSDqCMHGHnsw4bqnnwQmtehzCvSo"
     )
     assert (
-        result[1].get_token()
+        result[1].token
         == "6EBQR37MgDJPfEiLY3jtRq7eTP2aodR5V5wmXyyZhru5FM5yF4RCGKYQtnT7nhwHjA"
     )
-    assert result[0].get_id() == "X6KJbe9RxAGWNReCwd1xRw"
-    assert result[1].get_id() == "3Zpmji8bRKxWJo2NJbWX5H"
-    assert result[1].get_state() == "VA"
+    assert result[0].id == "X6KJbe9RxAGWNReCwd1xRw"
+    assert result[1].id == "3Zpmji8bRKxWJo2NJbWX5H"
+    assert result[1].state == "VA"
 
 
 @pytest.mark.unit
@@ -1001,17 +1002,17 @@ def test_update_bill(mocker):
 
     # act
     bill = get_example_bill()
-    bill.set_token("billToken")
+    bill.token = "billToken"
     result = client.update_bill(bill, bill_id)
 
     # assert
-    assert result.get_status() == "draft"
-    assert result.get_number() == "bill1234-EFGH"
-    assert result.get_cc()[0] == "jane@doe.com"
-    assert result.get_id() == "X6KJbe9RxAGWNReCwd1xRw"
-    assert result.get_items()[1].get_description() == "Test Item 2"
+    assert result.status == "draft"
+    assert result.number == "bill1234-EFGH"
+    assert result.cc[0] == "jane@doe.com"
+    assert result.id == "X6KJbe9RxAGWNReCwd1xRw"
+    assert result.items[1].description == "Test Item 2"
     assert (
-        result.get_token()
+        result.token
         == "6EBQR37MgDJPfEiLY3jtRq7eTP2aodR5V5wmXyyZhru5FM5yF4RCGKYQtnT7nhwHjA"
     )
 
@@ -1035,25 +1036,6 @@ def test_deliver_bill_by_merchant_facade(mocker):
     assert result is True
 
 
-#
-# def test_deliverBill_by_pos_facade(mocker):
-#     # arrange
-#     bitpay_client = get_bitpay_client(mocker)
-#     with open(os.path.abspath(os.path.dirname(__file__)) + '/json/create_invoice_response.json', 'r') as file:
-#         response = json.load(file)
-#     params = {"token": merchant_token_value}
-#     bitpay_client.post.side_effect = mock_response(response, "invoices", params, True)
-#     client = init_client(mocker, bitpay_client)
-#
-#     # act
-#     result = client.
-#
-#     # assert
-#     assert
-#
-#
-
-
 @pytest.mark.unit
 def test_get_rates(mocker):
     # arrange
@@ -1070,7 +1052,8 @@ def test_get_rates(mocker):
     result = client.get_rates()
 
     # assert
-    assert len(result.get_rates()) == 9
+    assert len(result.rates) == 9
+    assert result.get_rate("BCH") == 50.77
 
 
 @pytest.mark.unit
@@ -1085,7 +1068,7 @@ def test_get_currency_rates_usd(mocker):
     result = client.get_currency_rates("USD")
 
     # assert
-    assert len(result.get_rates()) == 1
+    assert len(result.rates) == 1
 
 
 @pytest.mark.unit
@@ -1105,7 +1088,7 @@ def test_get_currency_rates_btc(mocker):
     result = client.get_currency_rates("BCH")
 
     # assert
-    assert len(result.get_rates()) == 183
+    assert len(result.rates) == 183
 
 
 @pytest.mark.unit
@@ -1122,9 +1105,9 @@ def test_get_currency_pair_rate(mocker):
     result = client.get_currency_pair_rate("BCH", "USD")
 
     # assert
-    assert result.get_rate() == 119.11
-    assert result.get_name() == "US Dollar"
-    assert result.get_code() == "USD"
+    assert result.rate == 119.11
+    assert result.name == "US Dollar"
+    assert result.code == "USD"
 
 
 @pytest.mark.unit
@@ -1151,9 +1134,9 @@ def get_ledger_entries(mocker):
 
     # assert
     assert len(result) == 3
-    assert result[0].get_description() == "20210510_fghij"
-    assert result[2].get_type() == "Invoice Refund"
-    assert result[2].get_buyer_fields().get_address1() == "2630 Hegal Place"
+    assert result[0].description == "20210510_fghij"
+    assert result[2].type == "Invoice Refund"
+    assert result[2].buyer_fields.address1 == "2630 Hegal Place"
 
 
 @pytest.mark.unit
@@ -1173,8 +1156,8 @@ def test_get_ledgers(mocker):
 
     # assert
     assert len(result) == 3
-    assert result[1].get_currency() == "USD"
-    assert result[1].get_balance() == 2389.82
+    assert result[1].currency == "USD"
+    assert result[1].balance == 2389.82
 
 
 @pytest.mark.unit
@@ -1204,11 +1187,11 @@ def test_submit_payout_recipients(mocker):
     # assert
     assert len(result) == 2
     assert (
-        result[0].get_token()
+        result[0].token
         == "2LVBntm7z92rnuVjVX5ZVaDoUEaoY4LxhZMMzPAMGyXcejgPXVmZ4Ae3oGaCGBFKQf"
     )
-    assert result[1].get_status() == "invited"
-    assert result[1].get_id() == "X3icwc4tE8KJ5hEPNPpDXW"
+    assert result[1].status == "invited"
+    assert result[1].id == "X3icwc4tE8KJ5hEPNPpDXW"
 
 
 @pytest.mark.unit
@@ -1237,11 +1220,11 @@ def test_get_payout_recipients(mocker):
     # assert
     assert len(result) == 2
     assert (
-        result[0].get_token()
+        result[0].token
         == "2LVBntm7z92rnuVjVX5ZVaDoUEaoY4LxhZMMzPAMGyXcejgPXVmZ4Ae3oGaCGBFKQf"
     )
     assert (
-        result[1].get_token()
+        result[1].token
         == "2LVBntm7z92rnuVjVX5ZVaDoUEaoY4LxhZMMzPAMGyXrrBAB9vRY3BVxGLbAa6uEx7"
     )
 
@@ -1267,11 +1250,11 @@ def test_get_payout_recipient(mocker):
     result = client.get_payout_recipient(recipient_id)
 
     # assert
-    assert result.get_email() == "john.smith@email.com"
-    assert result.get_label() == "Bob123"
-    assert result.get_status() == "invited"
+    assert result.email == "john.smith@email.com"
+    assert result.label == "Bob123"
+    assert result.status == "invited"
     assert (
-        result.get_token()
+        result.token
         == "2LVBntm7z92rnuVjVX5ZVaDoUEaoY4LxhZMMzPAMGyXcejgPXVmZ4Ae3oGaCGBFKQf"
     )
 
@@ -1281,9 +1264,7 @@ def test_update_payout_recipient(mocker):
     # arrange
     recipient_id = "JA4cEtmBxCp5cybtnh1rds"
     label = "Bob123"
-    update_payout_recipient_data = PayoutRecipient()
-    update_payout_recipient_data.set_label(label)
-    update_payout_recipient_data.set_token(label)
+    update_payout_recipient_data = PayoutRecipient(label=label, token=label)
     bitpay_client = get_bitpay_client(mocker)
     with open(
         os.path.abspath(os.path.dirname(__file__))
@@ -1306,8 +1287,8 @@ def test_update_payout_recipient(mocker):
     result = client.update_payout_recipient(recipient_id, update_payout_recipient_data)
 
     # assert
-    assert result.get_id() == "X3icwc4tE8KJ5hEPNPpDXW"
-    assert result.get_email() == "bob@email.com"
+    assert result.id == "X3icwc4tE8KJ5hEPNPpDXW"
+    assert result.email == "bob@email.com"
 
 
 @pytest.mark.unit
@@ -1371,16 +1352,16 @@ def test_submit_payout(mocker):
 
     # assert
     assert (
-        result.get_token()
+        result.token
         == "6RZSTPtnzEaroAe2X4YijenRiqteRDNvzbT8NjtcHjUVd9FUFwa7dsX8RFgRDDC5SL"
     )
-    assert result.get_notification_email() == "merchant@email.com"
+    assert result.notification_email == "merchant@email.com"
     assert (
-        result.get_notification_url()
+        result.notification_url
         == "https://yournotiticationURL.com/wed3sa0wx1rz5bg0bv97851eqx"
     )
-    assert result.get_account_id() == "SJcWZCFq344DL8QnXpdBNM"
-    assert result.get_id() == "JMwv8wQCXANoU2ZZQ9a9GH"
+    assert result.account_id == "SJcWZCFq344DL8QnXpdBNM"
+    assert result.id == "JMwv8wQCXANoU2ZZQ9a9GH"
 
 
 @pytest.mark.unit
@@ -1403,14 +1384,14 @@ def test_get_payout(mocker):
     result = client.get_payout(payout_id)
 
     # assert
-    assert result.get_recipient_id() == "LDxRZCGq174SF8AnQpdBPB"
-    assert result.get_shopper_id() == "7qohDf2zZnQK5Qanj8oyC2"
+    assert result.recipient_id == "LDxRZCGq174SF8AnQpdBPB"
+    assert result.shopper_id == "7qohDf2zZnQK5Qanj8oyC2"
     assert (
-        result.get_notification_url()
+        result.notification_url
         == "https://yournotiticationURL.com/wed3sa0wx1rz5bg0bv97851eqx"
     )
     assert (
-        result.get_token()
+        result.token
         == "6RZSTPtnzEaroAe2X4YijenRiqteRDNvzbT8NjtcHjUVd9FUFwa7dsX8RFgRDDC5SL"
     )
 
@@ -1465,13 +1446,13 @@ def test_get_payouts(mocker):
     # assert
     assert len(result) == 2
     assert (
-        result[0].get_notification_url()
+        result[0].notification_url
         == "https://yournotiticationURL.com/wed3sa0wx1rz5bg0bv97851eqx"
     )
-    assert result[0].get_status() == "complete"
-    assert result[0].get_transactions()[0].get_amount() == 0.000254
+    assert result[0].status == "complete"
+    assert result[0].transactions[0].amount == 0.000254
     assert (
-        result[1].get_token()
+        result[1].token
         == "9pVLfvdjt59q1JiY2JEsf2hr5FsjimfY4qRLFi85tMiXSCkJ9mQ2oSQqYKVangKaro"
     )
 
@@ -1494,17 +1475,15 @@ def test_create_payout_group(mocker):
         response = json.load(file)
     shopper_id = "7qohDf2zZnQK5Qanj8oyC2"
     payout = Payout(
-        10,
-        "USD",
-        "USD",
-        **{
-            "reference": "payout_20210527",
-            "notificationEmail": "merchant@email.com",
-            "notificationURL": "https://yournotiticationURL.com/wed3sa0wx1rz5bg0bv97851eqx",
-            "email": "john@doe.com",
-            "recipientId": "LDxRZCGq174SF8AnQpdBPB",
-            "shopperId": shopper_id,
-        }
+        amount=10,
+        currency='USD',
+        ledger_currency='USD',
+        reference='payout_20210527',
+        notificationEmail='merchant@email.com',
+        notificationURL='https://yournotiticationURL.com/wed3sa0wx1rz5bg0bv97851eqx',
+        email='john@doe.com',
+        recipientId='LDxRZCGq174SF8AnQpdBPB',
+        shopperId=shopper_id
     )
 
     params = {"token": payout_token_value}
@@ -1517,8 +1496,8 @@ def test_create_payout_group(mocker):
     result = client.create_payout_group([payout])
 
     # assert
-    assert result.get_payouts()[0].get_shopper_id() == shopper_id
-    assert result.get_failed()[0].get_err_message() == "Ledger currency is required"
+    assert result.payouts[0].shopper_id == shopper_id
+    assert result.failed[0].err_message == "Ledger currency is required"
 
 
 @pytest.mark.unit
@@ -1543,9 +1522,9 @@ def test_cancel_payout_group(mocker):
     result = client.cancel_payout_group(group_id)
 
     # assert
-    assert result.get_payouts()[1].get_shopper_id() == "7qohDf2zZnQK5Qanj8oyC2"
-    assert result.get_failed()[0].get_err_message() == "PayoutId is missing or invalid"
-    assert result.get_failed()[0].get_payout_id() == "D8tgWzn1psUua4NYWW1vYo"
+    assert result.payouts[1].shopper_id == "7qohDf2zZnQK5Qanj8oyC2"
+    assert result.failed[0].err_message == "PayoutId is missing or invalid"
+    assert result.failed[0].payout_id == "D8tgWzn1psUua4NYWW1vYo"
 
 
 @pytest.mark.unit
@@ -1603,10 +1582,10 @@ def test_get_settlements(mocker):
 
     # assert
     assert len(result) == 2
-    assert result[0].get_id() == "KBkdURgmE3Lsy9VTnavZHX"
-    assert result[0].get_payout_info().get_label() == "Corporate account"
-    assert result[0].get_withholdings_sum() == 0
-    assert result[0].get_total_amount() == 22.09
+    assert result[0].id == "KBkdURgmE3Lsy9VTnavZHX"
+    assert result[0].payout_info.label == "Corporate account"
+    assert result[0].withholdings_sum == 0
+    assert result[0].total_amount == 22.09
 
 
 @pytest.mark.unit
@@ -1630,10 +1609,10 @@ def test_get_settlement(mocker):
     result = client.get_settlement(settlement_id)
 
     # assert
-    assert result.get_id() == "RPWTabW8urd3xWv2To989v"
-    assert result.get_payout_info().get_bank_country() == "Netherlands"
-    assert result.get_ledger_entries_sum() == 20.82
-    assert result.get_withholdings()[0].get_description() == "Pending Refunds"
+    assert result.id == "RPWTabW8urd3xWv2To989v"
+    assert result.payout_info.bank_country == "Netherlands"
+    assert result.ledger_entries_sum == 20.82
+    assert result.withholdings[0].description == "Pending Refunds"
 
 
 @pytest.mark.unit
@@ -1662,11 +1641,11 @@ def test_get_settlement_reconciliation_report(mocker):
     )
 
     # assert
-    assert result.get_id() == "RvNuCTMAkURKimwgvSVEMP"
-    assert result.get_payout_info().get_bank_country() == "Netherlands"
-    assert result.get_ledger_entries_sum() == 2956.77
-    assert result.get_withholdings()[0].get_description() == "Pending Refunds"
-    assert result.get_ledger_entries()[0].get_amount() == 5.83
+    assert result.id == "RvNuCTMAkURKimwgvSVEMP"
+    assert result.payout_info.bank_country == "Netherlands"
+    assert result.ledger_entries_sum == 2956.77
+    assert result.withholdings[0].description == "Pending Refunds"
+    assert result.ledger_entries[0].amount == 5.83
 
 
 @pytest.mark.unit
@@ -1689,9 +1668,10 @@ def test_get_supported_wallets(mocker):
 
     # assert
     assert len(result) == 7
-    assert result[0].get_avatar() == "bitpay-wallet.png"
-    assert len(result[0].get_currencies()) == 15
+    assert result[0].pay_pro is True
+    assert result[0].avatar == "bitpay-wallet.png"
+    assert len(result[0].currencies) == 15
     assert (
-        result[0].get_currencies()[0].get_image()
+        result[0].currencies[0].image
         == "https://bitpay.com/img/icon/currencies/BTC.svg"
     )

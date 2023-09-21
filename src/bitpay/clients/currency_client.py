@@ -33,7 +33,7 @@ class CurrencyClient:
             currencies = {}
             for currency in response_json:
                 currency_obj = Currency(**currency)
-                currencies[currency_obj.get_code()] = currency_obj
+                currencies[currency_obj.code] = currency_obj
         except Exception as exe:
             raise CurrencyQueryException(
                 "failed to deserialize BitPay server response "

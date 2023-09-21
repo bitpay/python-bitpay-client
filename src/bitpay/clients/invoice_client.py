@@ -52,10 +52,10 @@ class InvoiceClient:
         :raises InvoiceCreationException
         """
         try:
-            if invoice.get_guid() is None:
-                invoice.set_guid(self.__guid_generator.execute())
+            if invoice.guid is None:
+                invoice.guid = self.__guid_generator.execute()
 
-            invoice.set_token(self.__token_container.get_access_token(facade))
+            invoice.token = self.__token_container.get_access_token(facade)
             invoice_json = invoice.to_json()
             response_json = self.__bitpay_client.post(
                 "invoices", invoice_json, sign_request

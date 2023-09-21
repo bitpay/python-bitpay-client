@@ -1,5 +1,3 @@
-from typing import List
-
 from bitpay.clients.bitpay_client import BitPayClient
 from bitpay.exceptions.bitpay_exception import BitPayException
 from bitpay.exceptions.rate_query_exception import RateQueryException
@@ -34,7 +32,7 @@ class RateClient:
             rates = []
             for rate in response_json:
                 rates.append(Rate(**rate))
-            return Rates(rates)
+            return Rates(rates=rates)
         except Exception as exe:
             raise RateQueryException(
                 "failed to deserialize BitPay server response "
@@ -69,7 +67,7 @@ class RateClient:
             rates = []
             for rate in response_json:
                 rates.append(Rate(**rate))
-            return Rates(rates)
+            return Rates(rates=rates)
         except Exception as exe:
             raise RateQueryException(
                 "failed to deserialize BitPay server response "
