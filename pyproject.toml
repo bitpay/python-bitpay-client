@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bitpay"
+version = "5.0.0"
+authors = [
+  { name="Antonio Buedo", email="sales-engineering@bitpay.com" },
+]
+requires-python = ">=3.8"
+dependencies = [
+    "ecdsa >= 0.18.0",
+    "requests >= 2.31.0"
+]
+description = "Accept bitcoin with BitPay"
+readme = "README.md"
+keywords=["bitcoin", "payments", "crypto", "cash", "ethereum", "online payments"]
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Office/Business :: Financial",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/bitpay/python-bitpay-client"
+"Bug Tracker" = "https://github.com/bitpay/python-bitpay-client/issues"
+
+[project.optional-dependencies]
+dev = ["black", "pytest", "pytest-mock", "mypy", "pytest-mypy-plugins", "pytest-cov"]
+
+[tool.setuptools]
+package-dir={""= "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.mypy]
+disallow_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+check_untyped_defs = true
+show_error_codes = true
+warn_unused_ignores = true
