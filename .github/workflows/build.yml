@@ -31,3 +31,7 @@ jobs:
           pipenv run mypy -p src
       - name: Run unit tests
         run: pipenv run pytest -vv -s -m unit
+      - name: Run a test build
+        run: |
+          pipenv run pip3 install --upgrade build
+          pipenv run python -m build
