@@ -15,7 +15,8 @@ jobs:
         with:
           python-version: 3.8
       - run: |
-          python setup.py sdist
+          pip3 install --upgrade build
+          python -m build
       - uses: actions/upload-artifact@v3
         with:
           path: ./dist
