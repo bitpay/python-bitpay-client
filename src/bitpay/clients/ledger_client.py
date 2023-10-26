@@ -1,8 +1,8 @@
 from typing import List
 
 from bitpay.clients.bitpay_client import BitPayClient
-from bitpay.exceptions.bitpay_exception import BitPayException
-from bitpay.exceptions.ledger_query_exception import LedgerQueryException
+from bitpay.clients.response_parser import ResponseParser
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.facade import Facade
 from bitpay.models.ledger.ledger import Ledger
 from bitpay.models.ledger.ledger_entry import LedgerEntry
@@ -28,30 +28,26 @@ class LedgerClient:
         :param str end_date: The last date for the query filter.
         :return: A LedgerEntry object populated with the BitPay ledger entries list.
         :rtype: [LedgerEntry]
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {
-                "token": self.__token_container.get_access_token(Facade.MERCHANT),
-                "currency": currency,
-                "startDate": start_date,
-                "endDate": end_date,
-            }
-            response_json = self.__bitpay_client.get("ledgers/%s" % currency, params)
-        except BitPayException as exe:
-            raise LedgerQueryException(
-                "failed to serialize Ledger object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        params = {
+            "token": self.__token_container.get_access_token(Facade.MERCHANT),
+            "currency": currency,
+            "startDate": start_date,
+            "endDate": end_date,
+        }
+        response = self.__bitpay_client.get("ledgers/%s" % currency, params)
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             ledgers = []
             for ledger in response_json:
                 ledgers.append(LedgerEntry(**ledger))
         except Exception as exe:
-            raise LedgerQueryException(
-                "failed to deserialize BitPay server response "
-                "(Ledger) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Ledger", str(exe))
+            raise
+
         return ledgers
 
     def get_ledgers(self) -> List[Ledger]:
@@ -61,25 +57,19 @@ class LedgerClient:
         :return: A list of Ledger objects populated with the currency and
         current balance of each one.
         :rtype [Ledger]
-        :raises BitPayException
-        :raises LedgerQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
-            response_json = self.__bitpay_client.get("ledgers", params)
-        except BitPayException as exe:
-            raise LedgerQueryException(
-                "failed to serialize Ledger object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
+        response = self.__bitpay_client.get("ledgers", params)
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             ledgers = []
             for ledger in response_json:
                 ledgers.append(Ledger(**ledger))
         except Exception as exe:
-            raise LedgerQueryException(
-                "failed to deserialize BitPay server response"
-                " (Ledger) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Ledger", str(exe))
+            raise
+
         return ledgers

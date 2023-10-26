@@ -1,8 +1,8 @@
 from typing import Dict
 
 from bitpay.clients.bitpay_client import BitPayClient
-from bitpay.exceptions.bitpay_exception import BitPayException
-from bitpay.exceptions.currency_query_exception import CurrencyQueryException
+from bitpay.clients.response_parser import ResponseParser
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.currency import Currency
 
 
@@ -18,25 +18,19 @@ class CurrencyClient:
 
         :return: A list of BitPay Invoice objects.
         :rtype: [Currency]
-        :raises BitPayException
-        :raises CurrencyQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            response_json = self.__bitpay_client.get("currencies", None, False)
-        except BitPayException as exe:
-            raise CurrencyQueryException(
-                "failed to serialize Currency object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        response = self.__bitpay_client.get("currencies", None, False)
+        response_json = ResponseParser.response_to_json_string(response)
+
+        currencies = {}
 
         try:
-            currencies = {}
             for currency in response_json:
                 currency_obj = Currency(**currency)
                 currencies[currency_obj.code] = currency_obj
         except Exception as exe:
-            raise CurrencyQueryException(
-                "failed to deserialize BitPay server response "
-                " (Currency) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Currency", str(exe))
+
         return currencies

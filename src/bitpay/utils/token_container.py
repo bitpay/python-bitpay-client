@@ -1,6 +1,7 @@
 from typing import Dict
 
 from bitpay.exceptions.bitpay_exception import BitPayException
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.facade import Facade
 
 
@@ -8,12 +9,17 @@ class TokenContainer:
     __data: Dict[Facade, str] = {}
 
     def get_access_token(self, facade: Facade) -> str:
+        """
+        :raises BitPayGenericException
+        """
+        token = None
         try:
-            return self.__data[facade]
+            token = self.__data[facade]
         except Exception as exe:
-            raise BitPayException(
+            BitPayExceptionProvider.throw_generic_exception_with_message(
                 "There is no token for the specified key: " + facade.value
             )
+        raise BitPayException
 
     def put(self, key: Facade, value: str) -> None:
         self.__data[key] = value

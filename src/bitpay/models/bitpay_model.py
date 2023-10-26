@@ -3,6 +3,7 @@ from typing import Union
 from pydantic import BaseModel, field_validator, ConfigDict
 
 from bitpay.exceptions.bitpay_exception import BitPayException
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.utils.model_util import ModelUtil
 
 
@@ -21,11 +22,16 @@ class BitPayModel(BaseModel):
 
     @field_validator("currency", check_fields=False)
     def validate_currency(cls, currency_code: Union[str, None]) -> Union[str, None]:
+        """
+        :raises BitPayGenericException
+        """
         from bitpay.models.currency import Currency
 
         if currency_code is None:
             return currency_code
         currency_code = currency_code.upper()
         if Currency.is_valid(currency_code) is False:
-            raise BitPayException("currency code must be a type of Model.Currency")
+            BitPayExceptionProvider.throw_generic_exception_with_message(
+                "currency code must be a type of Model.Currency"
+            )
         return currency_code

@@ -1,17 +1,8 @@
 from typing import List, Optional
 
 from bitpay.clients.bitpay_client import BitPayClient
-from bitpay.exceptions.bitpay_exception import BitPayException
-from bitpay.exceptions.invoice_cancellation_exception import (
-    InvoiceCancellationException,
-)
-from bitpay.exceptions.invoice_creation_exception import InvoiceCreationException
-from bitpay.exceptions.invoice_notification_exception import (
-    InvoiceNotificationException,
-)
-from bitpay.exceptions.invoice_payment_exception import InvoicePaymentException
-from bitpay.exceptions.invoice_query_exception import InvoiceQueryException
-from bitpay.exceptions.invoice_update_exception import InvoiceUpdateException
+from bitpay.clients.response_parser import ResponseParser
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.facade import Facade
 from bitpay.models.invoice.invoice import Invoice
 from bitpay.models.invoice.invoice_event_token import InvoiceEventToken
@@ -48,35 +39,24 @@ class InvoiceClient:
         :param str sign_request: Signed request
         :return: A BitPay generated Invoice object
         :rtype: Invoice
-        :raises BitPayException
-        :raises InvoiceCreationException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            if invoice.guid is None:
-                invoice.guid = self.__guid_generator.execute()
 
-            invoice.token = self.__token_container.get_access_token(facade)
-            invoice_json = invoice.to_json()
-            response_json = self.__bitpay_client.post(
-                "invoices", invoice_json, sign_request
-            )
-        except BitPayException as exe:
-            raise InvoiceCreationException(
-                "failed to serialize Invoice object : " "%s" % str(exe),
-                exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoiceCreationException(
-                "failed to serialize Invoice object : %s" % str(exe)
-            )
+        if invoice.guid is None:
+            invoice.guid = self.__guid_generator.execute()
+
+        invoice.token = self.__token_container.get_access_token(facade)
+        invoice_json = invoice.to_json()
+        response = self.__bitpay_client.post(
+            "invoices", invoice_json, sign_request
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceCreationException(
-                "failed to deserialize BitPay server response "
-                "(Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
 
         return invoice
 
@@ -96,31 +76,20 @@ class InvoiceClient:
         :param bool sign_request: Signed request
         :return: A BitPay Invoice object
         :rtype: Invoice
-        :raises BitPayException
-        :raises InvoiceQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {"token": self.__token_container.get_access_token(facade)}
-            response_json = self.__bitpay_client.get(
-                "invoices/%s" % invoice_id, params, sign_request
-            )
-        except BitPayException as exe:
-            raise InvoiceQueryException(
-                "failed to serialize Invoice object : " "%s" % str(exe),
-                exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoiceQueryException(
-                "failed to serialize Invoice object :" " %s" % str(exe)
-            )
+        params = {"token": self.__token_container.get_access_token(facade)}
+        response = self.__bitpay_client.get(
+            "invoices/%s" % invoice_id, params, sign_request
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceQueryException(
-                "failed to deserialize BitPay server response"
-                " (Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            raise
 
         return invoice
 
@@ -137,31 +106,20 @@ class InvoiceClient:
         :param bool sign_request: Signed request
         :return: A BitPay Invoice object
         :rtype: Invoice
-        :raises BitPayException
-        :raises InvoiceQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {"token": self.__token_container.get_access_token(facade)}
-            response_json = self.__bitpay_client.get(
-                "invoices/guid/%s" % guid, params, sign_request
-            )
-        except BitPayException as exe:
-            raise InvoiceQueryException(
-                "failed to serialize Invoice object : " "%s" % str(exe),
-                exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoiceQueryException(
-                "failed to serialize Invoice object :" " %s" % str(exe)
-            )
+        params = {"token": self.__token_container.get_access_token(facade)}
+        response = self.__bitpay_client.get(
+            "invoices/guid/%s" % guid, params, sign_request
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceQueryException(
-                "failed to deserialize BitPay server response"
-                " (Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            raise
 
         return invoice
 
@@ -186,44 +144,33 @@ class InvoiceClient:
         (ex. skip 10 will give you results starting with the 11th)
         :return: A list of BitPay Invoice objects.
         :rtype: [Invoice]
-        :raises BitPayException
-        :raises InvoiceQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {
-                "token": self.__token_container.get_access_token(Facade.MERCHANT),
-                "dateStart": date_start,
-                "dateEnd": date_end,
-            }
-            if status:
-                params["status"] = status
-            if order_id:
-                params["orderId"] = order_id
-            if limit:
-                params["limit"] = limit
-            if offset:
-                params["offset"] = offset
+        params = {
+            "token": self.__token_container.get_access_token(Facade.MERCHANT),
+            "dateStart": date_start,
+            "dateEnd": date_end,
+        }
+        if status:
+            params["status"] = status
+        if order_id:
+            params["orderId"] = order_id
+        if limit:
+            params["limit"] = limit
+        if offset:
+            params["offset"] = offset
 
-            response_json = self.__bitpay_client.get("invoices/", params, True)
-        except BitPayException as exe:
-            raise InvoiceQueryException(
-                "failed to serialize Invoice object : %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoiceQueryException(
-                "failed to serialize Invoice object : %s" % str(exe)
-            )
+        response = self.__bitpay_client.get("invoices/", params, True)
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoices = []
             for invoice_data in response_json:
                 invoices.append(Invoice(**invoice_data))
         except Exception as exe:
-            raise InvoiceQueryException(
-                "failed to deserialize BitPay server "
-                "response (Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            raise
 
         return invoices
 
@@ -243,41 +190,30 @@ class InvoiceClient:
         :param str sms_code: The buyer's received verification code.
         :return: A BitPay generated Invoice object.
         :rtype: Invoice
-        :raises BitPayException
-        :raises InvoiceUpdateException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
+        params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
 
-            if buyer_email is not None:
-                params["buyerEmail"] = buyer_email
+        if buyer_email is not None:
+            params["buyerEmail"] = buyer_email
 
-            if buyer_sms is not None:
-                params["buyerSms"] = buyer_sms
+        if buyer_sms is not None:
+            params["buyerSms"] = buyer_sms
 
-            if sms_code is not None:
-                params["smsCode"] = sms_code
+        if sms_code is not None:
+            params["smsCode"] = sms_code
 
-            response_json = self.__bitpay_client.update(
-                "invoices/%s" % invoice_id, params
-            )
-        except BitPayException as exe:
-            raise InvoiceUpdateException(
-                "failed to serialize Invoice object :" " %s" % str(exe),
-                exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoiceUpdateException(
-                "failed to serialize Invoice object : %s" % str(exe)
-            )
+        response = self.__bitpay_client.update(
+            "invoices/%s" % invoice_id, params
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceUpdateException(
-                "failed to deserialize BitPay server response"
-                " (Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            raise
 
         return invoice
 
@@ -290,34 +226,24 @@ class InvoiceClient:
         no contact information is present
         :return: A BitPay generated Invoice object.
         :rtype: Invoice
-        :raises BitPayException
-        :raises InvoiceCancellationException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {
-                "token": self.__token_container.get_access_token(Facade.MERCHANT),
-                "forceCancel": force_cancel,
-            }
-            response_json = self.__bitpay_client.delete(
-                "invoices/%s" % invoice_id, params
-            )
-        except BitPayException as exe:
-            raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe)
-            )
+        params = {
+            "token": self.__token_container.get_access_token(Facade.MERCHANT),
+            "forceCancel": force_cancel,
+        }
+        response = self.__bitpay_client.delete(
+            "invoices/%s" % invoice_id, params
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceCancellationException(
-                "failed to deserialize BitPay server"
-                " response (Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            raise
+
         return invoice
 
     def cancel_by_guid(self, guid: str, force_cancel: bool = False) -> Invoice:
@@ -329,34 +255,24 @@ class InvoiceClient:
         no contact information is present
         :return: A BitPay generated Invoice object.
         :rtype: Invoice
-        :raises BitPayException
-        :raises InvoiceCancellationException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {
-                "token": self.__token_container.get_access_token(Facade.MERCHANT),
-                "forceCancel": force_cancel,
-            }
-            response_json = self.__bitpay_client.delete(
-                "invoices/guid/%s" % guid, params
-            )
-        except BitPayException as exe:
-            raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe)
-            )
+        params = {
+            "token": self.__token_container.get_access_token(Facade.MERCHANT),
+            "forceCancel": force_cancel,
+        }
+        response = self.__bitpay_client.delete(
+            "invoices/guid/%s" % guid, params
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoiceCancellationException(
-                "failed to deserialize BitPay server"
-                " response (Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            raise
+
         return invoice
 
     def get_event_token(self, invoice_id: str) -> InvoiceEventToken:
@@ -366,33 +282,22 @@ class InvoiceClient:
         :param str invoice_id: The id of the invoice for which you want to fetch an event token.
         :return: Invoice Event Token.
         :rtype: InvoiceEventToken
-        :raises BitPayException
-        :raises InvoiceQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {
-                "token": self.__token_container.get_access_token(Facade.MERCHANT),
-            }
-            response_json = self.__bitpay_client.get(
-                "invoices/%s/events" % invoice_id, params, True
-            )
-        except BitPayException as exe:
-            raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoiceCancellationException(
-                "failed to serialize Invoice object : %s" % str(exe)
-            )
+        params = {
+            "token": self.__token_container.get_access_token(Facade.MERCHANT),
+        }
+        response = self.__bitpay_client.get(
+            "invoices/%s/events" % invoice_id, params, True
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             return InvoiceEventToken(**response_json)
         except Exception as exe:
-            raise InvoiceCancellationException(
-                "failed to deserialize BitPay server"
-                " response (Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            raise
 
     def pay(self, invoice_id: str, status: str) -> Invoice:
         """
@@ -402,34 +307,24 @@ class InvoiceClient:
         :param bool status: indicate if paid invoice should have status if complete true or a confirmed status.
         :return: A BitPay generated Invoice object.
         :rtype: Invoice
-        :raises BitPayException
-        :raises InvoicePaymentException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {
-                "token": self.__token_container.get_access_token(Facade.MERCHANT),
-                "status": status,
-            }
-            response_json = self.__bitpay_client.update(
-                "invoices/pay/%s" % invoice_id, params
-            )
-        except BitPayException as exe:
-            raise InvoicePaymentException(
-                "failed to serialize Invoice object : %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise InvoicePaymentException(
-                "failed to serialize Invoice object : %s" % str(exe)
-            )
+        params = {
+            "token": self.__token_container.get_access_token(Facade.MERCHANT),
+            "status": status,
+        }
+        response = self.__bitpay_client.update(
+            "invoices/pay/%s" % invoice_id, params
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            raise InvoicePaymentException(
-                "failed to deserialize BitPay server"
-                " response (Invoice) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            raise
+
         return invoice
 
     def request_invoice_notifications(self, invoice_id: str) -> bool:
@@ -439,18 +334,13 @@ class InvoiceClient:
         :param str invoice_id: A BitPay invoice ID.
         :return: True if the webhook was successfully requested, false otherwise.
         :rtype: bool
-        :raises BitPayException
-        :raises InvoiceNotificationException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
-            response_json = self.__bitpay_client.post(
-                "invoices/%s" % invoice_id + "/notifications", params
-            )
-        except Exception as exe:
-            raise InvoiceNotificationException(
-                "failed to deserialize BitPay server"
-                " response (Invoice) : %s" % str(exe)
-            )
+        params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
+        response = self.__bitpay_client.post(
+            "invoices/%s" % invoice_id + "/notifications", params
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         return response_json.lower() == "success"

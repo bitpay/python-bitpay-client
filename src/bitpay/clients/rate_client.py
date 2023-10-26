@@ -1,6 +1,6 @@
 from bitpay.clients.bitpay_client import BitPayClient
-from bitpay.exceptions.bitpay_exception import BitPayException
-from bitpay.exceptions.rate_query_exception import RateQueryException
+from bitpay.clients.response_parser import ResponseParser
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.rate.rate import Rate
 from bitpay.models.rate.rates import Rates
 
@@ -17,27 +17,20 @@ class RateClient:
 
         :return: A Rates object populated with the BitPay exchange rate table.
         :rtype: [Rates]
-        :raises BitPayException
-        :raises RateQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            response_json = self.__bitpay_client.get("rates", None, False)
-        except BitPayException as exe:
-            raise RateQueryException(
-                "failed to serialize Rates object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        response = self.__bitpay_client.get("rates", None, False)
+        response_json = ResponseParser.response_to_json_string(response)
+
+        rates = []
 
         try:
-            rates = []
             for rate in response_json:
                 rates.append(Rate(**rate))
             return Rates(rates=rates)
         except Exception as exe:
-            raise RateQueryException(
-                "failed to deserialize BitPay server response "
-                " (Rates) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Rates", str(exe))
 
     def get_currency_rates(self, base_currency: str) -> Rates:
         """
@@ -47,18 +40,13 @@ class RateClient:
         Current supported values are BTC, BCH, ETH, XRP, DOGE and LTC
         :return: A Rates object populated with the currency rates for the requested baseCurrency.
         :rtype: [Rates]
-        :raises BitPayException
-        :raises RateQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            response_json = self.__bitpay_client.get(
-                "rates/%s" % base_currency, None, False
-            )
-        except BitPayException as exe:
-            raise RateQueryException(
-                "failed to serialize Rates object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        response = self.__bitpay_client.get(
+            "rates/%s" % base_currency, None, False
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             if isinstance(response_json, dict):
@@ -69,10 +57,7 @@ class RateClient:
                 rates.append(Rate(**rate))
             return Rates(rates=rates)
         except Exception as exe:
-            raise RateQueryException(
-                "failed to deserialize BitPay server response "
-                " (Rates) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Rates", str(exe))
 
     def get_currency_pair_rate(self, base_currency: str, currency: str) -> Rate:
         """
@@ -83,23 +68,15 @@ class RateClient:
         :param str currency: The fiat currency for which you want to fetch the baseCurrency rate
         :return: A rate object populated with the currency rate for the requested baseCurrency.
         :rtype: Rate
-        :raises BitPayException
-        :raises RateQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            response_json = self.__bitpay_client.get(
-                "rates/%s" % base_currency + "/%s" % currency, None, False
-            )
-        except BitPayException as exe:
-            raise RateQueryException(
-                "failed to serialize Rates object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        response = self.__bitpay_client.get(
+            "rates/%s" % base_currency + "/%s" % currency, None, False
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             return Rate(**response_json)
         except Exception as exe:
-            raise RateQueryException(
-                "failed to deserialize BitPay server response "
-                " (rate) : %s" % str(exe)
-            )
+            BitPayExceptionProvider.throw_deserialize_resource_exception("Rate", str(exe))

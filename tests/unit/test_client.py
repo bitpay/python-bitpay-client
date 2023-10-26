@@ -6,7 +6,7 @@ import pytest
 from pytest_mock import mocker
 
 from bitpay.clients.bitpay_client import BitPayClient
-from bitpay.exceptions.bill_update_exception import BillUpdateException
+from bitpay.exceptions.bitpay_validation_exception import BitPayValidationException
 from bitpay.models.bill.bill import Bill
 from bitpay.models.bill.item import Item
 from bitpay.models.facade import Facade
@@ -971,7 +971,7 @@ def test_get_bills_by_status(mocker):
 
 @pytest.mark.unit
 def test_update_bill_with_missing_token_should_throws_exception(mocker):
-    with pytest.raises(BillUpdateException):
+    with pytest.raises(BitPayValidationException):
         # arrange
         bill_id = "1234"
         bitpay_client = get_bitpay_client(mocker)
