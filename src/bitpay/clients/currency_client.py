@@ -31,6 +31,8 @@ class CurrencyClient:
                 currency_obj = Currency(**currency)
                 currencies[currency_obj.code] = currency_obj
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Currency", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Currency", str(exe)
+            )
 
         return currencies

@@ -29,6 +29,8 @@ class WalletClient:
             for wallet in response_json:
                 wallets.append(Wallet(**wallet))
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Wallet", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Wallet", str(exe)
+            )
 
         return wallets

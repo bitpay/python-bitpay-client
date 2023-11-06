@@ -67,7 +67,9 @@ class SettlementClient:
             for settlement in response_json:
                 settlements.append(Settlement(**settlement))
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Settlement", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Settlement", str(exe)
+            )
 
         return settlements
 
@@ -82,15 +84,15 @@ class SettlementClient:
         :raises BitPayGenericException
         """
         params = {"token": self.__token_container.get_access_token(Facade.MERCHANT)}
-        response = self.__bitpay_client.get(
-            "settlements/%s" % settlement_id, params
-        )
+        response = self.__bitpay_client.get("settlements/%s" % settlement_id, params)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
             settlement = Settlement(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Settlement", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Settlement", str(exe)
+            )
             raise
 
         return settlement
@@ -117,7 +119,9 @@ class SettlementClient:
         try:
             settlement = Settlement(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Settlement", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Settlement", str(exe)
+            )
             raise
 
         return settlement

@@ -35,7 +35,9 @@ class PayoutClient:
         try:
             payout = Payout(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout", str(exe)
+            )
             raise
 
         return payout
@@ -58,19 +60,21 @@ class PayoutClient:
         try:
             payout = Payout(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout", str(exe)
+            )
             raise
 
         return payout
 
     def get_payouts(
-            self,
-            start_date: Optional[str] = None,
-            end_date: Optional[str] = None,
-            status: Optional[str] = None,
-            reference: Optional[str] = None,
-            limit: Optional[int] = None,
-            offset: Optional[int] = None,
+        self,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        status: Optional[str] = None,
+        reference: Optional[str] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
     ) -> List[Payout]:
         """
         Retrieve a collection of BitPay payouts.
@@ -108,7 +112,9 @@ class PayoutClient:
             for payout in response_json:
                 payouts.append(Payout(**payout))
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout", str(exe)
+            )
             raise
 
         return payouts
@@ -124,15 +130,15 @@ class PayoutClient:
         :raises BitPayGenericException
         """
         params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
-        response = self.__bitpay_client.delete(
-            "payouts/%s" % payout_id, params
-        )
+        response = self.__bitpay_client.delete("payouts/%s" % payout_id, params)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
             return response_json["status"].lower() == "success"
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout", str(exe)
+            )
             raise
 
     def request_notification(self, payout_id: str) -> bool:
@@ -154,12 +160,14 @@ class PayoutClient:
         try:
             return response_json["status"].lower() == "success"
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout", str(exe)
+            )
             raise
 
     @staticmethod
     def get_payout_group_response(
-            response_json: dict, response_type: str
+        response_json: dict, response_type: str
     ) -> PayoutGroup:
         payouts = []
         for payout in response_json[response_type]:
@@ -172,7 +180,9 @@ class PayoutClient:
 
             return PayoutGroup(payouts=payouts, failed=failed)
         except Exception:
-            BitPayExceptionProvider.throw_generic_exception_with_message("Unable to parse payouts")
+            BitPayExceptionProvider.throw_generic_exception_with_message(
+                "Unable to parse payouts"
+            )
 
     def create_group(self, payouts: List[Payout]) -> PayoutGroup:
         params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
@@ -188,8 +198,6 @@ class PayoutClient:
 
     def cancel_group(self, group_id: str) -> PayoutGroup:
         params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
-        response = self.__bitpay_client.delete(
-            "payouts/group/" + group_id, params
-        )
+        response = self.__bitpay_client.delete("payouts/group/" + group_id, params)
         response_json = ResponseParser.response_to_json_string(response)
         return self.get_payout_group_response(response_json, "cancelled")

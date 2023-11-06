@@ -21,4 +21,3 @@ class BitPayException(Exception):
 
     def get_message(self) -> str:
         return self.__message
-

@@ -71,7 +71,9 @@ class Client:
                 guid_generator = GuidGenerator()
             self.__guid_generator = guid_generator
         except Exception as exe:
-            BitPayExceptionProvider.throw_generic_exception_with_message("failed to initiate clients: " + str(exe))
+            BitPayExceptionProvider.throw_generic_exception_with_message(
+                "failed to initiate clients: " + str(exe)
+            )
 
     @staticmethod
     def create_pos_client(self, pos_token: str, environment: Environment = Environment.PROD):  # type: ignore
@@ -100,7 +102,9 @@ class Client:
 
             return Client(bitpay_client, token_container, guid_generator)
         except Exception as exe:
-            BitPayExceptionProvider.throw_generic_exception_with_message("failed to process configuration: " + str(exe))
+            BitPayExceptionProvider.throw_generic_exception_with_message(
+                "failed to process configuration: " + str(exe)
+            )
 
     @staticmethod
     def create_client_by_config_file_path(config_file_path: str):  # type: ignore
@@ -108,7 +112,9 @@ class Client:
         :raises BitPayGenericException
         """
         if not os.path.exists(config_file_path):
-            BitPayExceptionProvider.throw_generic_exception_with_message("Configuration file not found")
+            BitPayExceptionProvider.throw_generic_exception_with_message(
+                "Configuration file not found"
+            )
 
         try:
             with open(config_file_path, "r") as read_file:
@@ -137,7 +143,9 @@ class Client:
                 private_key_or_private_key_path, token_container, environment, proxy
             )
         except Exception as exe:
-            BitPayExceptionProvider.throw_generic_exception_with_message("Error when reading configuration file. " + str(exe))
+            BitPayExceptionProvider.throw_generic_exception_with_message(
+                "Error when reading configuration file. " + str(exe)
+            )
 
     @staticmethod
     def get_ec_key(private_key_or_private_key_path: Optional[str]) -> str:
@@ -145,7 +153,9 @@ class Client:
         :raises BitPayGenericException
         """
         if private_key_or_private_key_path is None:
-            BitPayExceptionProvider.throw_generic_exception_with_message("Private Key file not found")
+            BitPayExceptionProvider.throw_generic_exception_with_message(
+                "Private Key file not found"
+            )
             raise BitPayGenericException("Private Key file not found")
 
         if os.path.exists(private_key_or_private_key_path):

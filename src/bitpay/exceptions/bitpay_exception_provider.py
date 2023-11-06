@@ -7,14 +7,15 @@ from bitpay.logger.logger_provider import LoggerProvider
 
 
 class BitPayExceptionProvider:
-
     @staticmethod
     def throw_generic_exception_with_message(message: str) -> None:
         BitPayExceptionProvider.log_error_message(message)
         raise BitPayGenericException(message)
 
     @staticmethod
-    def throw_api_exception_with_message(message: str, code: Union[str, None] = None) -> None:
+    def throw_api_exception_with_message(
+        message: str, code: Union[str, None] = None
+    ) -> None:
         BitPayExceptionProvider.log_error_message(message)
         raise BitPayApiException(message, code)
 
@@ -30,8 +31,13 @@ class BitPayExceptionProvider:
         raise BitPayValidationException(message)
 
     @staticmethod
-    def throw_deserialize_resource_exception(resource: str, exception_message: str) -> None:
-        message = "Failed to deserialize BitPay server response ( %s ) : %s" % (resource, exception_message)
+    def throw_deserialize_resource_exception(
+        resource: str, exception_message: str
+    ) -> None:
+        message = "Failed to deserialize BitPay server response ( %s ) : %s" % (
+            resource,
+            exception_message,
+        )
         BitPayExceptionProvider.throw_generic_exception_with_message(message)
 
     @staticmethod
@@ -45,7 +51,9 @@ class BitPayExceptionProvider:
         BitPayExceptionProvider.throw_generic_exception_with_message(message)
 
     @staticmethod
-    def throw_serialize_resource_exception(resource: str, exception_message: str) -> None:
+    def throw_serialize_resource_exception(
+        resource: str, exception_message: str
+    ) -> None:
         message = "Failed to serialize ( %s ) : %s" % (resource, exception_message)
         BitPayExceptionProvider.throw_generic_exception_with_message(message)
 

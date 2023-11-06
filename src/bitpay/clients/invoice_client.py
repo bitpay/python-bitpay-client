@@ -48,15 +48,15 @@ class InvoiceClient:
 
         invoice.token = self.__token_container.get_access_token(facade)
         invoice_json = invoice.to_json()
-        response = self.__bitpay_client.post(
-            "invoices", invoice_json, sign_request
-        )
+        response = self.__bitpay_client.post("invoices", invoice_json, sign_request)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
 
         return invoice
 
@@ -88,7 +88,9 @@ class InvoiceClient:
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
             raise
 
         return invoice
@@ -118,7 +120,9 @@ class InvoiceClient:
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
             raise
 
         return invoice
@@ -169,7 +173,9 @@ class InvoiceClient:
             for invoice_data in response_json:
                 invoices.append(Invoice(**invoice_data))
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
             raise
 
         return invoices
@@ -204,15 +210,15 @@ class InvoiceClient:
         if sms_code is not None:
             params["smsCode"] = sms_code
 
-        response = self.__bitpay_client.update(
-            "invoices/%s" % invoice_id, params
-        )
+        response = self.__bitpay_client.update("invoices/%s" % invoice_id, params)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
             raise
 
         return invoice
@@ -233,15 +239,15 @@ class InvoiceClient:
             "token": self.__token_container.get_access_token(Facade.MERCHANT),
             "forceCancel": force_cancel,
         }
-        response = self.__bitpay_client.delete(
-            "invoices/%s" % invoice_id, params
-        )
+        response = self.__bitpay_client.delete("invoices/%s" % invoice_id, params)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
             raise
 
         return invoice
@@ -262,15 +268,15 @@ class InvoiceClient:
             "token": self.__token_container.get_access_token(Facade.MERCHANT),
             "forceCancel": force_cancel,
         }
-        response = self.__bitpay_client.delete(
-            "invoices/guid/%s" % guid, params
-        )
+        response = self.__bitpay_client.delete("invoices/guid/%s" % guid, params)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
             raise
 
         return invoice
@@ -296,7 +302,9 @@ class InvoiceClient:
         try:
             return InvoiceEventToken(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
             raise
 
     def pay(self, invoice_id: str, status: str) -> Invoice:
@@ -314,15 +322,15 @@ class InvoiceClient:
             "token": self.__token_container.get_access_token(Facade.MERCHANT),
             "status": status,
         }
-        response = self.__bitpay_client.update(
-            "invoices/pay/%s" % invoice_id, params
-        )
+        response = self.__bitpay_client.update("invoices/pay/%s" % invoice_id, params)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
             invoice = Invoice(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Invoice", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Invoice", str(exe)
+            )
             raise
 
         return invoice

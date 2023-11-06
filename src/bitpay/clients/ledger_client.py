@@ -45,7 +45,9 @@ class LedgerClient:
             for ledger in response_json:
                 ledgers.append(LedgerEntry(**ledger))
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Ledger", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Ledger", str(exe)
+            )
             raise
 
         return ledgers
@@ -69,7 +71,9 @@ class LedgerClient:
             for ledger in response_json:
                 ledgers.append(Ledger(**ledger))
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Ledger", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Ledger", str(exe)
+            )
             raise
 
         return ledgers

@@ -123,5 +123,3 @@ class BitPayClient:
         self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__ec_key)
 
         return requests.put(full_url, data=form_data, headers=self.__headers)
-
-

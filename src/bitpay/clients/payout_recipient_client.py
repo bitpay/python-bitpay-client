@@ -40,9 +40,7 @@ class PayoutRecipientClient:
 
         recipients.token = self.__token_container.get_access_token(Facade.PAYOUT)
 
-        response = self.__bitpay_client.post(
-            "recipients", recipients.to_json(), True
-        )
+        response = self.__bitpay_client.post("recipients", recipients.to_json(), True)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
@@ -50,7 +48,9 @@ class PayoutRecipientClient:
             for recipient in response_json:
                 recipients.append(PayoutRecipient(**recipient))
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout Recipient", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
+            )
 
         return recipients
 
@@ -66,15 +66,15 @@ class PayoutRecipientClient:
         :raises BitPayGenericException
         """
         params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
-        response = self.__bitpay_client.get(
-            "recipients/%s" % recipient_id, params
-        )
+        response = self.__bitpay_client.get("recipients/%s" % recipient_id, params)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
             return PayoutRecipient(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout Recipient", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
+            )
 
     def get_recipients(
         self, status: Optional[str] = None, limit: int = 100, offset: int = 0
@@ -107,7 +107,9 @@ class PayoutRecipientClient:
             for payout_recipient in response_json:
                 payout_recipients.append(PayoutRecipient(**payout_recipient))
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout Recipient", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
+            )
 
         return payout_recipients
 
@@ -132,7 +134,9 @@ class PayoutRecipientClient:
         try:
             payout_recipient = PayoutRecipient(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout Recipient", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
+            )
             raise
 
         return payout_recipient
@@ -154,7 +158,9 @@ class PayoutRecipientClient:
             )
             response_json = ResponseParser.response_to_json_string(response)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout Recipient", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
+            )
             raise
 
         return response_json["status"].lower() == "success"
@@ -177,7 +183,9 @@ class PayoutRecipientClient:
             )
             response_json = ResponseParser.response_to_json_string(response)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Payout Recipient", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
+            )
             raise
 
         return response_json["status"].lower() == "success"

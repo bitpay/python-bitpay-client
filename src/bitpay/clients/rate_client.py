@@ -30,7 +30,9 @@ class RateClient:
                 rates.append(Rate(**rate))
             return Rates(rates=rates)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Rates", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Rates", str(exe)
+            )
 
     def get_currency_rates(self, base_currency: str) -> Rates:
         """
@@ -43,9 +45,7 @@ class RateClient:
         :raises BitPayApiException
         :raises BitPayGenericException
         """
-        response = self.__bitpay_client.get(
-            "rates/%s" % base_currency, None, False
-        )
+        response = self.__bitpay_client.get("rates/%s" % base_currency, None, False)
         response_json = ResponseParser.response_to_json_string(response)
 
         try:
@@ -57,7 +57,9 @@ class RateClient:
                 rates.append(Rate(**rate))
             return Rates(rates=rates)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Rates", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Rates", str(exe)
+            )
 
     def get_currency_pair_rate(self, base_currency: str, currency: str) -> Rate:
         """
@@ -79,4 +81,6 @@ class RateClient:
         try:
             return Rate(**response_json)
         except Exception as exe:
-            BitPayExceptionProvider.throw_deserialize_resource_exception("Rate", str(exe))
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Rate", str(exe)
+            )
