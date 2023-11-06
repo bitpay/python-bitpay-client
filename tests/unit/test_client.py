@@ -4,6 +4,7 @@ from typing import List
 
 import pytest
 from pytest_mock import mocker
+from unittest.mock import Mock
 
 from bitpay.clients.bitpay_client import BitPayClient
 from bitpay.exceptions.bitpay_validation_exception import BitPayValidationException
@@ -153,7 +154,8 @@ def test_get_currencies(mocker):
         + "/json/get_currencies_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.get.side_effect = mock_response(response, "currencies", None, False)
     client = init_client(mocker, bitpay_client)
 
@@ -181,7 +183,8 @@ def test_create_invoice_by_merchant(mocker):
         + "/json/create_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
 
     bitpay_client.post.side_effect = mock_response(
         response, "invoices", invoice_dict, True
@@ -233,7 +236,8 @@ def test_create_invoice_by_pos(mocker):
         + "/json/create_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
 
     bitpay_client.post.side_effect = mock_response(response, "invoices", request, False)
     client = Client(bitpay_client, token_container, get_guid_generator(mocker))
@@ -257,7 +261,8 @@ def test_get_invoice_by_merchant(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
 
     bitpay_client.get.side_effect = mock_response(
         response, "invoices/" + invoice_id, {"token": merchant_token_value}, True
@@ -286,7 +291,8 @@ def test_get_invoice_by_pos(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
 
     bitpay_client.get.side_effect = mock_response(
         response, "invoices/" + invoice_id, {"token": pos_token_value}, False
@@ -311,7 +317,8 @@ def test_get_invoice_by_guid(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
 
     bitpay_client.get.side_effect = mock_response(
         response, "invoices/guid/" + guid_token, {"token": merchant_token_value}, True
@@ -336,7 +343,8 @@ def test_get_invoices(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_invoices_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     date_start = "2022-5-10"
     date_end = "2022-5-11"
     status = "complete"
@@ -375,7 +383,8 @@ def test_get_invoice_event_token(mocker):
         + "/json/get_invoice_event_token.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
 
     bitpay_client.get.side_effect = mock_response(
         response,
@@ -407,7 +416,8 @@ def test_update_invoice(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
 
     bitpay_client.update.side_effect = mock_response(
         response,
@@ -431,7 +441,8 @@ def test_pay_invoice(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/pay_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "status": "complete"}
 
     bitpay_client.update.side_effect = mock_response(
@@ -457,7 +468,8 @@ def test_forced_cancel_invoice(mocker):
         + "/json/cancel_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "forceCancel": True}
     bitpay_client.delete.side_effect = mock_response(
         response, "invoices/" + invoice_id, params, True
@@ -481,7 +493,8 @@ def test_cancel_invoice(mocker):
         + "/json/cancel_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "forceCancel": False}
     bitpay_client.delete.side_effect = mock_response(
         response, "invoices/" + invoice_id, params, True
@@ -506,7 +519,8 @@ def test_cancel_invoice_by_guid(mocker):
         + "/json/cancel_invoice_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "forceCancel": False}
     bitpay_client.delete.side_effect = mock_response(
         response, "invoices/guid/" + guid, params, True
@@ -525,7 +539,8 @@ def test_cancel_invoice_by_guid(mocker):
 def test_request_invoice_notifications(mocker):
     # arrange
     bitpay_client = get_bitpay_client(mocker)
-    response = "success"
+    response = Mock()
+    response.json.return_value = {"data": "success"}
     params = {"token": merchant_token_value}
     bitpay_client.post.side_effect = mock_response(
         response, "invoices/" + invoice_id + "/notifications", params, True
@@ -548,7 +563,8 @@ def test_create_refund(mocker):
         + "/json/create_refund_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     guid = "37bd36bd-6fcb-409c-a907-47f9244302aa"
     params = {
         "token": merchant_token_value,
@@ -585,7 +601,8 @@ def test_get_refund_by_id(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_refund_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value}
     bitpay_client.get.side_effect = mock_response(
         response, "refunds/" + refund_id, params, True
@@ -611,7 +628,8 @@ def test_get_refund_by_guid(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_refund_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value}
     bitpay_client.get.side_effect = mock_response(
         response, "refunds/guid/" + guid, params, True
@@ -637,7 +655,8 @@ def test_get_refunds(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_refunds_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "invoiceId": invoice_id}
     bitpay_client.get.side_effect = mock_response(response, "refunds", params, True)
     client = init_client(mocker, bitpay_client)
@@ -661,7 +680,8 @@ def update_refund_by_id(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_refund_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "status": status}
     bitpay_client.update.side_effect = mock_response(
         response, "refunds" + refund_id, params, True
@@ -688,7 +708,8 @@ def update_refund_by_guid(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_refund_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "status": status}
     bitpay_client.update.side_effect = mock_response(
         response, "refunds" + guid_id, params, True
@@ -710,7 +731,8 @@ def test_send_refund_notification(mocker):
     # arrange
     refund_id = "1234"
     bitpay_client = get_bitpay_client(mocker)
-    response = {"status": "success"}
+    response = Mock()
+    response.json.return_value = {"status": "success"}
     params = {"token": merchant_token_value}
     bitpay_client.post.side_effect = mock_response(
         response, "refunds/" + refund_id + "/notifications", params, True
@@ -734,7 +756,8 @@ def test_cancel_refund_by_id(mocker):
         + "/json/cancel_refund_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value}
     bitpay_client.delete.side_effect = mock_response(
         response, "refunds/" + refund_id, params, True
@@ -758,7 +781,8 @@ def test_cancel_refund_by_guid(mocker):
         + "/json/cancel_refund_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value}
     bitpay_client.delete.side_effect = mock_response(
         response, "refunds/guid/" + guid, params, True
@@ -787,7 +811,8 @@ def test_create_bill_by_merchant_facade(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/create_bill_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.post.side_effect = mock_response(response, "bills", request, True)
     client = init_client(mocker, bitpay_client)
 
@@ -826,7 +851,8 @@ def test_create_bill_by_pos_facade(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/create_bill_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.post.side_effect = mock_response(response, "bills", request, False)
     client = Client(bitpay_client, token_container, get_guid_generator(mocker))
 
@@ -853,7 +879,8 @@ def test_get_bill_by_merchant_facade(mocker):
     with open(
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_bill_response.json", "r"
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value}
     bitpay_client.get.side_effect = mock_response(
         response, "bills/" + bill_id, params, True
@@ -886,7 +913,8 @@ def test_get_bill_by_pos_facade(mocker):
     with open(
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_bill_response.json", "r"
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": pos_token_value}
     bitpay_client.get.side_effect = mock_response(
         response, "bills/" + bill_id, params, False
@@ -914,7 +942,8 @@ def test_get_bills(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_bills_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value}
     bitpay_client.get.side_effect = mock_response(response, "bills", params, True)
     client = init_client(mocker, bitpay_client)
@@ -946,7 +975,8 @@ def test_get_bills_by_status(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_bills_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "status": status}
     bitpay_client.get.side_effect = mock_response(response, "bills", params, True)
     client = init_client(mocker, bitpay_client)
@@ -994,7 +1024,8 @@ def test_update_bill(mocker):
     with open(
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_bill_response.json", "r"
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.update.side_effect = mock_response(
         response, "bills/" + bill_id, request, True
     )
@@ -1023,9 +1054,11 @@ def test_deliver_bill_by_merchant_facade(mocker):
     bill_id = "12345"
     bill_token = "someBillToken"
     bitpay_client = get_bitpay_client(mocker)
+    response = Mock()
+    response.json.return_value = {"data": "Success"}
     params = {"token": bill_token}
     bitpay_client.post.side_effect = mock_response(
-        "Success", "bills/" + bill_id + "/deliveries", params, True
+        response, "bills/" + bill_id + "/deliveries", params, True
     )
     client = init_client(mocker, bitpay_client)
 
@@ -1044,7 +1077,8 @@ def test_get_rates(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_rates_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.get.side_effect = mock_response(response, "rates", None, False)
     client = init_client(mocker, bitpay_client)
 
@@ -1060,7 +1094,8 @@ def test_get_rates(mocker):
 def test_get_currency_rates_usd(mocker):
     # arrange
     bitpay_client = get_bitpay_client(mocker)
-    response = {"code": "USD", "name": "US Dollar", "rate": 27430}
+    response = Mock()
+    response.json.return_value = {"code": "USD", "name": "US Dollar", "rate": 27430}
     bitpay_client.get.side_effect = mock_response(response, "rates/USD", None, False)
     client = init_client(mocker, bitpay_client)
 
@@ -1080,7 +1115,8 @@ def test_get_currency_rates_btc(mocker):
         + "/json/get_rates_bch_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.get.side_effect = mock_response(response, "rates/BCH", None, False)
     client = init_client(mocker, bitpay_client)
 
@@ -1095,7 +1131,8 @@ def test_get_currency_rates_btc(mocker):
 def test_get_currency_pair_rate(mocker):
     # arrange
     bitpay_client = get_bitpay_client(mocker)
-    response = {"code": "USD", "name": "US Dollar", "rate": 119.11}
+    response = Mock()
+    response.json.return_value = {"code": "USD", "name": "US Dollar", "rate": 119.11}
     bitpay_client.get.side_effect = mock_response(
         response, "rates/BCH/USD", None, False
     )
@@ -1122,7 +1159,8 @@ def get_ledger_entries(mocker):
         + "/json/get_ledger_entries_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value, "starDate": dateStart, "endDate": dateEnd}
     bitpay_client.post.side_effect = mock_response(
         response, "ledgers/" + currency, params, True
@@ -1146,7 +1184,8 @@ def test_get_ledgers(mocker):
     with open(
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_ledgers.json", "r"
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value}
     bitpay_client.get.side_effect = mock_response(response, "ledgers", params, True)
     client = init_client(mocker, bitpay_client)
@@ -1175,7 +1214,8 @@ def test_submit_payout_recipients(mocker):
         + "/json/submit_payout_recipients_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.post.side_effect = mock_response(
         response, "recipients", request, True
     )
@@ -1204,7 +1244,8 @@ def test_get_payout_recipients(mocker):
         + "/json/get_payout_recipients_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {
         "token": payout_token_value,
         "status": status,
@@ -1239,7 +1280,8 @@ def test_get_payout_recipient(mocker):
         + "/json/get_payout_recipient_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": payout_token_value}
     bitpay_client.get.side_effect = mock_response(
         response, "recipients/" + recipient_id, params, True
@@ -1277,7 +1319,8 @@ def test_update_payout_recipient(mocker):
         + "/json/update_payout_recipient_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.update.side_effect = mock_response(
         response, "recipients/" + recipient_id, request, True
     )
@@ -1296,7 +1339,8 @@ def test_delete_payout_recipient(mocker):
     # arrange
     recipient_id = "JA4cEtmBxCp5cybtnh1rds"
     bitpay_client = get_bitpay_client(mocker)
-    response = {"status": "Success"}
+    response = Mock()
+    response.json.return_value = {"status": "Success"}
     params = {"token": payout_token_value}
     bitpay_client.delete.side_effect = mock_response(
         response, "recipients/" + recipient_id, params, True
@@ -1315,7 +1359,8 @@ def test_request_payout_recipient_notification(mocker):
     # arrange
     recipient_id = "JA4cEtmBxCp5cybtnh1rds"
     bitpay_client = get_bitpay_client(mocker)
-    response = {"status": "Success"}
+    response = Mock()
+    response.json.return_value = {"status": "Success"}
     params = {"token": payout_token_value}
     url = "recipients/" + recipient_id + "/notifications"
     bitpay_client.post.side_effect = mock_response(response, url, params, True)
@@ -1343,7 +1388,8 @@ def test_submit_payout(mocker):
         + "/json/submit_payout_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.post.side_effect = mock_response(response, "payouts", request, True)
     client = init_client(mocker, bitpay_client)
 
@@ -1373,7 +1419,8 @@ def test_get_payout(mocker):
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_payout_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": payout_token_value}
     bitpay_client.get.side_effect = mock_response(
         response, "payouts/" + payout_id, params, True
@@ -1404,7 +1451,8 @@ def test_cancel_payout(mocker):
     with open(
         os.path.abspath(os.path.dirname(__file__)) + "/json/success_response.json", "r"
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": payout_token_value}
     bitpay_client.delete.side_effect = mock_response(
         response, "payouts/" + payout_id, params, True
@@ -1429,7 +1477,8 @@ def test_get_payouts(mocker):
     with open(
         os.path.abspath(os.path.dirname(__file__)) + "/json/get_payouts.json", "r"
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {
         "token": payout_token_value,
         "startDate": startDate,
@@ -1472,7 +1521,8 @@ def test_create_payout_group(mocker):
         + "/json/create_payout_group_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     shopper_id = "7qohDf2zZnQK5Qanj8oyC2"
     payout = Payout(
         amount=10,
@@ -1486,7 +1536,6 @@ def test_create_payout_group(mocker):
         shopperId=shopper_id
     )
 
-    params = {"token": payout_token_value}
     bitpay_client.post.side_effect = mock_response(
         response, "payouts/group", request_dict, True
     )
@@ -1510,7 +1559,8 @@ def test_cancel_payout_group(mocker):
         + "/json/cancel_payout_group_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
 
     params = {"token": payout_token_value}
     bitpay_client.delete.side_effect = mock_response(
@@ -1535,7 +1585,8 @@ def test_request_payout_notification(mocker):
     with open(
         os.path.abspath(os.path.dirname(__file__)) + "/json/success_response.json", "r"
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": payout_token_value}
     bitpay_client.post.side_effect = mock_response(
         response, "payouts/" + payout_id + "/notifications", params, True
@@ -1564,7 +1615,8 @@ def test_get_settlements(mocker):
         + "/json/get_settlements_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {
         "token": merchant_token_value,
         "limit": limit,
@@ -1598,7 +1650,8 @@ def test_get_settlement(mocker):
         + "/json/get_settlement_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": merchant_token_value}
     bitpay_client.get.side_effect = mock_response(
         response, "settlements/" + settlement_id, params, True
@@ -1628,7 +1681,8 @@ def test_get_settlement_reconciliation_report(mocker):
         + "/json/get_settlement_reconciliation_report_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     params = {"token": settlement_token}
     bitpay_client.get.side_effect = mock_response(
         response, "settlements/" + settlement_id + "/reconciliationReport", params, True
@@ -1657,7 +1711,8 @@ def test_get_supported_wallets(mocker):
         + "/json/get_supported_wallets_response.json",
         "r",
     ) as file:
-        response = json.load(file)
+        response = Mock()
+        response.json.return_value = json.load(file)
     bitpay_client.get.side_effect = mock_response(
         response, "supportedWallets/", None, False
     )

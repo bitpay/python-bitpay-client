@@ -12,14 +12,13 @@ class TokenContainer:
         """
         :raises BitPayGenericException
         """
-        token = None
         try:
-            token = self.__data[facade]
+            return self.__data[facade]
         except Exception as exe:
             BitPayExceptionProvider.throw_generic_exception_with_message(
                 "There is no token for the specified key: " + facade.value
             )
-        raise BitPayException
+            raise BitPayException
 
     def put(self, key: Facade, value: str) -> None:
         self.__data[key] = value
