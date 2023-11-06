@@ -29,6 +29,8 @@ class ResponseParser:
                 BitPayExceptionProvider.throw_api_exception_with_message(
                     response_obj["error"], response_obj["code"]
                 )
+            if "data" in response_obj and len(response_obj["data"]) == 0:
+                return response_obj
 
         if "error" in response_obj:
             BitPayExceptionProvider.throw_api_exception_with_message(
