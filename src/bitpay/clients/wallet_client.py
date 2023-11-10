@@ -1,8 +1,8 @@
 from typing import List
 
 from bitpay.clients.bitpay_client import BitPayClient
-from bitpay.exceptions.bitpay_exception import BitPayException
-from bitpay.exceptions.wallet_query_exception import WalletQueryException
+from bitpay.clients.response_parser import ResponseParser
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.wallet.wallet import Wallet
 
 
@@ -18,28 +18,19 @@ class WalletClient:
 
         :return: A list of wallet objets.
         :rtype: [Wallet]
-        :raises BitPayException
-        :raises WalletQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            response_json = self.__bitpay_client.get("supportedWallets/", None, False)
-        except BitPayException as exe:
-            raise WalletQueryException(
-                "failed to serialize wallet object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
-        except Exception as exe:
-            raise WalletQueryException(
-                "failed to serialize wallet object : %s" % str(exe)
-            )
+        response = self.__bitpay_client.get("supportedWallets/", None, False)
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             wallets = []
             for wallet in response_json:
                 wallets.append(Wallet(**wallet))
         except Exception as exe:
-            raise WalletQueryException(
-                "failed to deserialize BitPay server response (Wallet) : %s" % str(exe)
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Wallet", str(exe)
             )
 
         return wallets

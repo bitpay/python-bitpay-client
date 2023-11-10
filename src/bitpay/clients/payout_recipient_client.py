@@ -1,22 +1,8 @@
 from typing import List, Optional
 
 from bitpay.clients.bitpay_client import BitPayClient
-from bitpay.exceptions.bitpay_exception import BitPayException
-from bitpay.exceptions.payout_recipient_cancellation_exception import (
-    PayoutRecipientCancellationException,
-)
-from bitpay.exceptions.payout_recipient_creation_exception import (
-    PayoutRecipientCreationException,
-)
-from bitpay.exceptions.payout_recipient_notification_exception import (
-    PayoutRecipientNotificationException,
-)
-from bitpay.exceptions.payout_recipient_query_exception import (
-    PayoutRecipientQueryException,
-)
-from bitpay.exceptions.payout_recipient_update_exception import (
-    PayoutRecipientUpdateException,
-)
+from bitpay.clients.response_parser import ResponseParser
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.facade import Facade
 from bitpay.models.payout.payout_recipient import PayoutRecipient
 from bitpay.models.payout.payout_recipients import PayoutRecipients
@@ -46,33 +32,26 @@ class PayoutRecipientClient:
         :param PayoutRecipient recipients:
         :return: A PayoutRecipients object with request parameters defined.
         :rtype: [PayoutRecipient]
-        :raises BitPayException
-        :raises PayoutRecipientCreationException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            if recipients.guid is None:
-                recipients.guid = self.__guid_generator.execute()
+        if recipients.guid is None:
+            recipients.guid = self.__guid_generator.execute()
 
-            recipients.token = self.__token_container.get_access_token(Facade.PAYOUT)
+        recipients.token = self.__token_container.get_access_token(Facade.PAYOUT)
 
-            response_json = self.__bitpay_client.post(
-                "recipients", recipients.to_json(), True
-            )
-        except BitPayException as exe:
-            raise PayoutRecipientCreationException(
-                "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        response = self.__bitpay_client.post("recipients", recipients.to_json(), True)
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             recipients = []
             for recipient in response_json:
                 recipients.append(PayoutRecipient(**recipient))
         except Exception as exe:
-            raise PayoutRecipientCreationException(
-                "failed to deserialize BitPay server response "
-                " (PayoutRecipients) : %s" % str(exe)
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
             )
+
         return recipients
 
     def get(self, recipient_id: str) -> PayoutRecipient:
@@ -83,26 +62,18 @@ class PayoutRecipientClient:
         :param str recipient_id: The id of the recipient to retrieve.
         :return: A BitPay PayoutRecipient object.
         :rtype: PayoutRecipient
-        :raises BitPayException
-        :raises PayoutRecipientQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
-            response_json = self.__bitpay_client.get(
-                "recipients/%s" % recipient_id, params
-            )
-        except BitPayException as exe:
-            raise PayoutRecipientQueryException(
-                "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
+        response = self.__bitpay_client.get("recipients/%s" % recipient_id, params)
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             return PayoutRecipient(**response_json)
         except Exception as exe:
-            raise PayoutRecipientQueryException(
-                "failed to deserialize BitPay server response "
-                " (PayoutRecipients) : %s" % str(exe)
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
             )
 
     def get_recipients(
@@ -116,34 +87,30 @@ class PayoutRecipientClient:
         :param int offset: Offset for paging
         :return: A list of BitPayRecipient objects.
         :rtype: [PayoutRecipient]
-        :raises BitPayException
-        :raises PayoutRecipientQueryException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {
-                "token": self.__token_container.get_access_token(Facade.PAYOUT),
-                "limit": str(limit),
-                "offset": str(offset),
-            }
-            if status is not None:
-                params["status"] = status
+        params = {
+            "token": self.__token_container.get_access_token(Facade.PAYOUT),
+            "limit": str(limit),
+            "offset": str(offset),
+        }
+        if status is not None:
+            params["status"] = status
 
-            response_json = self.__bitpay_client.get("recipients", params)
-        except BitPayException as exe:
-            raise PayoutRecipientQueryException(
-                "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        response = self.__bitpay_client.get("recipients", params)
+        response_json = ResponseParser.response_to_json_string(response)
+
+        payout_recipients = []
 
         try:
-            payout_recipients = []
             for payout_recipient in response_json:
                 payout_recipients.append(PayoutRecipient(**payout_recipient))
         except Exception as exe:
-            raise PayoutRecipientQueryException(
-                "failed to deserialize BitPay server response "
-                " (PayoutRecipients) : %s" % str(exe)
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
             )
+
         return payout_recipients
 
     def update(self, recipient_id: str, recipient: PayoutRecipient) -> PayoutRecipient:
@@ -154,28 +121,24 @@ class PayoutRecipientClient:
         :param str recipient: A PayoutRecipient object with updated parameters defined.
         :return: The updated recipient object.
         :rtype: PayoutRecipient
-        :raises BitPayException
-        :raises PayoutRecipientUpdateException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            recipient.token = self.__token_container.get_access_token(Facade.PAYOUT)
-            recipient.guid = self.__guid_generator.execute()
-            response_json = self.__bitpay_client.update(
-                "recipients/%s" % recipient_id, recipient.to_json()
-            )
-        except BitPayException as exe:
-            raise PayoutRecipientUpdateException(
-                "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        recipient.token = self.__token_container.get_access_token(Facade.PAYOUT)
+        recipient.guid = self.__guid_generator.execute()
+        response = self.__bitpay_client.update(
+            "recipients/%s" % recipient_id, recipient.to_json()
+        )
+        response_json = ResponseParser.response_to_json_string(response)
 
         try:
             payout_recipient = PayoutRecipient(**response_json)
         except Exception as exe:
-            raise PayoutRecipientUpdateException(
-                "failed to deserialize BitPay server response "
-                " (PayoutRecipients) : %s" % str(exe)
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
             )
+            raise
+
         return payout_recipient
 
     def delete(self, recipient_id: str) -> bool:
@@ -184,23 +147,22 @@ class PayoutRecipientClient:
 
         :param str recipient_id: The id of the recipient to cancel.
         :return: True if the delete operation was successful, false otherwise.
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
+        params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
+
         try:
-            params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
-        except BitPayException as exe:
-            raise PayoutRecipientCancellationException(
-                "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
-        try:
-            response_json = self.__bitpay_client.delete(
+            response = self.__bitpay_client.delete(
                 "recipients/%s" % recipient_id, params
             )
+            response_json = ResponseParser.response_to_json_string(response)
         except Exception as exe:
-            raise PayoutRecipientCancellationException(
-                "failed to deserialize BitPay server response "
-                " (PayoutRecipients) : %s" % str(exe)
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
             )
+            raise
+
         return response_json["status"].lower() == "success"
 
     def request_notification(self, recipient_id: str) -> bool:
@@ -210,24 +172,20 @@ class PayoutRecipientClient:
         :param str recipient_id: The id of the recipient to notify.
         :return: True if the notification was successfully sent, false otherwise.
         :rtype bool
-        :raises BitPayException
-        :raises PayoutRecipientNotificationException
+        :raises BitPayApiException
+        :raises BitPayGenericException
         """
-        try:
-            params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
-        except BitPayException as exe:
-            raise PayoutRecipientNotificationException(
-                "failed to serialize PayoutRecipients object :  %s" % str(exe),
-                api_code=exe.get_api_code(),
-            )
+        params = {"token": self.__token_container.get_access_token(Facade.PAYOUT)}
 
         try:
-            response_json = self.__bitpay_client.post(
+            response = self.__bitpay_client.post(
                 "recipients/%s" % recipient_id + "/notifications", params
             )
+            response_json = ResponseParser.response_to_json_string(response)
         except Exception as exe:
-            raise PayoutRecipientNotificationException(
-                "failed to deserialize BitPay server response "
-                " (PayoutRecipients) : %s" % str(exe)
+            BitPayExceptionProvider.throw_deserialize_resource_exception(
+                "Payout Recipient", str(exe)
             )
+            raise
+
         return response_json["status"].lower() == "success"

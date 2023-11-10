@@ -8,24 +8,16 @@ class BitPayException(Exception):
     BitPayException
     """
 
-    __bitpay_message = "Unexpected Bitpay exception."
-    __bitpay_code = "BITPAY-GENERIC"
-    __api_code = ""
+    __message: str
 
-    def __init__(self, message: str, code: int = 100, api_code: str = "000000"):
+    def __init__(self, message: str):
         """
-        Construct the BillUpdateException.
+        Construct the BitPayException.
 
         :param message: The Exception message to throw.
-        :param code: [optional] The Exception code to throw.
-        :param api_code: [optional] The API Exception code to throw.
         """
-        message = self.__bitpay_code + ": " + self.__bitpay_message + ":" + message
-        self.__api_code = api_code
-        super().__init__(message, code)
+        self.__message = message
+        super().__init__(message)
 
-    def get_api_code(self) -> str:
-        """
-        :return: Error code provided by the BitPay REST API
-        """
-        return self.__api_code
+    def get_message(self) -> str:
+        return self.__message

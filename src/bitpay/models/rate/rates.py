@@ -1,6 +1,7 @@
 """
 Rates
 """
+from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.bitpay_model import BitPayModel
 from bitpay.models.rate.rate import Rate
 from bitpay.models.currency import Currency
@@ -21,8 +22,13 @@ class Rates(BitPayModel):
         self.rates = rates.rates
 
     def get_rate(self, currency_code: str) -> Optional[float]:
+        """
+        :raises BitPayGenericException
+        """
         if Currency.is_valid(currency_code) is False:
-            raise BitPayException("currency code must be a type of Model.Currency")
+            BitPayExceptionProvider.throw_generic_exception_with_message(
+                "currency code must be a type of Model.Currency"
+            )
 
         val = None
         for rate_obj in self.rates:
