@@ -1,3 +1,4 @@
+import json
 import os
 import datetime
 
@@ -70,7 +71,6 @@ class TestClient:
         buyer.phone = "+99477512690"
         buyer.postal_code = "KY7 1TH"
         buyer.region = "New Port"
-        buyer.buyer_email = "sandbox1@bitpay.com"
         invoice.buyer = buyer
         return invoice
 
@@ -225,7 +225,7 @@ class TestClient:
         )
         submit_payout = self.__client.submit_payout(payout)
         payout_id = submit_payout.id
-        assert self.__email == submit_payout.get_notification_email()
+        assert self.__email == submit_payout.notification_email
         assert payout_id is not None
 
         get_payout_by_id = self.__client.get_payout(payout_id)
@@ -247,11 +247,11 @@ class TestClient:
 
         payout_group = self.__client.create_payout_group([payout])
         payout_group_id = payout_group.payouts[0].group_id
-        assert payout_group.get_payouts()[0].notification_url == notification_url
+        assert payout_group.payouts[0].notification_url == notification_url
         assert len(payout_group.payouts) == 1
 
         cancel_payout_group = self.__client.cancel_payout_group(payout_group_id)
-        assert cancel_payout_group.payouts[0].status == PayoutStatus.Cancelled
+        assert cancel_payout_group.payouts[0].status == PayoutStatus.CANCELLED.value
 
     @pytest.mark.functional
     def test_ledgers_requests(self):
@@ -279,7 +279,7 @@ class TestClient:
             zip="23242",
             country="US",
             phone="555-123-456",
-            dueDate="2021-5-31",
+            dueDate=datetime.datetime.now(),
             passProcessingFee=True,
             items=[item1]
         )

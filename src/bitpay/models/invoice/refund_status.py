@@ -1,16 +1,17 @@
 """
 RefundStatus
 """
+from enum import Enum
 
 
-class RefundStatus:
+class RefundStatus(Enum):
     """
     Refund Status
     """
 
-    Pending = "pending"
-    Success = "success"
-    Failure = "failure"
-    Preview = "preview"
-    Created = "created"
-    Cancelled = "cancelled"
+    PENDING = "pending"
+    SUCCESS = "success"
+    FAILURE = "failure"
+    PREVIEW = "preview"
+    CREATED = "created"
+    CANCELLED = "cancelled"

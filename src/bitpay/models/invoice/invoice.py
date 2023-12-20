@@ -1,7 +1,7 @@
 """
 Invoice
 """
-from typing import List, Union
+from typing import List, Union, Dict
 from pydantic import Field
 from .buyer import Buyer
 from .buyer_provided_info import BuyerProvidedInfo
@@ -39,17 +39,17 @@ class Invoice(BitPayModel):
     item_code: Union[str, None] = None
     physical: Union[bool, None] = False
     payment_currencies: Union[List[str], None] = None
-    payment_subtotals: Union[dict, None] = None
-    payment_totals: Union[dict, None] = None
-    payment_display_totals: Union[dict, None] = None
-    payment_display_subtotals: Union[dict, None] = None
-    payment_codes: Union[dict, None] = None
+    payment_subtotals: Union[Dict[str, int], None] = None
+    payment_totals: Union[Dict[str, int], None] = None
+    payment_display_totals: Union[Dict[str, str], None] = None
+    payment_display_subtotals: Union[Dict[str, str], None] = None
+    payment_codes: Union[Dict[str, Dict[str, str]], None] = None
     acceptance_window: Union[int, None] = None
     buyer: Union[Buyer, None] = None
     refund_addresses: Union[List[str], None] = None
     close_url: Union[str, None] = Field(alias="closeURL", default=None)
     auto_redirect: Union[bool, None] = False
-    json_paypro_required: bool = False
+    json_paypro_required: Union[bool, None] = False
     id: Union[str, None] = None
     url: Union[str, None] = None
     status: Union[str, None] = None
@@ -71,16 +71,12 @@ class Invoice(BitPayModel):
     bill_id: Union[str, None] = None
     refund_info: Union[List[RefundInfo], None] = None
     extended_notifications: Union[bool, None] = False
-    invoice_buyer_provided_info: Union[BuyerProvidedInfo, None] = None
     transaction_currency: Union[str, None] = None
     underpaid_amount: Union[float, None] = None
     overpaid_amount: Union[float, None] = None
     amount_paid: Union[float, None] = None
     display_amount_paid: Union[str, None] = None
-    exchange_rates: Union[dict, None] = None
-    payment_string: Union[str, None] = None
-    verification_link: Union[str, None] = None
-    buyer_email: Union[str, None] = None
+    exchange_rates: Union[Dict[str, Dict[str, float]], None] = None
     merchant_name: Union[str, None] = None
     forced_buyer_selected_wallet: Union[str, None] = None
     forced_buyer_selected_transaction_currency: Union[str, None] = None

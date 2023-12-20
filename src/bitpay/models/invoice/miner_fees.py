@@ -26,3 +26,7 @@ class MinerFees(BitPayModel):
     ltc: MinerFeesItem = Field(alias="LTC", default=MinerFeesItem())
     busd: MinerFeesItem = Field(alias="BUSD", default=MinerFeesItem())
     xrp: MinerFeesItem = Field(alias="XRP", default=MinerFeesItem())
+    dai: MinerFeesItem = Field(alias="DAI", default=MinerFeesItem())
+    wbtc: MinerFeesItem = Field(alias="WBTC", default=MinerFeesItem())
+    matic: MinerFeesItem = Field(alias="MATIC", default=MinerFeesItem())
+    usdc_m: MinerFeesItem = Field(alias="USDC_m", default=MinerFeesItem())

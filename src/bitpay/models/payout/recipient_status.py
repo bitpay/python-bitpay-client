@@ -1,9 +1,10 @@
 """
 RecipientStatus
 """
+from enum import Enum
 
 
-class RecipientStatus:
+class RecipientStatus(Enum):
     """
     Recipient Status
     """

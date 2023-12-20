@@ -20,4 +20,3 @@ class Buyer(BitPayModel):
     email: Union[str, None] = None
     phone: Union[str, None] = None
     notify: bool = False
-    buyer_email: Union[str, None] = None

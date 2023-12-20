@@ -200,12 +200,16 @@ class Currency(BitPayModel):
     symbol: Union[str, None] = None
     precision: int
     name: str
-    plural: Union[str, None] = None
-    alts: Union[str, None] = None
-    minimum: Union[float, None] = None
+    plural: str
+    alts: str
+    minimum: float
     sanctioned: bool = False
     decimals: int
+    display_code: Union[str, None] = None
     chain: Union[str, None] = None
+    max_supply: Union[float, None] = None
+    tranche_decimals: Union[int, None] = None
+    contract_address: Union[str, None] = None
 
     @classmethod
     def is_valid(cls, value: str) -> bool:

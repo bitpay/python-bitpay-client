@@ -2,7 +2,6 @@ from typing import Union
 
 from pydantic import BaseModel, field_validator, ConfigDict
 
-from bitpay.exceptions.bitpay_exception import BitPayException
 from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.utils.model_util import ModelUtil
 

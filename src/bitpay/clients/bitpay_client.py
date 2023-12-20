@@ -1,5 +1,6 @@
 import json
 import urllib
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 
 import requests
@@ -50,7 +51,7 @@ class BitPayClient:
         :raises BitPayApiException
         """
         full_url = self.__base_url + uri
-        form_data = json.dumps(form_data)
+        form_data = json.dumps(form_data, default=json_serialize)
         if signature_required:
             self.__headers["x-signature"] = sign(full_url + form_data, self.__ec_key)
             self.__headers["x-identity"] = get_compressed_public_key_from_pem(
@@ -117,9 +118,15 @@ class BitPayClient:
         """
 
         full_url = self.__base_url + uri
-        form_data = json.dumps(form_data)
+        form_data = json.dumps(form_data, default=json_serialize)
 
         self.__headers["x-signature"] = sign(full_url + form_data, self.__ec_key)
         self.__headers["x-identity"] = get_compressed_public_key_from_pem(self.__ec_key)
 
         return requests.put(full_url, data=form_data, headers=self.__headers)
+
+
+def json_serialize(obj):
+    if isinstance(obj, datetime):
+        return obj.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    raise TypeError("Type %s not serializable" % type(obj))
