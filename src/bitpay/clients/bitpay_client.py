@@ -126,7 +126,7 @@ class BitPayClient:
         return requests.put(full_url, data=form_data, headers=self.__headers)
 
 
-def json_serialize(obj):
+def json_serialize(obj) -> Any:  # type: ignore
     if isinstance(obj, datetime):
         return obj.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     raise TypeError("Type %s not serializable" % type(obj))
