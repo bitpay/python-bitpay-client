@@ -1,14 +1,15 @@
 """
 PayoutStatus
 """
+from enum import Enum
 
 
-class PayoutStatus:
-    New = "new"
-    Funded = "funded"
-    Processing = "processing"
-    Complete = "complete"
-    Failed = "failed"
-    Cancelled = "cancelled"
-    Paid = "paid"
-    Unpaid = "unpaid"
+class PayoutStatus(Enum):
+    NEW = "new"
+    FUNDED = "funded"
+    PROCESSING = "processing"
+    COMPLETE = "complete"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+    PAID = "paid"
+    UNPAID = "unpaid"

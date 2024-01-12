@@ -14,6 +14,6 @@ class MinerFeesItem(BitPayModel):
     see this support article for more information
     """
 
-    satoshis_per_byte: Union[float, None] = None
-    total_fee: Union[float, None] = None
+    satoshis_per_byte: Union[int, None] = None
+    total_fee: Union[int, None] = None
     fiat_amount: Union[float, None] = None

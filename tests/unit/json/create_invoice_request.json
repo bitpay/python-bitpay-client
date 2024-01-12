@@ -19,8 +19,7 @@
     "notify": true,
     "phone": "+99477512690",
     "postalCode": "KY7 1TH",
-    "region": "New Port",
-    "buyerEmail": "sandbox1@bitpay.com"
+    "region": "New Port"
   },
   "guid": "chc9kj52-04g0-4b6f-941d-3a844e352758",
   "token": "someMerchantToken"

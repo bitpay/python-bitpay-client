@@ -1,6 +1,7 @@
 """
 Bill
 """
+from datetime import datetime
 from typing import List, Union
 from .item import Item
 from ..bitpay_model import BitPayModel
@@ -27,10 +28,10 @@ class Bill(BitPayModel):
     country: Union[str, None] = None
     cc: Union[List[str], None] = None
     phone: Union[str, None] = None
-    due_date: Union[str, None] = None
+    due_date: Union[datetime, None] = None
     pass_processing_fee: bool = False
     status: Union[str, None] = None
     url: Union[str, None] = None
-    created_date: Union[str, None] = None
+    created_date: Union[datetime, None] = None
     id: Union[str, None] = None
     merchant: Union[str, None] = None

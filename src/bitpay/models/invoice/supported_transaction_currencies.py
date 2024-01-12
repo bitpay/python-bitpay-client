@@ -42,3 +42,36 @@ class SupportedTransactionCurrencies(BitPayModel):
     ltc: SupportedTransactionCurrency = Field(
         alias="LTC", default=SupportedTransactionCurrency()
     )
+    wbtc: SupportedTransactionCurrency = Field(
+        alias="WBTC", default=SupportedTransactionCurrency()
+    )
+    dai: SupportedTransactionCurrency = Field(
+        alias="DAI", default=SupportedTransactionCurrency()
+    )
+    euroc: SupportedTransactionCurrency = Field(
+        alias="EUROC", default=SupportedTransactionCurrency()
+    )
+    matic: SupportedTransactionCurrency = Field(
+        alias="MATIC", default=SupportedTransactionCurrency()
+    )
+    matic_e: SupportedTransactionCurrency = Field(
+        alias="MATIC_e", default=SupportedTransactionCurrency()
+    )
+    eth_m: SupportedTransactionCurrency = Field(
+        alias="ETH_m", default=SupportedTransactionCurrency()
+    )
+    usdc_m: SupportedTransactionCurrency = Field(
+        alias="USDC_m", default=SupportedTransactionCurrency()
+    )
+    busd_m: SupportedTransactionCurrency = Field(
+        alias="BUSD_m", default=SupportedTransactionCurrency()
+    )
+    dai_m: SupportedTransactionCurrency = Field(
+        alias="DAI_m", default=SupportedTransactionCurrency()
+    )
+    wbtc_m: SupportedTransactionCurrency = Field(
+        alias="WBTC_m", default=SupportedTransactionCurrency()
+    )
+    shib_m: SupportedTransactionCurrency = Field(
+        alias="SHIB_m", default=SupportedTransactionCurrency()
+    )

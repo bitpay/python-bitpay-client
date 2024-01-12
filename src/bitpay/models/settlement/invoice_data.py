@@ -1,7 +1,8 @@
 """
 InvoiceData: Object containing relevant information from the paid invoice
 """
-from typing import Union
+from datetime import datetime
+from typing import Union, Dict
 from bitpay.models.bitpay_model import BitPayModel
 from bitpay.models.settlement.refund_info import RefundInfo
 
@@ -12,11 +13,10 @@ class InvoiceData(BitPayModel):
     """
 
     order_id: Union[str, None] = None
-    date: Union[str, None] = None
+    date: Union[datetime, None] = None
     price: Union[float, None] = None
     currency: Union[str, None] = None
     transaction_currency: Union[str, None] = None
-    over_paid_amount: Union[float, None] = None
-    payout_percentage: Union[dict, None] = None
-    buyer_email_address: Union[str, None] = None
+    overpaid_amount: Union[float, None] = None
+    payout_percentage: Union[Dict[str, int], None] = None
     refund_info: Union[RefundInfo, None] = None

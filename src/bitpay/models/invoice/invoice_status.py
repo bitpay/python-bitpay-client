@@ -1,16 +1,18 @@
 """
 InvoiceStatus
 """
+from enum import Enum
 
 
-class InvoiceStatus:
+class InvoiceStatus(Enum):
     """
     Invoice Status
     """
 
-    New = "new"
-    Paid = "paid"
-    Confirmed = "confirmed"
-    Complete = "complete"
-    Expired = "expired"
-    Invalid = "invalid"
+    NEW = "new"
+    PAID = "paid"
+    CONFIRMED = "confirmed"
+    COMPLETE = "complete"
+    EXPIRED = "expired"
+    INVALID = "invalid"
+    DECLINED = "declined"

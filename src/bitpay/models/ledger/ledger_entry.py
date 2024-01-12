@@ -1,6 +1,7 @@
 """
 LedgerEntry
 """
+from datetime import datetime
 from typing import Union
 from pydantic import field_validator
 from bitpay.models.bitpay_model import BitPayModel
@@ -13,19 +14,19 @@ class LedgerEntry(BitPayModel):
     """
 
     type: Union[str, None] = None
-    amount: Union[float, None] = None
+    amount: Union[int, None] = None
     code: Union[int, None] = None
-    timestamp: Union[str, None] = None
+    description: Union[str, None] = None
+    timestamp: Union[datetime, None] = None
     currency: Union[str, None] = None
     tx_type: Union[str, None] = None
     scale: Union[int, None] = None
     id: Union[str, None] = None
     support_request: Union[str, None] = None
-    description: Union[str, None] = None
     invoice_id: Union[str, None] = None
 
     # Buyer
-    buyer_fields: Buyer = Buyer()
+    buyer_fields: Union[Buyer, None] = None
 
     invoice_amount: Union[float, None] = None
     invoice_currency: Union[str, None] = None

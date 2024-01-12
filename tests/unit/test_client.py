@@ -91,7 +91,6 @@ def get_example_invoice():
     buyer.phone = "+99477512690"
     buyer.postal_code = "KY7 1TH"
     buyer.region = "New Port"
-    buyer.buyer_email = "sandbox1@bitpay.com"
     invoice.buyer = buyer
     return invoice
 
@@ -824,6 +823,7 @@ def test_create_bill_by_merchant_facade(mocker):
     assert result.number == "bill1234-ABCD"
     assert result.cc[0] == "jane@doe.com"
     assert result.id == "X6KJbe9RxAGWNReCwd1xRw"
+    assert result.created_date.strftime('%Y-%m-%d %H:%M:%S') == "2021-05-21 09:48:02"
     assert result.items[1].description == "Test Item 2"
     assert (
         result.token
@@ -892,7 +892,7 @@ def test_get_bill_by_merchant_facade(mocker):
 
     # assert
     assert result.status == "draft"
-    assert result.due_date == "2021-05-31T00:00:00.000Z"
+    assert result.due_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ') == "2021-05-31T00:00:00.000000Z"
     assert result.merchant == "7HyKWn3d4xdhAMQYAEVxVq"
     assert result.items[1].id == "Apy3i2TpzHRYP8tJCkrZMT"
     assert (

@@ -1,15 +1,16 @@
 """
 BillStatus
 """
+from enum import Enum
 
 
-class BillStatus:
+class BillStatus(Enum):
     """
     Bill Status
     """
 
-    Draft = "draft"
-    Sent = "sent"
-    New = "new"
-    Paid = "paid"
-    Complete = "complete"
+    DRAFT = "draft"
+    SENT = "sent"
+    NEW = "new"
+    PAID = "paid"
+    COMPLETE = "complete"
