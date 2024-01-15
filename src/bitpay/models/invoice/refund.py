@@ -4,7 +4,7 @@ Refund
 from datetime import datetime
 from typing import Union
 
-from pydantic import Field
+from pydantic import Field, field_serializer
 
 from bitpay.models.bitpay_model import BitPayModel
 
@@ -36,3 +36,7 @@ class Refund(BitPayModel):
     transaction_refund_fee: Union[float, None] = None
     txid: Union[str, None] = None
     type: Union[str, None] = None
+
+    @field_serializer("request_date", "last_refund_notification")
+    def serialize_datetime(self, dt: datetime) -> str:
+        return super().serialize_datetime_to_iso8601(dt)

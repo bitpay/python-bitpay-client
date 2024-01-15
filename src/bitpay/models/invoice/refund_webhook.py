@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Union
 
+from pydantic import field_serializer
+
 from bitpay.models.bitpay_model import BitPayModel
 
 
@@ -16,3 +18,7 @@ class RefundWebhook(BitPayModel):
     request_date: Union[datetime, None] = None
     status: Union[str, None] = None
     support_request: Union[str, None] = None
+
+    @field_serializer("request_date", "last_refund_notification")
+    def serialize_datetime(self, dt: datetime) -> str:
+        return super().serialize_datetime_to_iso8601(dt)

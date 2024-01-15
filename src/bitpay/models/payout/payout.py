@@ -3,7 +3,7 @@ Payout
 """
 from datetime import datetime
 from typing import List, Union, Dict
-from pydantic import Field
+from pydantic import Field, field_serializer
 from .payout_transaction import PayoutTransaction
 from ..bitpay_model import BitPayModel
 
@@ -36,6 +36,10 @@ class Payout(BitPayModel):
     transactions: Union[List[PayoutTransaction], None] = None
     account_id: Union[str, None] = None
     group_id: Union[str, None] = None
+
+    @field_serializer("effective_date", "request_date", "date_executed")
+    def serialize_datetime_to_iso8601(self, dt: datetime) -> str:
+        return super().serialize_datetime_to_iso8601(dt)
 
     def to_json(self) -> dict:
         """

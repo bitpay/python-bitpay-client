@@ -3,7 +3,7 @@ LedgerEntry
 """
 from datetime import datetime
 from typing import Union
-from pydantic import field_validator
+from pydantic import field_validator, field_serializer
 from bitpay.models.bitpay_model import BitPayModel
 from bitpay.models.ledger.buyer import Buyer
 
@@ -37,3 +37,7 @@ class LedgerEntry(BitPayModel):
         if value is None:
             return None
         return float(value)
+
+    @field_serializer("timestamp")
+    def serialize_datetime_to_iso8601(self, dt: datetime) -> str:
+        return super().serialize_datetime_to_iso8601(dt)

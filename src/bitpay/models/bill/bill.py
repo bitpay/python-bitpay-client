@@ -1,8 +1,11 @@
 """
 Bill
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Union
+
+from pydantic import field_serializer
+
 from .item import Item
 from ..bitpay_model import BitPayModel
 
@@ -35,3 +38,7 @@ class Bill(BitPayModel):
     created_date: Union[datetime, None] = None
     id: Union[str, None] = None
     merchant: Union[str, None] = None
+
+    @field_serializer("due_date", "created_date")
+    def serialize_datetime(self, dt: datetime) -> str:
+        return super().serialize_datetime_to_iso8601(dt)
