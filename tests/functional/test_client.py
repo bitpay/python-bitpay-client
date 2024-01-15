@@ -225,7 +225,7 @@ class TestClient:
         )
         submit_payout = self.__client.submit_payout(payout)
         payout_id = submit_payout.id
-        assert self.__email == submit_payout.get_notification_email()
+        assert self.__email == submit_payout.notification_email
         assert payout_id is not None
 
         get_payout_by_id = self.__client.get_payout(payout_id)
