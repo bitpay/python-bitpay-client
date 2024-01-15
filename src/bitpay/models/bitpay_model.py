@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Union
 
 from pydantic import BaseModel, field_validator, ConfigDict
@@ -18,6 +19,9 @@ class BitPayModel(BaseModel):
         :return: data in json
         """
         return self.model_dump(exclude_unset=True, by_alias=True)
+
+    def serialize_datetime_to_iso8601(self, dt: datetime) -> str:
+        return dt.isoformat(timespec="microseconds")[:-4] + "Z"
 
     @field_validator("currency", check_fields=False)
     def validate_currency(cls, currency_code: Union[str, None]) -> Union[str, None]:

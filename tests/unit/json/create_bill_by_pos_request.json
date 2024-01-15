@@ -7,7 +7,7 @@
   "city": "Alexandria",
   "country": "US",
   "currency": "USD",
-  "dueDate": "2021-5-31",
+  "dueDate": "2021-05-31T00:00:00.00Z",
   "email": "some@email.com",
   "items": [
     {

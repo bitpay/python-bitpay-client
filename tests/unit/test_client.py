@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from typing import List
 
 import pytest
@@ -115,7 +116,7 @@ def get_example_bill():
     bill.country = "US"
     bill.cc = cc
     bill.phone = "555-123-456"
-    bill.due_date = "2021-5-31"
+    bill.due_date = datetime.strptime("2021-5-31", "%Y-%m-%d")
     bill.pass_processing_fee = True
     bill.items = [item1, item2]
     return bill
@@ -1041,6 +1042,7 @@ def test_update_bill(mocker):
     assert result.number == "bill1234-EFGH"
     assert result.cc[0] == "jane@doe.com"
     assert result.id == "X6KJbe9RxAGWNReCwd1xRw"
+    assert result.due_date.strftime('%Y-%m-%dT%H:%M:%S') == "2021-05-31T00:00:00"
     assert result.items[1].description == "Test Item 2"
     assert (
         result.token
