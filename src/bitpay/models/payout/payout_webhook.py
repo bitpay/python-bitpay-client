@@ -1,4 +1,5 @@
 from datetime import datetime
+from pydantic import field_serializer
 from typing import Union, Dict, List
 
 from bitpay.models.bitpay_model import BitPayModel
@@ -23,5 +24,9 @@ class PayoutWebhook(BitPayModel):
     status: Union[str, None] = None
     transactions: Union[List[PayoutTransaction], None] = None
     account_id: Union[str, None] = None
-    date: Union[datetime, None] = None
+    date_executed: Union[datetime, None] = None
     group_id: Union[str, None] = None
+
+    @field_serializer("effective_date", "request_date")
+    def serialize_datetime(self, dt: datetime) -> str:
+        return super().serialize_datetime_to_iso8601(dt)

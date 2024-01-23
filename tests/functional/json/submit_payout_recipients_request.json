@@ -1,0 +1,14 @@
+{
+  "recipients": [
+    {
+      "email": "alice@email.com",
+      "label": "Alice"
+    },
+    {
+      "email": "bob@email.com",
+      "label": "Bob"
+    }
+  ],
+  "guid": "chc9kj52-04g0-4b6f-941d-3a844e352758",
+  "token": "somePayoutToken"
+}
