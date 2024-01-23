@@ -15,7 +15,7 @@ class PayoutTransaction(BitPayModel):
     txid: Union[str, None] = None
     amount: Union[float, None] = None
     date: Union[datetime, None] = None
-    confirmations: Union[str, None] = None
+    confirmations: Union[int, None] = None
 
     @field_serializer("date")
     def serialize_datetime_to_iso8601(self, dt: datetime) -> str:

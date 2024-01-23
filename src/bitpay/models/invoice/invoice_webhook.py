@@ -21,3 +21,5 @@ class InvoiceWebhook(BitPayModel):
     status: Union[str, None] = None
     transaction_currency: Union[str, None] = None
     url: Union[str, None] = None
+    in_invoice_id: Union[str, None] = None
+    in_payment_request: Union[str, None] = None
