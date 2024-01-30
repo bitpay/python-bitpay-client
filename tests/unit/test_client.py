@@ -214,6 +214,7 @@ def test_create_invoice_by_merchant(mocker):
         result.universal_codes.payment_string
         == "https://link.test.bitpay.com/i/UZjwcYkWAKfTMn9J1yyfs4"
     )
+    assert result.refund_addresses[0].get("n2MDYgEhxCAnuoVd1JpPmvxZShE6rQA6zv").date.strftime("%Y-%m-%d %H:%M:%S") == "2024-01-08 23:50:56"
 
 
 @pytest.mark.unit

@@ -1,0 +1,27 @@
+{
+  "price": 2.16,
+  "currency": "EUR",
+  "orderId": "98e572ea-910e-415d-b6de-65f5090680f6",
+  "fullNotifications": true,
+  "extendedNotifications": true,
+  "transactionSpeed": "medium",
+  "notificationURL": "https://hookbin.com/lJnJg9WW7MtG9GZlPVdj",
+  "redirectURL": "https://hookbin.com/lJnJg9WW7MtG9GZlPVdj",
+  "posData": "98e572ea35hj356xft8y8cgh56h5090680f6",
+  "itemDesc": "Ab tempora sed ut.",
+  "buyer": {
+    "name": "Bily Matthews",
+    "email": "sandbox@bitpay.com",
+    "address1": "168 General Grove",
+    "address2": "sandbox@bitpay.com",
+    "country": "AD",
+    "locality": "Port Horizon",
+    "notify": true,
+    "phone": "+99477512690",
+    "postalCode": "KY7 1TH",
+    "region": "New Port",
+    "buyerEmail": "sandbox1@bitpay.com"
+  },
+  "guid": "chc9kj52-04g0-4b6f-941d-3a844e352758",
+  "token": "somePosToken"
+}

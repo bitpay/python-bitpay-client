@@ -5,6 +5,7 @@ from typing import List, Union, Dict
 from pydantic import Field
 from .buyer import Buyer
 from .buyer_provided_info import BuyerProvidedInfo
+from .invoice_refund_addresses import InvoiceRefundAddresses
 from .miner_fees import MinerFees
 from .refund_info import RefundInfo
 from .shopper import Shopper
@@ -46,7 +47,7 @@ class Invoice(BitPayModel):
     payment_codes: Union[Dict[str, Dict[str, str]], None] = None
     acceptance_window: Union[int, None] = None
     buyer: Union[Buyer, None] = None
-    refund_addresses: Union[List[str], None] = None
+    refund_addresses: Union[List[Dict[str, InvoiceRefundAddresses]], None] = None
     close_url: Union[str, None] = Field(alias="closeURL", default=None)
     auto_redirect: Union[bool, None] = False
     json_paypro_required: Union[bool, None] = False
