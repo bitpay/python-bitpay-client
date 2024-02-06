@@ -247,7 +247,7 @@ class TestClient:
 
         payout_group = self.__client.create_payout_group([payout])
         payout_group_id = payout_group.payouts[0].group_id
-        assert payout_group.get_payouts()[0].notification_url == notification_url
+        assert payout_group.payouts[0].notification_url == notification_url
         assert len(payout_group.payouts) == 1
 
         cancel_payout_group = self.__client.cancel_payout_group(payout_group_id)
