@@ -1,6 +1,7 @@
 """
 InvoiceData: Object containing relevant information from the paid invoice
 """
+
 from typing import Union
 from bitpay.models.bitpay_model import BitPayModel
 from bitpay.models.settlement.refund_info import RefundInfo

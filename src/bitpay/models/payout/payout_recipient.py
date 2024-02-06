@@ -1,6 +1,7 @@
 """
 PayoutRecipient
 """
+
 from typing import Union
 
 from pydantic import Field

@@ -1,6 +1,7 @@
 """
 PayoutRecipientCreation Exception gets raised when request for recipient creation gets failed.
 """
+
 from .payout_recipient_exception import PayoutRecipientException
 
 

@@ -1,6 +1,7 @@
 """
 Ledger Query Exception gets raised when request for ledger retrieval gets failed .
 """
+
 from .ledger_exception import LedgerException
 
 

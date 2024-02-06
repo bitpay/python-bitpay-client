@@ -1,6 +1,7 @@
 """
 PayoutRecipientNotification Exception gets raised when webhook fails to send notification
 """
+
 from .payout_recipient_exception import PayoutRecipientException
 
 

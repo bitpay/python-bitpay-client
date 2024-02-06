@@ -1,6 +1,7 @@
 """
 Invoice
 """
+
 from typing import List, Union
 from pydantic import Field
 from .buyer import Buyer

@@ -1,6 +1,7 @@
 """
 Currency Query Exception gets raised when request for currency retrieval gets failed .
 """
+
 from .invoice_exception import InvoiceException
 
 

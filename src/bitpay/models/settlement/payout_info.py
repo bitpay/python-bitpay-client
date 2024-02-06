@@ -2,6 +2,7 @@
 PayoutInfo: Object containing the settlement info provided by the Merchant
 in his BitPay account settings
 """
+
 from typing import Union
 from bitpay.models.bitpay_model import BitPayModel
 

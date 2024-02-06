@@ -1,6 +1,7 @@
 """
 PayoutTransaction
 """
+
 from typing import Union
 from bitpay.models.bitpay_model import BitPayModel
 

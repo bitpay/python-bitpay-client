@@ -1,6 +1,7 @@
 """
 rate Query Exception gets raised when request for rate retrieval gets failed .
 """
+
 from .rates_exception import RateException
 
 

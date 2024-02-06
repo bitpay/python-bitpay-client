@@ -1,6 +1,7 @@
 """
 Invoice Payment exception gets raised when it fails to pay invoice.
 """
+
 from .invoice_exception import InvoiceException
 
 

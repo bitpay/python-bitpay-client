@@ -1,6 +1,7 @@
 """
 SettlementLedgerEntry: ledger entries in the settlement,
 """
+
 from typing import Union
 from .invoice_data import InvoiceData
 from ..bitpay_model import BitPayModel

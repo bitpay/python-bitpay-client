@@ -1,6 +1,7 @@
 """
 PayoutRecipients
 """
+
 from typing import List, Union
 
 from .payout_recipient import PayoutRecipient
