@@ -1,6 +1,7 @@
 """
 InvoiceData: Object containing relevant information from the paid invoice
 """
+
 from datetime import datetime
 from pydantic import field_serializer
 from typing import Union, Dict

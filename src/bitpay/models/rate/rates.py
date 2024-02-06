@@ -1,6 +1,7 @@
 """
 Rates
 """
+
 from bitpay.exceptions.bitpay_exception_provider import BitPayExceptionProvider
 from bitpay.models.bitpay_model import BitPayModel
 from bitpay.models.rate.rate import Rate

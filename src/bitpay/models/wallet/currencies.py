@@ -1,6 +1,7 @@
 """
 Currencies
 """
+
 from typing import Union
 from bitpay.models.bitpay_model import BitPayModel
 from bitpay.models.wallet.currency_qr import CurrencyQr

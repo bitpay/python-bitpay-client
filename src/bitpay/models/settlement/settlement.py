@@ -3,6 +3,7 @@ Settlement: Settlements are transfers of payment profits from BitPay to bank
 accounts and cryptocurrency wallets owned by merchants, partners, etc. This
 endpoint exposes reports detailing these settlements.
 """
+
 from datetime import datetime
 from pydantic import field_serializer
 from typing import List, Union
