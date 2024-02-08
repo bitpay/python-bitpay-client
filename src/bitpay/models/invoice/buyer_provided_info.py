@@ -2,6 +2,7 @@
 BuyerProvidedInfo: Information collected from the buyer during the process of paying
 an invoice. Initially this object is empty.
 """
+
 from typing import Union
 
 from bitpay.models.bitpay_model import BitPayModel

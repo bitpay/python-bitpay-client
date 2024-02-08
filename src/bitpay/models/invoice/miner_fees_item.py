@@ -1,6 +1,7 @@
 """
 MinerFeesItem
 """
+
 from typing import Union
 from bitpay.models.bitpay_model import BitPayModel
 from bitpay.utils.model_util import ModelUtil

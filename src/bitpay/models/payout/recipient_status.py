@@ -1,6 +1,7 @@
 """
 RecipientStatus
 """
+
 from enum import Enum
 
 

@@ -1,6 +1,7 @@
 """
 RefundInfo: Object containing information about the refund executed for the invoice
 """
+
 from typing import Union, Dict
 from bitpay.models.bitpay_model import BitPayModel
 

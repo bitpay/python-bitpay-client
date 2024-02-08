@@ -1,6 +1,7 @@
 """
 Payout
 """
+
 from datetime import datetime
 from typing import List, Union, Dict
 from pydantic import Field, field_serializer

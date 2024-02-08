@@ -1,6 +1,7 @@
 """
 InvoiceStatus
 """
+
 from enum import Enum
 
 

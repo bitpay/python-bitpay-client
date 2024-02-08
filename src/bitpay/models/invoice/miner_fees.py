@@ -1,6 +1,7 @@
 """
 MinerFees
 """
+
 from pydantic import Field
 
 from .miner_fees_item import MinerFeesItem
