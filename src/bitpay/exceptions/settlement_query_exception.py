@@ -1,6 +1,7 @@
 """
 Settlement Query Exception gets raised when request for settlement retrieval gets failed .
 """
+
 from .settlement_exception import SettlementException
 
 

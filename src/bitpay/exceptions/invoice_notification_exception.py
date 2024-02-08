@@ -1,6 +1,7 @@
 """
 Invoice Notification Exception gets raised when webhook fails to send notification
 """
+
 from .invoice_exception import InvoiceException
 
 

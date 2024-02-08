@@ -1,6 +1,7 @@
 """
 Bill
 """
+
 from typing import List, Union
 from .item import Item
 from ..bitpay_model import BitPayModel

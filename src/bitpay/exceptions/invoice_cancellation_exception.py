@@ -1,6 +1,7 @@
 """
 Invoice Cancellation exception gets raised when it fails to cancel invoice.
 """
+
 from .invoice_exception import InvoiceException
 
 

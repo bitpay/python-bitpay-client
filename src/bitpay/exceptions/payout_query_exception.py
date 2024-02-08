@@ -1,6 +1,7 @@
 """
 Payout Query Exception gets raised when request for payout retrieval gets failed .
 """
+
 from .payout_exception import PayoutException
 
 

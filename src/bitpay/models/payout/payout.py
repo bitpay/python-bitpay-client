@@ -1,6 +1,7 @@
 """
 Payout
 """
+
 from typing import List, Union
 from pydantic import Field
 from .payout_transaction import PayoutTransaction

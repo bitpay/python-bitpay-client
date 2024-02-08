@@ -1,6 +1,7 @@
 """
 RefundInfo
 """
+
 from typing import List, Union
 from bitpay.models.bitpay_model import BitPayModel
 

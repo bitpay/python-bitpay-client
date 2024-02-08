@@ -5,6 +5,7 @@ author  Antonio Buedo
 version 4.0.1
 See https://developer.bitpay.com/reference/concepts for more information.
 """
+
 import os
 import json
 from typing import List, Optional

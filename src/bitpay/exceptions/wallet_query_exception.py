@@ -1,6 +1,7 @@
 """
 Wallet Query Exception gets raised when a user fails to retrieve wallets
 """
+
 from .wallet_exception import WalletException
 
 

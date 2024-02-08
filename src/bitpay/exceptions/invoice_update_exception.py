@@ -1,6 +1,7 @@
 """
 Invoice Update Exception gets raised when it fails to update invoice
 """
+
 from .invoice_exception import InvoiceException
 
 

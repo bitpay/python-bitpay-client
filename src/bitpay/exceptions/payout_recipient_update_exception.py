@@ -1,6 +1,7 @@
 """
 PayoutRecipientUpdate Exception gets raised when it fails to update recipient
 """
+
 from .payout_recipient_exception import PayoutRecipientException
 
 

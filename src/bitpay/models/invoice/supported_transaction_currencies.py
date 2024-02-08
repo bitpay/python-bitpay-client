@@ -1,6 +1,7 @@
 """
 SupportedTransactionCurrencies
 """
+
 from pydantic import Field
 
 from .supported_transaction_currency import SupportedTransactionCurrency

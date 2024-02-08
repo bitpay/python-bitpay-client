@@ -2,6 +2,7 @@
 Wallet Exception gets raised when some unexpected error occurs while processing a request
 or trying to manage wallet.
 """
+
 from .bitpay_exception import BitPayException
 
 

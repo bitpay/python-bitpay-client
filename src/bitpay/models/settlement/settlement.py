@@ -3,6 +3,7 @@ Settlement: Settlements are transfers of payment profits from BitPay to bank
 accounts and cryptocurrency wallets owned by merchants, partners, etc. This
 endpoint exposes reports detailing these settlements.
 """
+
 from typing import List, Union
 from .payout_info import PayoutInfo
 from .settlement_ledger_entry import SettlementLedgerEntry

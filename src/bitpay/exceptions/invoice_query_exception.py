@@ -1,6 +1,7 @@
 """
 Invoice Query Exception gets raised when request for invoice retrieval gets failed .
 """
+
 from .invoice_exception import InvoiceException
 
 

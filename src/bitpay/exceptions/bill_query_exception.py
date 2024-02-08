@@ -1,6 +1,7 @@
 """
 Bill Query Exception gets raised when request for bill retrieval gets failed .
 """
+
 from .bill_exception import BillException
 
 

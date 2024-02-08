@@ -1,9 +1,8 @@
 """
 Facade
 """
-from enum import Enum
 
-from bitpay.exceptions.bitpay_exception import BitPayException
+from enum import Enum
 
 
 class Facade(Enum):

@@ -1,6 +1,7 @@
 """
 Rates
 """
+
 from bitpay.models.bitpay_model import BitPayModel
 from bitpay.models.rate.rate import Rate
 from bitpay.models.currency import Currency

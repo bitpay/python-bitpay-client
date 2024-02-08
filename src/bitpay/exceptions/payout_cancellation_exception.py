@@ -1,6 +1,7 @@
 """
 Payout Cancellation exception gets raised when it fails to cancel payout.
 """
+
 from .payout_exception import PayoutException
 
 

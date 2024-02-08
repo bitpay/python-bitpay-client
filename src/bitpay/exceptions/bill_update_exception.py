@@ -1,6 +1,7 @@
 """
 Bill Update Exception gets raised when it fails to update bill
 """
+
 from .bill_exception import BillException
 
 

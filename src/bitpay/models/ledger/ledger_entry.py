@@ -1,6 +1,7 @@
 """
 LedgerEntry
 """
+
 from typing import Union
 from pydantic import field_validator
 from bitpay.models.bitpay_model import BitPayModel

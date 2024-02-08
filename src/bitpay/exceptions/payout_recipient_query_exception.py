@@ -1,6 +1,7 @@
 """
 PayoutRecipientQuery Exception gets raised when request for recipient retrieval gets failed .
 """
+
 from .invoice_exception import InvoiceException
 
 

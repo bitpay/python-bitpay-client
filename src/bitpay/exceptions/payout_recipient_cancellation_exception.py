@@ -1,6 +1,7 @@
 """
 PayoutRecipient Cancellation exception gets raised when it fails to cancel payout recipient.
 """
+
 from .payout_recipient_exception import PayoutRecipientException
 
 
