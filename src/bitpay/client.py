@@ -1,11 +1,3 @@
-"""
-Class Client
-package Bitpay
-author  Antonio Buedo
-version 4.0.1
-See https://developer.bitpay.com/reference/concepts for more information.
-"""
-
 import os
 import json
 from typing import List, Optional
@@ -47,14 +39,6 @@ from .utils.token_container import TokenContainer
 
 
 class Client:
-    """
-    * Class Client
-    * @package Bitpay
-    * @author  Antonio Buedo
-    * @version 4.0.0
-    * See https://developer.bitpay.com/reference/concepts for more information.
-    """
-
     __bitpay_client: BitPayClient
     __token_container: TokenContainer
     __guid_generator: GuidGenerator
