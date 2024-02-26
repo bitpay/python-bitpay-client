@@ -26,4 +26,4 @@ def test_handle_multiple_errors(mocker):
         response.json.return_value = response_json
         ResponseParser.response_to_json_string(response)
 
-    assert str(exc_info.value) == "Missing required parameter. Missing required parameter."
+    assert str(exc_info.value) == "Missing required parameter price. Missing required parameter currency."
