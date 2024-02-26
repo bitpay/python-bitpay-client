@@ -40,10 +40,10 @@ class ResponseParser:
         if "errors" in response_obj:
             final_message = ""
             for error in response_obj["errors"]:
-                error_value = error.get('error', '')
-                param_value = error.get('param', '')
+                error_value = error.get("error", "")
+                param_value = error.get("param", "")
 
-                if error_value.endswith('.'):
+                if error_value.endswith("."):
                     error_value = error_value[:-1]
 
                 if error_value:
@@ -51,8 +51,8 @@ class ResponseParser:
                 else:
                     result = param_value.strip()
 
-                if not result.endswith('.'):
-                    result += '.'
+                if not result.endswith("."):
+                    result += "."
 
                 if not final_message == "":
                     result = " " + result
