@@ -37,6 +37,15 @@ class ResponseParser:
                 response_obj["error"]
             )
 
+        if "errors" in response_obj:
+            message = ""
+            for error in response_obj["errors"]:
+                if message == "":
+                    message += str(error["error"])
+                else:
+                    message += " " + str(error["error"])
+            BitPayExceptionProvider.throw_api_exception_with_message(message)
+
         if "success" in response_obj:
             return response_obj["success"]
 
