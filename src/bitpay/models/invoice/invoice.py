@@ -2,10 +2,11 @@
 Invoice
 """
 
-from typing import List, Union
+from typing import List, Union, Dict
 from pydantic import Field
 from .buyer import Buyer
 from .buyer_provided_info import BuyerProvidedInfo
+from .invoice_refund_address import InvoiceRefundAddress
 from .miner_fees import MinerFees
 from .refund_info import RefundInfo
 from .shopper import Shopper
@@ -47,7 +48,7 @@ class Invoice(BitPayModel):
     payment_codes: Union[dict, None] = None
     acceptance_window: Union[int, None] = None
     buyer: Union[Buyer, None] = None
-    refund_addresses: Union[List[str], None] = None
+    refund_addresses: Union[List[Dict[str, InvoiceRefundAddress]], None] = None
     close_url: Union[str, None] = Field(alias="closeURL", default=None)
     auto_redirect: Union[bool, None] = False
     json_paypro_required: bool = False
