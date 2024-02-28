@@ -1,14 +1,19 @@
 """
 InvoiceRefundAddress
 """
-
+from datetime import datetime
 from typing import Union
+from pydantic import field_serializer
 
 from bitpay.models.bitpay_model import BitPayModel
 
 
 class InvoiceRefundAddress(BitPayModel):
-    type: str
-    date: str
-    tag: Union[int, None] = None
+    date: Union[datetime, None] = None
     email: Union[str, None] = None
+    tag: Union[int, None] = None
+    type: Union[str, None] = None
+
+    @field_serializer("date")
+    def serialize_datetime(self, dt: datetime) -> str:
+        return super().serialize_datetime_to_iso8601(dt)
