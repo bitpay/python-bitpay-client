@@ -51,14 +51,15 @@ class BitPayClient:
         :raises BitPayApiException
         """
         full_url = self.__base_url + uri
+
+        LoggerProvider.get_logger().log_request("POST", uri, form_data)
+
         form_data = json.dumps(form_data, default=json_serialize)
         if signature_required:
             self.__headers["x-signature"] = sign(full_url + form_data, self.__ec_key)
             self.__headers["x-identity"] = get_compressed_public_key_from_pem(
                 self.__ec_key
             )
-
-        LoggerProvider.get_logger().log_request("POST", uri, form_data)
 
         return requests.post(full_url, data=form_data, headers=self.__headers)
 
