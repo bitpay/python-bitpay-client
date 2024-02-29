@@ -5,9 +5,9 @@ from typing import Union
 from bitpay.models.bitpay_model import BitPayModel
 
 
-class InvoiceRefundAddresses(BitPayModel):
-    date: Union[datetime, None]
-    email: Union[str, None]
+class InvoiceRefundAddress(BitPayModel):
+    date: Union[datetime, None] = None
+    email: Union[str, None] = None
     tag: Union[int, None] = None
     type: Union[str, None] = None
 
