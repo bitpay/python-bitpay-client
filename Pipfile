@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 ecdsa = "==0.18.0"
 requests = "==2.31.0"
-pydantic = "==2.6.1"
+pydantic = "==2.6.3"
 
 [dev-packages]
 black = "==24.1.1"
