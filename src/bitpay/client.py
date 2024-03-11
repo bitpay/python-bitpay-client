@@ -57,11 +57,11 @@ class Client:
             raise BitPayException("failed to initiate clients: " + str(exe))
 
     @staticmethod
-    def create_pos_client(self, pos_token: str, environment: Environment = Environment.PROD):  # type: ignore
+    def create_pos_client(pos_token: str, environment: Environment = Environment.PROD):  # type: ignore
         token_container = TokenContainer()
         token_container.add_pos(pos_token)
 
-        bitpay_client = BitPayClient(self.get_base_url(environment))
+        bitpay_client = BitPayClient(Client.get_base_url(environment))
 
         return Client(bitpay_client, token_container, GuidGenerator())
 
