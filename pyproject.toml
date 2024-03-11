@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bitpay"
-version = "5.0.4"
+version = "5.0.5"
 authors = [
   { name="Antonio Buedo", email="sales-engineering@bitpay.com" },
 ]
