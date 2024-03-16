@@ -27,11 +27,11 @@ class InvoiceRequests:
 
         invoice.buyer = buyer
 
-        client = Client.create_pos_client('somePosToken', Environment.TEST.value)
+        client = Client.create_pos_client('somePosToken', Environment.TEST)
 
         result = client.create_invoice(invoice, Facade.POS, False)
 
     def get_invoice(self) -> None:
-        client = Client.create_pos_client('somePosToken', Environment.TEST.value)
+        client = Client.create_pos_client('somePosToken', Environment.TEST)
 
         invoice_by_id = client.get_invoice('someInvoiceId', Facade.POS, False)
