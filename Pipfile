@@ -12,7 +12,7 @@ pydantic = "==2.11.3"
 black = "==25.1.0"
 pytest = "==8.3.5"
 pytest-mock = "==3.14.0"
-mypy = "==1.15.0"
+mypy = "==1.16.0"
 pytest-mypy-plugins = "==3.2.0"
 pytest-cov = "==6.1.1"
 
