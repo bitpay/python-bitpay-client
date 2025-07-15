@@ -44,9 +44,11 @@ jobs:
         id: release
         run: |
           echo "title=${{ github.event.release.name }}" >> $GITHUB_OUTPUT
-          echo "body<<EOF" >> $GITHUB_OUTPUT
-          echo "${{ github.event.release.body }}" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "body<<EOF"
+            echo "${{ github.event.release.body }}"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
@@ -67,4 +69,3 @@ jobs:
             --header "Authorization: Bearer $README_API_KEY" \
             --header 'Content-Type: application/json' \
             --data @payload.json
-
