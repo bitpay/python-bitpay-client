@@ -54,9 +54,6 @@ jobs:
           --header "Authorization: Bearer $README_API_KEY" \
           --header 'Content-Type: application/json' \
           --data '{
-              "author": {
-                  "id": "62fee95665f6d6003c12b799"
-              },
               "body": "${{ steps.release.outputs.body }}",
               "title": "Python Unified SDK ${{ steps.release.outputs.title }}",
               "privacy": {
