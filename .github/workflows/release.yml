@@ -61,7 +61,9 @@ jobs:
                 --arg body "${{ steps.release.outputs.body }}" \
                 '{
                   title: $title,
-                  body: $body,
+                  content: {
+                    body: $body
+                  },
                   privacy: { view: "public" }
                 }' > payload.json
 
