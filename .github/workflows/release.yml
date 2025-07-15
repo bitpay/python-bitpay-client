@@ -58,7 +58,6 @@ jobs:
           jq -n --arg title "Python Unified SDK ${{ steps.release.outputs.title }}" \
                 --arg body "${{ steps.release.outputs.body }}" \
                 '{
-                  author: { id: $authorId },
                   title: $title,
                   body: $body,
                   privacy: { view: "public" }
