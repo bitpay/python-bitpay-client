@@ -34,3 +34,29 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages_dir: artifact/
+
+  readme-changelog:
+    name: Publish changelog to Readme
+    needs: ['pypi-publish']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract release data
+        id: release
+        run: |
+          echo "title=$(echo "${{ github.event.release.name }}" | sed 's/"/\\"/g')" >> $GITHUB_OUTPUT
+          echo "body=$(echo "${{ github.event.release.body }}" | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')" >> $GITHUB_OUTPUT
+
+      - name: Publish changelog to Readme
+        env:
+          README_API_KEY: ${{ secrets.README_API_KEY }}
+        run: |
+          curl --location 'https://api.readme.com/v2/changelogs' \
+          --header "Authorization: Bearer $README_API_KEY" \
+          --header 'Content-Type: application/json' \
+          --data '{
+              "body": "${{ steps.release.outputs.body }}",
+              "title": "Python Unified SDK ${{ steps.release.outputs.title }}",
+              "privacy": {
+                  "view": "public"
+              }
+          }'
