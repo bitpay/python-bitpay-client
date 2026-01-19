@@ -9,7 +9,7 @@ requests = "==2.32.5"
 pydantic = "==2.12.5"
 
 [dev-packages]
-black = "==25.12.0"
+black = "==26.1.0"
 pytest = "==9.0.2"
 pytest-mock = "==3.15.1"
 mypy = "==1.19.1"
