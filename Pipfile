@@ -9,12 +9,12 @@ requests = "==2.32.5"
 pydantic = "==2.12.5"
 
 [dev-packages]
-black = "==26.1.0"
+black = "==26.3.1"
 pytest = "==9.0.2"
 pytest-mock = "==3.15.1"
 mypy = "==1.19.1"
-pytest-mypy-plugins = "==3.3.0"
-pytest-cov = "==7.0.0"
+pytest-mypy-plugins = "==4.0.0"
+pytest-cov = "==7.1.0"
 
 [requires]
 python_version = "3"
