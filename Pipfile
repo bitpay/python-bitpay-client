@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 cryptography = ">=44.0.0"
-requests = "==2.33.1"
+requests = "==2.34.1"
 pydantic = "==2.13.4"
 
 [dev-packages]
