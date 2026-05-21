@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 dependencies = [
     "cryptography >= 44.0.0",
     "requests >= 2.33.1",
-    "pydantic == 2.12.5"
+    "pydantic == 2.13.4"
 ]
 description = "Accept bitcoin with BitPay"
 readme = "README.md"
