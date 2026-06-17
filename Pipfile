@@ -10,7 +10,7 @@ pydantic = "==2.13.4"
 
 [dev-packages]
 black = "==26.5.1"
-pytest = "==9.0.3"
+pytest = "==9.1.0"
 pytest-mock = "==3.15.1"
 mypy = "==2.1.0"
 pytest-mypy-plugins = "==4.0.3"
