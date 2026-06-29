@@ -1,6 +1,7 @@
 <img src="https://bitpay.com/_nuxt/img/bitpay-logo-blue.1c0494b.svg" width="150">
 
 # BitPay Python Client
+
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/bitpay/python-bitpay-client/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/bitpay.svg?style=flat-square)](https://pypi.org/project/bitpay)
 
@@ -8,8 +9,8 @@ Full implementation of the BitPay Payment Gateway. This library implements BitPa
 
 ## Support
 
-* https://github.com/bitpay/python-bitpay-client/issues
-* https://support.bitpay.com
+- https://github.com/bitpay/python-bitpay-client/issues
+- https://support.bitpay.com
 
 ## Contribute
 
@@ -19,7 +20,7 @@ To contribute to this project, please fork and submit a pull request.
 
 MIT License
 
-Copyright (c) 2021 BitPay
+Copyright (c) 2026 BitPay
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
