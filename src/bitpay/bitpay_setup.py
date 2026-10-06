@@ -5,6 +5,7 @@ from typing import Optional
 import requests
 
 from utils.key_utils import *
+from utils.secret_file import write_secret_file
 from exceptions.bitpay_exception import BitPayException
 
 # Will be set to Test otherwise
@@ -77,8 +78,7 @@ def store_key(private_key: str) -> None:
         )
 
         if input_value.lower() == "f":
-            with open(str(private_key_path), "wb") as f:
-                f.write(private_key.encode())
+            write_secret_file(str(private_key_path), private_key)
             plain_private_key = None
             print("Private key saved at path:", private_key_path)
             select_tokens(private_key)
@@ -171,12 +171,9 @@ def update_config_file() -> None:
             }
         }
 
-        with open(os.path.abspath("bitpay.config.json"), "w") as outfile:
-            json.dump(config, outfile, indent=2)
-            print(
-                "Generated configuration file at path: ",
-                os.path.abspath("bitpay.config.json"),
-            )
+        config_path = os.path.abspath("bitpay.config.json")
+        write_secret_file(config_path, json.dumps(config, indent=2))
+        print("Generated configuration file at path: ", config_path)
 
         print("Configuration generated successfully! \n")
         print(
